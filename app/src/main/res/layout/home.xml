@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#5777AB"
+    tools:context=".Home">
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addOS"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="@dimen/fab_margin"
+        android:layout_marginBottom="16dp"
+        app:srcCompat="@android:drawable/ic_input_add"
+        tools:ignore="MissingConstraints"
+        android:contentDescription="Adcionar nova ordem de manutenção"
+        />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="start"
+            android:background="#5777AB"
+            tools:layout_editor_absoluteX="1dp"
+            tools:layout_editor_absoluteY="1dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/layout_topbf"
+                android:padding="10dp"
+                android:layout_margin="10dp"
+                android:text="Ultimas Ordens de Serviço Abertas"
+                android:textAlignment="center"
+                android:textColor="#000000"
+                android:textSize="18sp" />
+
+    <!--        TODO itens de OS passadas-->
+<!--            <androidx.recyclerview.widget.RecyclerView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:layout_margin="10dp"-->
+<!--                android:background="@drawable/layout_bf"-->
+<!--                -->
+
+<!--                />-->
+
+
+
+
+
+
+
+
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+
+
+<!--<LinearLayout-->
+<!--android:layout_width="match_parent"-->
+<!--android:layout_height="wrap_content"-->
+<!--android:orientation="horizontal"-->
+<!--android:layout_margin="3dp"-->
+<!--android:background="@drawable/layout_bf">-->
+
+<!--<TextView-->
+<!--    android:layout_width="wrap_content"-->
+<!--    android:layout_height="wrap_content"-->
+<!--    android:layout_margin="10dp"-->
+<!--    android:text="Preventiva: Bloco A - Diretoria - 01A"-->
+<!--    android:textColor="#ffffff"-->
+<!--    android:textSize="14sp" />-->
+
+<!--<View-->
+<!--    android:layout_width="0dp"-->
+<!--    android:layout_height="0dp"-->
+<!--    android:layout_weight="1" />-->
+
+<!--<ImageButton-->
+<!--    android:layout_width="wrap_content"-->
+<!--    android:layout_height="match_parent"-->
+<!--    android:layout_marginHorizontal="5dp"-->
+<!--    android:background="@drawable/layout_bf"-->
+<!--    android:src="@android:drawable/ic_menu_share" />-->
+
+<!--<ImageButton-->
+<!--    android:layout_width="wrap_content"-->
+<!--    android:layout_height="match_parent"-->
+<!--    android:layout_marginHorizontal="5dp"-->
+<!--    android:background="@drawable/layout_bf"-->
+<!--    android:src="@android:drawable/ic_menu_edit" />-->
+
+<!--<ImageButton-->
+<!--    android:layout_width="wrap_content"-->
+<!--    android:layout_height="match_parent"-->
+<!--    android:layout_gravity="end"-->
+<!--    android:background="@drawable/layout_bf"-->
+<!--    android:src="@android:drawable/ic_menu_delete" />-->
+
+
+
+<!--</LinearLayout>-->
+
+<!--<LinearLayout-->
+<!--android:layout_width="match_parent"-->
+<!--android:layout_height="wrap_content"-->
+<!--android:orientation="horizontal"-->
+<!--android:layout_margin="3dp"-->
+<!--android:background="@drawable/layout_bf">-->
+
+<!--<TextView-->
+<!--    android:layout_width="wrap_content"-->
+<!--    android:layout_height="wrap_content"-->
+<!--    android:layout_margin="10dp"-->
+<!--    android:text="Preventiva: Bloco E - Refeitorio - 01E"-->
+<!--    android:textColor="#ffffff"-->
+<!--    android:textSize="14sp" />-->
+
+<!--<View-->
+<!--    android:layout_width="0dp"-->
+<!--    android:layout_height="0dp"-->
+<!--    android:layout_weight="1" />-->
+
+<!--<ImageButton-->
+<!--    android:layout_width="wrap_content"-->
+<!--    android:layout_height="match_parent"-->
+<!--    android:layout_marginHorizontal="5dp"-->
+<!--    android:background="@drawable/layout_bf"-->
+<!--    android:src="@android:drawable/ic_menu_share" />-->
+
+<!--<ImageButton-->
+<!--    android:layout_width="wrap_content"-->
+<!--    android:layout_height="match_parent"-->
+<!--    android:layout_marginHorizontal="5dp"-->
+<!--    android:background="@drawable/layout_bf"-->
+<!--    android:src="@android:drawable/ic_menu_edit" />-->
+
+<!--<ImageButton-->
+<!--    android:layout_width="wrap_content"-->
+<!--    android:layout_height="match_parent"-->
+<!--    android:layout_gravity="end"-->
+<!--    android:background="@drawable/layout_bf"-->
+<!--    android:src="@android:drawable/ic_menu_delete" />-->
+
+
+
+<!--</LinearLayout>-->
+
+<!--<LinearLayout-->
+<!--android:layout_width="match_parent"-->
+<!--android:layout_height="wrap_content"-->
+<!--android:orientation="horizontal"-->
+<!--android:layout_margin="3dp"-->
+<!--android:background="@drawable/layout_bf">-->
+
+<!--<TextView-->
+<!--    android:layout_width="wrap_content"-->
+<!--    android:layout_height="wrap_content"-->
+<!--    android:layout_margin="10dp"-->
+<!--    android:text="Corretiva: BR - Atendimento - 01BR"-->
+<!--    android:textColor="#ffffff"-->
+<!--    android:textSize="14sp" />-->
+
+<!--<View-->
+<!--    android:layout_width="0dp"-->
+<!--    android:layout_height="0dp"-->
+<!--    android:layout_weight="1" />-->
+
+<!--<ImageButton-->
+<!--    android:layout_width="wrap_content"-->
+<!--    android:layout_height="match_parent"-->
+<!--    android:layout_marginHorizontal="5dp"-->
+<!--    android:background="@drawable/layout_bf"-->
+<!--    android:src="@android:drawable/ic_menu_share" />-->
+
+<!--<ImageButton-->
+<!--    android:layout_width="wrap_content"-->
+<!--    android:layout_height="match_parent"-->
+<!--    android:layout_marginHorizontal="5dp"-->
+<!--    android:background="@drawable/layout_bf"-->
+<!--    android:src="@android:drawable/ic_menu_edit" />-->
+
+<!--<ImageButton-->
+<!--    android:layout_width="wrap_content"-->
+<!--    android:layout_height="match_parent"-->
+<!--    android:layout_gravity="end"-->
+<!--    android:background="@drawable/layout_bf"-->
+<!--    android:src="@android:drawable/ic_menu_delete" />-->
+
+
+
+<!--</LinearLayout>-->
+
+<!--<LinearLayout-->
+<!--android:layout_width="match_parent"-->
+<!--android:layout_height="wrap_content"-->
+<!--android:orientation="horizontal"-->
+<!--android:layout_margin="3dp"-->
+<!--android:background="@drawable/layout_bf">-->
+
+<!--<TextView-->
+<!--    android:layout_width="wrap_content"-->
+<!--    android:layout_height="wrap_content"-->
+<!--    android:layout_margin="10dp"-->
+<!--    android:text="Corretiva: Guamá - Comando - 01JU"-->
+<!--    android:textColor="#ffffff"-->
+<!--    android:textSize="14sp" />-->
+
+<!--<View-->
+<!--    android:layout_width="0dp"-->
+<!--    android:layout_height="0dp"-->
+<!--    android:layout_weight="1" />-->
+
+<!--<ImageButton-->
+<!--    android:layout_width="wrap_content"-->
+<!--    android:layout_height="match_parent"-->
+<!--    android:layout_marginHorizontal="5dp"-->
+<!--    android:background="@drawable/layout_bf"-->
+<!--    android:src="@android:drawable/ic_menu_share" />-->
+
+<!--<ImageButton-->
+<!--    android:layout_width="wrap_content"-->
+<!--    android:layout_height="match_parent"-->
+<!--    android:layout_marginHorizontal="5dp"-->
+<!--    android:background="@drawable/layout_bf"-->
+<!--    android:src="@android:drawable/ic_menu_edit" />-->
+
+<!--<ImageButton-->
+<!--    android:layout_width="wrap_content"-->
+<!--    android:layout_height="match_parent"-->
+<!--    android:layout_gravity="end"-->
+<!--    android:background="@drawable/layout_bf"-->
+<!--    android:src="@android:drawable/ic_menu_delete" />-->
+
+
+
+<!--</LinearLayout>-->
+
+<!--<LinearLayout-->
+<!--android:layout_width="match_parent"-->
+<!--android:layout_height="wrap_content"-->
+<!--android:orientation="horizontal"-->
+<!--android:layout_margin="3dp"-->
+<!--android:background="@drawable/layout_bf">-->
+
+<!--<TextView-->
+<!--    android:layout_width="wrap_content"-->
+<!--    android:layout_height="wrap_content"-->
+<!--    android:layout_margin="10dp"-->
+<!--    android:text="Corretiva: Castanhal - Comando - 01TA"-->
+<!--    android:textColor="#ffffff"-->
+<!--    android:textSize="14sp" />-->
+
+<!--<View-->
+<!--    android:layout_width="0dp"-->
+<!--    android:layout_height="0dp"-->
+<!--    android:layout_weight="1" />-->
+
+<!--<ImageButton-->
+<!--    android:layout_width="wrap_content"-->
+<!--    android:layout_height="match_parent"-->
+<!--    android:layout_marginHorizontal="5dp"-->
+<!--    android:background="@drawable/layout_bf"-->
+<!--    android:src="@android:drawable/ic_menu_share" />-->
+
+<!--<ImageButton-->
+<!--    android:layout_width="wrap_content"-->
+<!--    android:layout_height="match_parent"-->
+<!--    android:layout_marginHorizontal="5dp"-->
+<!--    android:background="@drawable/layout_bf"-->
+<!--    android:src="@android:drawable/ic_menu_edit" />-->
+
+<!--<ImageButton-->
+<!--    android:layout_width="wrap_content"-->
+<!--    android:layout_height="match_parent"-->
+<!--    android:layout_gravity="end"-->
+<!--    android:background="@drawable/layout_bf"-->
+<!--    android:src="@android:drawable/ic_menu_delete" />-->
+
+
+
+<!--</LinearLayout>-->

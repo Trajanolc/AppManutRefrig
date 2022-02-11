@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/home">
+
+    <fragment
+        android:id="@+id/home"
+        android:name="com.example.myapplication.Home"
+        android:label="@string/first_fragment_label"
+        tools:layout="@layout/home">
+
+        <action
+            android:id="@+id/action_FirstFragment_to_SecondFragment"
+            app:destination="@id/SecondFragment" />
+        <action
+            android:id="@+id/action_FirstFragment_to_insert_form"
+            app:destination="@id/insert_form" />
+    </fragment>
+    <fragment
+        android:id="@+id/SecondFragment"
+        android:name="com.example.myapplication.SecondFragment"
+        android:label="@string/second_fragment_label"
+        tools:layout="@layout/fragment_second">
+
+        <action
+            android:id="@+id/action_SecondFragment_to_FirstFragment"
+            app:destination="@id/home" />
+    </fragment>
+    <fragment
+        android:id="@+id/insert_form"
+        android:name="com.example.myapplication.InsertForm"
+        android:label="Formulário de entrada"
+        tools:layout="@layout/insert_form">
+
+
+        <action
+            android:id="@+id/action_insert_form_to_FirstFragment"
+            app:destination="@id/home" />
+    </fragment>
+</navigation>
