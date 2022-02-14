@@ -32,6 +32,7 @@ import aws.smithy.kotlin.runtime.util.asyncLazy
 
 
 import com.example.myapplication.databinding.ActivityMainBinding
+import kotlinx.coroutines.delay
 import okhttp3.internal.wait
 
 
@@ -62,21 +63,25 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        val preferencia = getSharedPreferences("VersaoInstalacao", MODE_PRIVATE)
+        val versaoequipamentos = getSharedPreferences("VersaoInstalacao", MODE_PRIVATE)
+        val listaequipamentos = getSharedPreferences("ListaEquipamentos", MODE_PRIVATE)
 
 
-        var versaolocal: List<Map<String, AttributeValue>>? = null
-        suspend {versaolocal = queryDynTable("instalacoes","nomeInstalacao","Equatorial","#a")
-        }.wait()
+        var versaolocal: Map<String, AttributeValue>? = null
+        
+       suspend {versaolocal = getSpecificItem("Instalacoes","nomeInstalacao","Equatorial")
+           if(versaoequipamentos.getString("VersaoInstalacao","") != versaolocal?.get("Versao").toString()){
+               //var editor = listaequipamentos.edit()
+               print(versaolocal?.get("listaEquipamentos").toString())
+           }
 
-        if(preferencia.getString("VersaoInstalacao","") != versaolocal?.get(0)?.get("Versao").toString()){
-            //Buscar no dynamo os locais
-            //Checar se existe os arquivos de local
-            //se nao criar
-            //se sim atualizar
-            //atualizar a tabela de locais
-            //atualizar versão
-        }
+       }
+
+
+//        //atualizar
+//            //atualizar a tabela de locais
+//            //atualizar versão
+//        }
 
 
 
