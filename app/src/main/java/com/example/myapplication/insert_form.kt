@@ -17,7 +17,7 @@ import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import aws.sdk.kotlin.services.dynamodb.model.PutItemRequest
 import aws.smithy.kotlin.runtime.util.asyncLazy
 import com.example.myapplication.databinding.InsertFormBinding
-import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
+
 import java.io.File
 import kotlin.math.round
 

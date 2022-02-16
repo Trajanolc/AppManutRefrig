@@ -6,34 +6,31 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-
-
+import android.view.Menu
+import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
-import android.view.Menu
-import android.view.MenuItem
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-
-
+import aws.sdk.kotlin.runtime.config.profile.awsSecretAccessKey
+import aws.sdk.kotlin.runtime.config.profile.loadActiveAwsProfile
 import aws.sdk.kotlin.services.dynamodb.DynamoDbClient
-import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
-import aws.sdk.kotlin.services.dynamodb.model.GetItemRequest
-import aws.sdk.kotlin.services.dynamodb.model.QueryRequest
-import aws.smithy.kotlin.runtime.util.asyncLazy
-
-
+import aws.sdk.kotlin.services.dynamodb.model.*
+import com.amazonaws.auth.BasicAWSCredentials
+import com.amazonaws.regions.Regions
 import com.example.myapplication.databinding.ActivityMainBinding
-import kotlinx.coroutines.delay
-import okhttp3.internal.wait
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import javax.crypto.Cipher.SECRET_KEY
 
 
 class MainActivity : AppCompatActivity() {
@@ -52,6 +49,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -63,19 +61,23 @@ class MainActivity : AppCompatActivity() {
 
 
 
+
         val versaoequipamentos = getSharedPreferences("VersaoInstalacao", MODE_PRIVATE)
         val listaequipamentos = getSharedPreferences("ListaEquipamentos", MODE_PRIVATE)
 
-
-        var versaolocal: Map<String, AttributeValue>? = null
-        
-       suspend {versaolocal = getSpecificItem("Instalacoes","nomeInstalacao","Equatorial")
-           if(versaoequipamentos.getString("VersaoInstalacao","") != versaolocal?.get("Versao").toString()){
-               //var editor = listaequipamentos.edit()
-               print(versaolocal?.get("listaEquipamentos").toString())
-           }
-
-       }
+//        var versaolocal: Map<String, AttributeValue>? = null
+//        GlobalScope.launch(Dispatchers.Main) {
+//            Toast.makeText(this@MainActivity,"zero1",Toast.LENGTH_SHORT).show()
+//            Toast.makeText(this@MainActivity,"zero",Toast.LENGTH_SHORT).show()
+//            getSpecificItem("instalacoes2-dev", "empresa", "Equatorial")
+//        }
+//       suspend {getSpecificItem("Instalacoes","nomeInstalacao","Equatorial")
+//           if(versaoequipamentos.getString("VersaoInstalacao","") != versaolocal?.get("Versao").toString()){
+//               //var editor = listaequipamentos.edit()
+//               print(versaolocal?.get("listaEquipamentos"))
+//           }
+//
+//       }
 
 
 //        //atualizar
@@ -118,19 +120,36 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    suspend fun getSpecificItem(tableNameVal: String, keyName: String, keyVal: String): Map<String,AttributeValue>? {
+    suspend fun getSpecificItem(tableNameVal: String, keyName: String, keyVal: String) {
 
         val keyToGet = mutableMapOf<String, AttributeValue>()
         keyToGet[keyName] = AttributeValue.S(keyVal)
-
+        Toast.makeText(this,"one",Toast.LENGTH_SHORT).show()
         val request = GetItemRequest {
             key = keyToGet
             tableName = tableNameVal
-        }
 
-        DynamoDbClient { region = "us-east-1" }.use { ddb ->
-            val returnedItem = ddb.getItem(request)
-            return returnedItem.item
+
+        }
+        Toast.makeText(this,"two",Toast.LENGTH_SHORT).show()
+
+
+
+        DynamoDbClient { region="eu-east-2" }.use { ddb ->
+            try {
+                var returnedItem = ddb.getItem(request)
+                Toast.makeText(this, returnedItem.consumedCapacity.toString(), Toast.LENGTH_SHORT)
+                    .show()
+                val numbersMap = returnedItem.item
+                numbersMap?.forEach { key1 ->
+                    Toast.makeText(this, key1.key, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, key1.value.toString(), Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                Toast.makeText(this, "tree", Toast.LENGTH_SHORT).show()
+            }
+
+
         }
 
     }

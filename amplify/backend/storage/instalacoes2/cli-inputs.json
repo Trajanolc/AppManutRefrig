@@ -1,0 +1,10 @@
+{
+  "resourceName": "instalacoes2",
+  "tableName": "instalacoes2",
+  "partitionKey": {
+    "fieldName": "empresa",
+    "fieldType": "string"
+  },
+  "gsi": [],
+  "triggerFunctions": []
+}
