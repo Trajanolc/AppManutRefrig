@@ -12,7 +12,6 @@ import android.os.Bundle
 import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -20,17 +19,12 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
-import aws.sdk.kotlin.runtime.config.profile.awsSecretAccessKey
-import aws.sdk.kotlin.runtime.config.profile.loadActiveAwsProfile
+import aws.sdk.kotlin.runtime.auth.credentials.Credentials
+import aws.sdk.kotlin.runtime.auth.credentials.StaticCredentialsProvider
 import aws.sdk.kotlin.services.dynamodb.DynamoDbClient
 import aws.sdk.kotlin.services.dynamodb.model.*
-import com.amazonaws.auth.BasicAWSCredentials
-import com.amazonaws.regions.Regions
 import com.example.myapplication.databinding.ActivityMainBinding
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import javax.crypto.Cipher.SECRET_KEY
+import kotlinx.coroutines.runBlocking
 
 
 class MainActivity : AppCompatActivity() {
@@ -61,23 +55,26 @@ class MainActivity : AppCompatActivity() {
 
 
 
+//        val versaoequipamentos = getSharedPreferences("Equipamentos", MODE_PRIVATE)
+//        println(versaoequipamentos.getStringSet("listaEquipamentos", mutableSetOf("0","1")))
 
-        val versaoequipamentos = getSharedPreferences("VersaoInstalacao", MODE_PRIVATE)
-        val listaequipamentos = getSharedPreferences("ListaEquipamentos", MODE_PRIVATE)
 
-//        var versaolocal: Map<String, AttributeValue>? = null
-//        GlobalScope.launch(Dispatchers.Main) {
-//            Toast.makeText(this@MainActivity,"zero1",Toast.LENGTH_SHORT).show()
-//            Toast.makeText(this@MainActivity,"zero",Toast.LENGTH_SHORT).show()
-//            getSpecificItem("instalacoes2-dev", "empresa", "Equatorial")
-//        }
-//       suspend {getSpecificItem("Instalacoes","nomeInstalacao","Equatorial")
-//           if(versaoequipamentos.getString("VersaoInstalacao","") != versaolocal?.get("Versao").toString()){
-//               //var editor = listaequipamentos.edit()
-//               print(versaolocal?.get("listaEquipamentos"))
-//           }
-//
-//       }
+//TODO adcionar de volta essa linha
+
+
+        runBlocking {
+
+            val versaoequipamentos = getSharedPreferences("Equipamentos", MODE_PRIVATE)
+
+            var lista = getSpecificItem("instalacoes2-dev", "empresa", "Equatorial","Equipamentos")
+            val listastrings = lista.toString().subSequence(10,lista.toString().length-2).split(", ").toMutableSet()
+            versaoequipamentos.edit().clear().putStringSet("listaEquipamentos",listastrings).apply()
+
+        }
+
+
+
+
 
 
 //        //atualizar
@@ -120,38 +117,36 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    suspend fun getSpecificItem(tableNameVal: String, keyName: String, keyVal: String) {
+    suspend fun getSpecificItem(tableNameVal: String, keyName: String, keyVal: String,coluna: String):AttributeValue? {
 
         val keyToGet = mutableMapOf<String, AttributeValue>()
+        var retorno : AttributeValue? = null
         keyToGet[keyName] = AttributeValue.S(keyVal)
-        Toast.makeText(this,"one",Toast.LENGTH_SHORT).show()
         val request = GetItemRequest {
-            key = keyToGet
             tableName = tableNameVal
-
-
+            key = keyToGet
         }
-        Toast.makeText(this,"two",Toast.LENGTH_SHORT).show()
 
 
+        DynamoDbClient { region="us-east-2"
+            credentialsProvider=
+                StaticCredentialsProvider(Credentials("AKIAXJ6IWE3BPJLVFANI","MFr8G6u2JsoYzPLxtSjt3bgE2lVL4qKoZ0NBwOpT"))
+        }.use { ddb ->
 
-        DynamoDbClient { region="eu-east-2" }.use { ddb ->
-            try {
-                var returnedItem = ddb.getItem(request)
-                Toast.makeText(this, returnedItem.consumedCapacity.toString(), Toast.LENGTH_SHORT)
-                    .show()
-                val numbersMap = returnedItem.item
-                numbersMap?.forEach { key1 ->
-                    Toast.makeText(this, key1.key, Toast.LENGTH_SHORT).show()
-                    Toast.makeText(this, key1.value.toString(), Toast.LENGTH_SHORT).show()
+            val returnedItem = ddb.getItem(request)
+            val numbersMap = returnedItem.item
+
+            numbersMap?.forEach { key1 ->
+                if(key1.key == coluna) {
+                    retorno = key1.value
                 }
-            } catch (e: Exception) {
-                Toast.makeText(this, "tree", Toast.LENGTH_SHORT).show()
             }
 
 
-        }
 
+
+        }
+        return retorno
     }
 
     suspend fun queryDynTable(

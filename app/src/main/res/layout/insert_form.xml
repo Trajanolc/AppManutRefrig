@@ -88,7 +88,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:background="@android:drawable/btn_dropdown"
-                        android:layout_gravity="end"
+                        android:layout_gravity="start"
                         android:padding="10dp"
                         android:spinnerMode="dropdown"
 
@@ -122,7 +122,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:background="@android:drawable/btn_dropdown"
-                        android:layout_gravity="end"
+                        android:layout_gravity="start"
                         android:padding="10dp"
                         android:spinnerMode="dropdown"/>
 
@@ -154,7 +154,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:background="@android:drawable/btn_dropdown"
-                        android:layout_gravity="end"
+                        android:layout_gravity="start"
                         android:padding="10dp"
                         android:spinnerMode="dropdown"/>
 
