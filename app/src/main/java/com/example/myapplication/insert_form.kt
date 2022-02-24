@@ -3,27 +3,45 @@ package com.example.myapplication
 
 
 
+import android.R.attr
+import android.R.attr.*
+import android.content.ContentResolver
 import android.content.Context.MODE_PRIVATE
 import android.graphics.Bitmap
+import android.graphics.Bitmap.CompressFormat
 import android.graphics.BitmapFactory
+import android.graphics.ImageDecoder
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import aws.sdk.kotlin.services.dynamodb.DynamoDbClient
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import aws.sdk.kotlin.services.dynamodb.model.PutItemRequest
-import aws.smithy.kotlin.runtime.util.asyncLazy
+import aws.sdk.kotlin.services.s3.S3Client
+import aws.sdk.kotlin.services.s3.model.PutObjectRequest
+import aws.smithy.kotlin.runtime.content.asByteStream
 import com.example.myapplication.databinding.InsertFormBinding
+import id.zelory.compressor.Compressor
+import id.zelory.compressor.constraint.destination
+import id.zelory.compressor.constraint.format
+import id.zelory.compressor.constraint.quality
+import id.zelory.compressor.constraint.resolution
+import kotlinx.coroutines.runBlocking
+import java.io.ByteArrayOutputStream
 import java.io.File
-import java.io.FileInputStream
 import java.io.FileOutputStream
+import java.nio.file.Paths
 import kotlin.math.round
 
 
@@ -35,6 +53,9 @@ class InsertForm : Fragment() {
 
     private var _binding: InsertFormBinding? = null
 
+
+    val listImgsAntes : MutableList<File> = mutableListOf()
+    val listImgsDepois : MutableList<File> = mutableListOf()
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -168,13 +189,13 @@ class InsertForm : Fragment() {
         }
 
         binding.imgAntes.setOnClickListener{
-
+            listImgsAntes.clear()
             getContentAntes.launch("image/*")
 
         }
 
         binding.imgDepois.setOnClickListener{
-
+            listImgsDepois.clear()
             getContentDepois.launch("image/*")
         }
 
@@ -182,127 +203,231 @@ class InsertForm : Fragment() {
 
         }
 
-//        binding.finalizar.setOnClickListener {
-//            val ID = ((System.currentTimeMillis() - 1645473084517)/1000).toString()
-//            val pat = binding.chamado.text.toString()
-//            val local = binding.local.selectedItem.toString() //TODO impedir de enviar valor nulo
-//            val instalacao = binding.instalacao.selectedItem.toString()
-//            val equipamento = binding.equipamento.selectedItem.toString()
-//
-//            val tipoManut = mutableListOf<String>()
-//            if(binding.switchSensitiva.isChecked) tipoManut.add("Manutenção Sensitiva")
-//            if(binding.switchPreventiva.isChecked) tipoManut.add("Manutenção Preventiva")
-//            if(binding.switchCorretiva.isChecked) tipoManut.add("Manutenção Corretiva")
-//
-//            val tipoServicos = mutableListOf<String>()
-//            if(binding.switchLimpezaFiltros.isChecked) tipoServicos.add("Limpeza de Filtros")
-//            if(binding.switchRecargaDeGas.isChecked) tipoServicos.add("Recarga de Gás")
-//            if(binding.switchLimpezaQuimico.isChecked) tipoServicos.add("Limpeza com Químicos Bactericidas")
-//
-//            val tipoTroca = mutableListOf<String>()
-//            if(binding.switchRele.isChecked) tipoTroca.add("Troca de Relé")
-//            if(binding.switchCapacitor.isChecked) tipoTroca.add("Troca de Capacitor")
-//            if(binding.switchFusivel.isChecked) tipoTroca.add("Troca de Fusível")
-//            if(binding.switchVentilador.isChecked) tipoTroca.add("Troca de Ventilador")
-//
-//            val OBS = binding.OBS.text.toString()
-//
-//            val DataFim = System.currentTimeMillis().toString()
-//            // TODO incluir id do funcionario e do equipamento
-//            asyncLazy {
-//                putItemInTable(
-//                    pat,
-//                    local,
-//                    instalacao,
-//                    equipamento,
-//                    equipamento,
-//                    tipoManut,
-//                    tipoServicos,
-//                    tipoTroca,
-//                    OBS,
-//                    1.toString(),
-//                    DataFim
-//                )
-////            OBS: String,
-////            FuncionarioID: String,
-////            DataFim: String,
-//            }
-//        }
+        binding.finalizar.setOnClickListener {
+
+            //TODO enviar para um bucket S3 as fotos
+
+            val ID = ((System.currentTimeMillis() - 1645473084517)/1000).toString()
+            val pat = binding.chamado.text.toString()
+            val local = binding.local.selectedItem.toString() //TODO impedir de enviar valor nulo para local
+            val instalacao = binding.instalacao.selectedItem.toString()
+            val equipamento = binding.equipamento.selectedItem.toString()
+
+            val tipoManut = mutableListOf<String>()
+            if(binding.switchSensitiva.isChecked) tipoManut.add("Manutenção Sensitiva")
+            if(binding.switchPreventiva.isChecked) tipoManut.add("Manutenção Preventiva")
+            if(binding.switchCorretiva.isChecked) tipoManut.add("Manutenção Corretiva")
+
+            val tipoServicos = mutableListOf<String>()
+            if(binding.switchLimpezaFiltros.isChecked) tipoServicos.add("Limpeza de Filtros")
+            if(binding.switchRecargaDeGas.isChecked) tipoServicos.add("Recarga de Gás")
+            if(binding.switchLimpezaQuimico.isChecked) tipoServicos.add("Limpeza com Químicos Bactericidas")
+
+            val tipoTroca = mutableListOf<String>()
+            if(binding.switchRele.isChecked) tipoTroca.add("Troca de Relé")
+            if(binding.switchCapacitor.isChecked) tipoTroca.add("Troca de Capacitor")
+            if(binding.switchFusivel.isChecked) tipoTroca.add("Troca de Fusível")
+            if(binding.switchVentilador.isChecked) tipoTroca.add("Troca de Ventilador")
+
+            val OBS = binding.OBS.text.toString()
+
+            val DataFim = System.currentTimeMillis().toString()
+            // TODO incluir id do funcionario e do equipamento
+            runBlocking {
+                putItemInTable(
+                    pat,
+                    local,
+                    instalacao,
+                    equipamento,
+                    equipamento,
+                    tipoManut,
+                    tipoServicos,
+                    tipoTroca,
+                    OBS,
+                    1.toString(),
+                    DataFim
+                )
+//            OBS: String,
+//            FuncionarioID: String,
+//            DataFim: String,
+            }
+        }
 
 
     }
 
 
-    fun compressImage(file: File): File? {
-        return try {
+    @RequiresApi(Build.VERSION_CODES.O)
+    suspend fun putS3Object(bucketName: String, objectKey: String, objectPath: String) {
 
-            // BitmapFactory options to downsize the image
-            val o = BitmapFactory.Options()
-            o.inJustDecodeBounds = true
-            o.inSampleSize = 6
-            // factor of downsizing the image
-            var inputStream = FileInputStream(file)
-            //Bitmap selectedBitmap = null;
-            BitmapFactory.decodeStream(inputStream, null, o)
-            inputStream.close()
+        val metadataVal = mutableMapOf<String, String>()
+        metadataVal["myVal"] = "test"
 
-            // The new size we want to scale to
-            val REQUIRED_SIZE = 512
+        val request = PutObjectRequest {
+            var bucket = bucketName
+            key = objectKey
+            metadata = metadataVal
+            this.body = Paths.get(objectPath).asByteStream()
+        }
 
-            // Find the correct scale value. It should be the power of 2.
-            var scale = 1
-            while (o.outWidth / scale / 2 >= REQUIRED_SIZE &&
-                o.outHeight / scale / 2 >= REQUIRED_SIZE
-            ) {
-                scale *= 2
-            }
-            val o2 = BitmapFactory.Options()
-            o2.inSampleSize = scale
-            inputStream = FileInputStream(file)
-            val selectedBitmap = BitmapFactory.decodeStream(inputStream, null, o2)
-            inputStream.close()
-
-            // here i override the original image file
-            file.createNewFile()
-            val outputStream = FileOutputStream(file)
-            selectedBitmap!!.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-            file
-        } catch (e: Exception) {
-            null
+        S3Client { region = "us-east-2" }.use { s3 ->
+            val response =s3.putObject(request)
+            println("Tag information is ${response.eTag}")
         }
     }
 
-    var imgAntesUriList = arrayListOf<Uri>()
-    var imgDepoisUriList = arrayListOf<Uri>()
+
 
     private val getContentAntes = registerForActivityResult(ActivityResultContracts.GetMultipleContents()) { urisAntes: List<Uri?> ->
-        imgAntesUriList = urisAntes as ArrayList<Uri>
-        binding.imgAntes.setImageURI(urisAntes[0])
-        imgDepoisUriList.forEach { uri ->
-            compressImage(File(uri.path))
+        urisAntes.forEach { urii ->
+
+            if (urii != null) {
+
+                var bitmap: Bitmap? = null
+
+                try {
+
+                    val contentResolver: ContentResolver = this.requireContext().contentResolver
+
+                    bitmap = if (Build.VERSION.SDK_INT < 28) {
+                        MediaStore.Images.Media.getBitmap(contentResolver, urii)
+                    } else {
+                        val source: ImageDecoder.Source =
+                            urii.let { ImageDecoder.createSource(contentResolver, it) }
+                        ImageDecoder.decodeBitmap(source)
+                    }
+                } catch (e: java.lang.Exception) {
+                    e.printStackTrace()
+                }
+
+
+                // The new size we want to scale to
+                val REQUIRED_SIZE = 512
+
+                // Find the correct scale value. It should be the power of 2.
+                var scale = 1
+                while (bitmap!!.width / scale >= REQUIRED_SIZE &&
+                    bitmap.height / scale >= REQUIRED_SIZE
+                ) {
+                    scale *= 2
+                }
+
+
+                val outputDir = requireContext().cacheDir // context being the Activity pointer
+
+                val outputFile =
+                    File.createTempFile(urii.toString().split("%").last(), ".JPEG", outputDir)
+
+
+
+                println(bitmap.byteCount)
+
+                val bos = ByteArrayOutputStream()
+                bitmap.compress(CompressFormat.JPEG, 100, bos)
+                val bitmapdata: ByteArray = bos.toByteArray()
+
+                val fos = FileOutputStream(outputFile)
+                fos.write(bitmapdata)
+                fos.flush()
+                fos.close()
+
+
+                runBlocking {
+                    var arquivoImg = Compressor.compress(requireContext(), outputFile) {
+                        resolution(bitmap!!.width/scale, bitmap!!.height/scale)
+                        quality(100)
+                        format(Bitmap.CompressFormat.JPEG)
+                        destination(outputFile)
+                    }
+                }
+
+                listImgsAntes.add(outputFile)
+
+                binding.imgAntes.setImageURI(urisAntes[0])
+
+            }
         }
+
 
     }
 
     private val getContentDepois = registerForActivityResult(ActivityResultContracts.GetMultipleContents()) { urisDepois: List<Uri?> ->
-        imgDepoisUriList = urisDepois as ArrayList<Uri>
-        binding.imgDepois.setImageURI(urisDepois[0])
-        imgDepoisUriList.forEach { uri ->
-            compressImage(File(uri.path))
+        urisDepois.forEach { urii ->
+
+            if (urii != null) {
+
+                var bitmap: Bitmap? = null
+
+
+
+                try {
+
+
+                    val contentResolver: ContentResolver = this.requireContext().contentResolver
+
+
+                    bitmap = if (Build.VERSION.SDK_INT < 28) {
+                        MediaStore.Images.Media.getBitmap(contentResolver, urii)
+                    } else {
+                        val source: ImageDecoder.Source =
+                            urii.let { ImageDecoder.createSource(contentResolver, it) }
+                        ImageDecoder.decodeBitmap(source)
+                    }
+                } catch (e: java.lang.Exception) {
+                    e.printStackTrace()
+                }
+
+
+                // The new size we want to scale to
+                val REQUIRED_SIZE = 512
+
+                // Find the correct scale value. It should be the power of 2.
+                var scale = 1
+                while (bitmap!!.width / scale >= REQUIRED_SIZE &&
+                    bitmap!!.height / scale >= REQUIRED_SIZE
+                ) {
+                    scale *= 2
+                }
+
+
+                val outputDir = requireContext().cacheDir // context being the Activity pointer
+
+                val outputFile =
+                    File.createTempFile(urii.toString().split("%").last(), ".JPEG", outputDir)
+
+
+
+                val bos = ByteArrayOutputStream()
+                bitmap.compress(CompressFormat.JPEG, 100, bos)
+                val bitmapdata: ByteArray = bos.toByteArray()
+
+                val fos = FileOutputStream(outputFile)
+                fos.write(bitmapdata)
+                fos.flush()
+                fos.close()
+
+
+                runBlocking {
+                    var arquivoImg = Compressor.compress(requireContext(), outputFile) {
+                        resolution(bitmap!!.width / scale, bitmap!!.height / scale)
+                        quality(100)
+                        format(Bitmap.CompressFormat.JPEG)
+                        destination(outputFile)
+                    }
+                }
+
+
+                listImgsDepois.add(outputFile)
+                binding.imgDepois.setImageURI(urisDepois[0])
+
+
+            }
 
         }
     }
 
     val tableNameVal = "tabela"
 
-    private val CUSTOMEPOCH = 1300000000000; // artificial epoch
-    fun generateRowId(shardId:Int /* range 0-64 for shard/slot */): Double {
-        var ts =  System.currentTimeMillis() - CUSTOMEPOCH; // limit to recent
-        var randid = Math.floor(Math.random() * 512);
-        ts = (ts * 64);   // bit-shift << 6
-        ts += shardId;
-        return (ts * 512) + randid;
-    }
 
     private suspend fun putItemInTable(
         PAT: String,
@@ -321,7 +446,7 @@ class InsertForm : Fragment() {
         ) {
         val itemValues = mutableMapOf<String, AttributeValue>()
 
-        val ordemID = round(generateRowId(1)).toString()
+        val ordemID = round((System.currentTimeMillis() - 1645735671136).toDouble()).toString()
 
         // Add all content to the table.
         itemValues[ordemID] = AttributeValue.N(ordemID)

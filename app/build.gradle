@@ -62,6 +62,9 @@ dependencies {
     implementation("aws.sdk.kotlin:dynamodb:0.+"){
         exclude group: "xmlpull", module: "xmlpull"
     }
+    implementation("aws.sdk.kotlin:s3:0.+")
+
+    implementation('id.zelory:compressor:3.0.1')
 
 
 
