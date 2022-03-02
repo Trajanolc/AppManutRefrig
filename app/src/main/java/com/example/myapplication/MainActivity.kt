@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -23,8 +24,20 @@ import aws.sdk.kotlin.runtime.auth.credentials.Credentials
 import aws.sdk.kotlin.runtime.auth.credentials.StaticCredentialsProvider
 import aws.sdk.kotlin.services.dynamodb.DynamoDbClient
 import aws.sdk.kotlin.services.dynamodb.model.*
+import com.auth0.android.Auth0
+import com.auth0.android.authentication.AuthenticationException
+import com.auth0.android.provider.WebAuthProvider
 import com.example.myapplication.databinding.ActivityMainBinding
 import kotlinx.coroutines.runBlocking
+
+import com.auth0.android.authentication.AuthenticationAPIClient
+
+import com.auth0.android.callback.Callback
+import com.auth0.android.management.ManagementException
+import com.auth0.android.management.UsersAPIClient
+
+import com.auth0.android.result.Credentials as Credencias
+import com.auth0.android.result.UserProfile
 
 
 class MainActivity : AppCompatActivity() {
@@ -32,8 +45,12 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
-
-
+    var cachedCredentials: Credencias? = null
+    public var cachedUserProfile: UserProfile? = null
+    var account = Auth0(
+        "mkIWwOBPcHort6RWafUCx0YJbhZME8rb",
+        "dev-l9wd1tpd.us.auth0.com"
+    )
 
 
 
@@ -42,6 +59,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
+
 
 
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -55,22 +75,18 @@ class MainActivity : AppCompatActivity() {
 
 
 
-//        val versaoequipamentos = getSharedPreferences("Equipamentos", MODE_PRIVATE)
-//        println(versaoequipamentos.getStringSet("listaEquipamentos", mutableSetOf("0","1")))
+        //TODO se nao existir login no shared preferences
+        loginWithBrowser(account)
 
-
-//TODO adcionar de volta essa linha
-
-
-        runBlocking {
-
-            val versaoequipamentos = getSharedPreferences("Equipamentos", MODE_PRIVATE)
-
-            var lista = getSpecificItem("instalacoes2-dev", "empresa", "Equatorial","Equipamentos")
-            val listastrings = lista.toString().subSequence(10,lista.toString().length-2).split(", ").toMutableSet()
-            versaoequipamentos.edit().clear().putStringSet("listaEquipamentos",listastrings).apply()
-
-        }
+//        runBlocking {
+//
+//            val versaoequipamentos = getSharedPreferences("Equipamentos", MODE_PRIVATE)
+//
+//            var lista = getSpecificItem("instalacoes2-dev", "empresa", "Equatorial","Equipamentos")
+//            val listastrings = lista.toString().subSequence(10,lista.toString().length-2).split(", ").toMutableSet()
+//            versaoequipamentos.edit().clear().putStringSet("listaEquipamentos",listastrings).apply()
+//
+//        }
 
 
 
@@ -87,11 +103,53 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        //TODO checar a versao dos csvs de locais no dynamo, caso seja um maior, baixar do bucket s3 e atualizar a versão localmente
+
 
 
     }
+    private fun loginWithBrowser(account: Auth0) {
+        // Setup the WebAuthProvider, using the custom scheme and scope.
 
+        WebAuthProvider.login(account)
+            .withScheme(getString(R.string.com_auth0_scheme))
+            .withScope("openid profile email read:current_user update:current_user_metadata")
+            .withAudience("https://${getString(R.string.com_auth0_domain)}/api/v2/")
+            // Launch the authentication passing the callback where the results will be received
+            .start(this, object : Callback<Credencias, AuthenticationException> {
+                // Called when there is an authentication failure
+                override fun onFailure(exception: AuthenticationException) {
+                    // Something went wrong!
+                }
+
+                // Called when authentication completed successfully
+                override fun onSuccess(credenciais: Credencias) {
+                    // Get the access token from the credentials object.
+                    // This can be used to call APIs
+                    cachedCredentials = credenciais
+
+                    println("access token: ${credenciais.accessToken})")
+                    println("ID: ${credenciais.idToken}")
+
+                    val client = AuthenticationAPIClient(account)
+                    client.userInfo(cachedCredentials!!.accessToken!!)
+                        .start(object : Callback<UserProfile, AuthenticationException> {
+                            override fun onFailure(exception: AuthenticationException) {
+
+                            }
+
+                            override fun onSuccess(profile: UserProfile) {
+                                cachedUserProfile = profile;
+                                println("profile: ${profile.name}, nickname: ${profile.nickname}")
+                                val login = getSharedPreferences("login", MODE_PRIVATE)
+                                login.edit().clear().putString("login",profile.nickname).apply()
+
+                                Toast.makeText(this@MainActivity,"Bem vindo, ${profile.nickname}!",Toast.LENGTH_SHORT).show()
+                            }
+                        })
+                }
+
+            })
+    }
 
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -105,7 +163,17 @@ class MainActivity : AppCompatActivity() {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
-            R.id.action_settings -> true
+            R.id.action_settings -> {
+                if(cachedUserProfile == null){
+                    loginWithBrowser(account)
+                }
+                else{
+                    logout()
+                    Toast.makeText(this, "Logout realizado com sucesso!", Toast.LENGTH_SHORT).show()
+
+                }
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -116,6 +184,23 @@ class MainActivity : AppCompatActivity() {
                 || super.onSupportNavigateUp()
     }
 
+    private fun logout() {
+        WebAuthProvider.logout(account)
+            .withScheme(getString(R.string.com_auth0_scheme))
+            .start(this, object : Callback<Void?, AuthenticationException> {
+                override fun onSuccess(payload: Void?) {
+                    // The user has been logged out!
+                    cachedCredentials = null
+                    cachedUserProfile = null
+                    val login = getSharedPreferences("login", MODE_PRIVATE)
+                    login.edit().clear().putString("login","").apply()
+                }
+
+                override fun onFailure(exception: AuthenticationException) {
+
+                }
+            })
+    }
 
     suspend fun getSpecificItem(tableNameVal: String, keyName: String, keyVal: String,coluna: String):AttributeValue? {
 
@@ -149,32 +234,7 @@ class MainActivity : AppCompatActivity() {
         return retorno
     }
 
-    suspend fun queryDynTable(
-        tableNameVal: String,
-        partitionKeyName: String,
-        partitionKeyVal: String,
-        partitionAlias: String
-    ): List<Map<String,AttributeValue>>? {
 
-        val attrNameAlias = mutableMapOf<String, String>()
-        attrNameAlias[partitionAlias] = partitionKeyName
-
-        // Set up mapping of the partition name with the value.
-        val attrValues = mutableMapOf<String, AttributeValue>()
-        attrValues[":$partitionKeyName"] = AttributeValue.S(partitionKeyVal)
-
-        val request = QueryRequest {
-            tableName = tableNameVal
-            keyConditionExpression = "$partitionAlias = :$partitionKeyName"
-            expressionAttributeNames = attrNameAlias
-            this.expressionAttributeValues = attrValues
-        }
-
-        DynamoDbClient { region = "us-east-1" }.use { ddb ->
-            val response = ddb.query(request)
-            return response.items
-        }
-    }
 
 
 

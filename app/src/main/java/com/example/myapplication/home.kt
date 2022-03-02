@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import aws.sdk.kotlin.runtime.auth.credentials.*
@@ -15,6 +16,7 @@ import aws.sdk.kotlin.services.dynamodb.model.AttributeValue.*
 import aws.sdk.kotlin.services.dynamodb.model.GetItemRequest
 import com.example.myapplication.databinding.HomeBinding
 import kotlinx.coroutines.runBlocking
+import com.auth0.android.result.UserProfile
 
 
 /**
@@ -36,13 +38,22 @@ class Home : Fragment() {
         _binding = HomeBinding.inflate(inflater, container, false)
         return binding.root
 
+
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         binding.addOS.setOnClickListener {
-            findNavController().navigate(R.id.action_FirstFragment_to_insert_form)
+            val login = requireActivity().getSharedPreferences("login", AppCompatActivity.MODE_PRIVATE)
+            println(login.getString("login",""))
+            if(login.getString("login","") != "") {
+                findNavController().navigate(R.id.action_FirstFragment_to_insert_form)
+            }
+                else {
+                Toast.makeText(requireContext(), "Por favor, faça o login antes", Toast.LENGTH_SHORT).show()
+            }
 
 
 

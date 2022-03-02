@@ -36,6 +36,7 @@
 
 
         <ScrollView
+            android:id="@+id/scroll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -425,6 +426,155 @@
 
                     </LinearLayout>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    tools:layout_editor_absoluteX="1dp"
+                    tools:layout_editor_absoluteY="1dp"
+                    android:layout_marginHorizontal="5dp"
+
+                    tools:ignore="MissingConstraints">
+                    <TextView
+                        android:id="@+id/txtDreno"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Limpeza e Desobstrução de Dreno"
+                        android:layout_gravity="start"
+                        android:textColor="#ffffff"
+                        android:textSize="18sp"
+                        android:padding="7dp"/>
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/switchDreno"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    tools:layout_editor_absoluteX="1dp"
+                    tools:layout_editor_absoluteY="1dp"
+                    android:layout_marginHorizontal="5dp"
+                    tools:ignore="MissingConstraints">
+
+                    <TextView
+                        android:id="@+id/txtSensorTemp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:layout_weight="1"
+                        android:padding="7dp"
+                        android:text="Troca de Sensor de Temperatura"
+                        android:textColor="#ffffff"
+                        android:textSize="18sp" />
+
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/switchSensorTemperatura"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    tools:layout_editor_absoluteX="1dp"
+                    tools:layout_editor_absoluteY="1dp"
+                    android:layout_marginHorizontal="5dp"
+                    tools:ignore="MissingConstraints">
+
+                    <TextView
+                        android:id="@+id/txtSensorDegelo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:layout_weight="1"
+                        android:padding="7dp"
+                        android:text="Troca de Sensor de Degelo"
+                        android:textColor="#ffffff"
+                        android:textSize="18sp" />
+
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/switchSensorDegelo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1" />
+
+                </LinearLayout>
+
+
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    tools:layout_editor_absoluteX="1dp"
+                    tools:layout_editor_absoluteY="1dp"
+                    android:layout_marginHorizontal="5dp"
+                    tools:ignore="MissingConstraints">
+
+                    <TextView
+                        android:id="@+id/txtPlaca"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:layout_weight="1"
+                        android:padding="7dp"
+                        android:text="Troca de Placa Universal"
+                        android:textColor="#ffffff"
+                        android:textSize="18sp" />
+
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/switchPlaca"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    tools:layout_editor_absoluteX="1dp"
+                    tools:layout_editor_absoluteY="1dp"
+                    android:layout_marginHorizontal="5dp"
+                    tools:ignore="MissingConstraints">
+
+                    <TextView
+                        android:id="@+id/txtVentiladorEvap"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:layout_weight="1"
+                        android:padding="7dp"
+                        android:text="Troca de Ventilador Evaporadora"
+                        android:textColor="#ffffff"
+                        android:textSize="18sp" />
+
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/switchVentiladorEvap"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1" />
+
+                </LinearLayout>
+
+
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -435,24 +585,86 @@
                         tools:ignore="MissingConstraints">
 
                         <TextView
-                            android:id="@+id/txtVentilador"
+                            android:id="@+id/txtVentiladorCond"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="start"
                             android:layout_weight="1"
                             android:padding="7dp"
-                            android:text="Troca de Ventilador"
+                            android:text="Troca de Ventilador Condensadora"
                             android:textColor="#ffffff"
                             android:textSize="18sp" />
 
 
                         <androidx.appcompat.widget.SwitchCompat
-                            android:id="@+id/switchVentilador"
+                            android:id="@+id/switchVentiladorCond"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_weight="1" />
 
                     </LinearLayout>
+
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    tools:layout_editor_absoluteX="1dp"
+                    tools:layout_editor_absoluteY="1dp"
+                    android:layout_marginHorizontal="5dp"
+                    tools:ignore="MissingConstraints">
+
+                    <TextView
+                        android:id="@+id/txtSerpentina"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:layout_weight="1"
+                        android:padding="7dp"
+                        android:text="Troca de Serpentina"
+                        android:textColor="#ffffff"
+                        android:textSize="18sp" />
+
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/switchSerpentina"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    tools:layout_editor_absoluteX="1dp"
+                    tools:layout_editor_absoluteY="1dp"
+                    android:layout_marginHorizontal="5dp"
+                    tools:ignore="MissingConstraints">
+
+                    <TextView
+                        android:id="@+id/txtVentilador"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:layout_weight="1"
+                        android:padding="7dp"
+                        android:text="Troca de Compressor"
+                        android:textColor="#ffffff"
+                        android:textSize="18sp" />
+
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/switchCompressor"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1" />
+
+                </LinearLayout>
+
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -538,6 +750,63 @@
                             android:layout_weight="1" />
 
                     </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    tools:layout_editor_absoluteX="1dp"
+                    tools:layout_editor_absoluteY="1dp"
+                    android:layout_marginHorizontal="5dp"
+
+                    tools:ignore="MissingConstraints">
+                    <TextView
+                        android:id="@+id/txtControle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Ajuste no Controle"
+                        android:layout_gravity="start"
+                        android:textColor="#ffffff"
+                        android:textSize="18sp"
+                        android:padding="7dp"/>
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/switchControle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    tools:layout_editor_absoluteX="1dp"
+                    tools:layout_editor_absoluteY="1dp"
+                    android:layout_marginHorizontal="5dp"
+
+                    tools:ignore="MissingConstraints">
+                    <TextView
+                        android:id="@+id/txtEletrica"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Ajuste na Elétrica Local"
+                        android:layout_gravity="start"
+                        android:textColor="#ffffff"
+                        android:textSize="18sp"
+                        android:padding="7dp"/>
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/switchEletrica"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1" />
+
+                </LinearLayout>
+
             </LinearLayout>
 
 

@@ -5,6 +5,8 @@ package com.example.myapplication
 
 import android.R.attr
 import android.R.attr.*
+import android.app.AlertDialog
+import android.app.Dialog
 import android.content.ContentResolver
 import android.content.Context.MODE_PRIVATE
 import android.graphics.Bitmap
@@ -20,11 +22,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import aws.sdk.kotlin.runtime.auth.credentials.Credentials
+import aws.sdk.kotlin.runtime.auth.credentials.StaticCredentialsProvider
 import aws.sdk.kotlin.services.dynamodb.DynamoDbClient
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import aws.sdk.kotlin.services.dynamodb.model.PutItemRequest
@@ -38,10 +44,14 @@ import id.zelory.compressor.constraint.format
 import id.zelory.compressor.constraint.quality
 import id.zelory.compressor.constraint.resolution
 import kotlinx.coroutines.runBlocking
+import okhttp3.internal.toImmutableList
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.nio.file.Paths
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.round
 
 
@@ -54,8 +64,12 @@ class InsertForm : Fragment() {
     private var _binding: InsertFormBinding? = null
 
 
-    val listImgsAntes : MutableList<File> = mutableListOf()
-    val listImgsDepois : MutableList<File> = mutableListOf()
+    var listImgsAntes : MutableList<File> = mutableListOf()
+    var listImgsDepois : MutableList<File> = mutableListOf()
+
+
+
+
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -65,6 +79,8 @@ class InsertForm : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
 
+
+
     ): View? {
 
         _binding = InsertFormBinding.inflate(inflater, container, false)
@@ -72,17 +88,18 @@ class InsertForm : Fragment() {
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-
+        listImgsDepois.clear()
+        listImgsAntes.clear()
 
 
         val versaoequipamentos = this.activity?.getSharedPreferences("Equipamentos", MODE_PRIVATE)
-        var lista0 = arrayListOf<String>("0","1")
-        var lista1 = arrayListOf<String>("0","1")
-        var lista2 = arrayListOf<String>("0","1")
+        var lista0 = arrayListOf<String>("0", "1")
+        var lista1 = arrayListOf<String>("0", "1")
+        var lista2 = arrayListOf<String>("0", "1")
         val arrayAdapter0 = ArrayAdapter(
             this.requireContext(),
             android.R.layout.simple_spinner_item,
@@ -99,7 +116,8 @@ class InsertForm : Fragment() {
             lista2
         )
         if (versaoequipamentos != null) {
-            val listaequidb = versaoequipamentos.getStringSet("listaEquipamentos", mutableSetOf("0","1"))
+            val listaequidb =
+                versaoequipamentos.getStringSet("listaEquipamentos", mutableSetOf("0", "1"))
             lista0.clear()
             lista0.add(" ")
             listaequidb?.forEach { equip ->
@@ -115,13 +133,18 @@ class InsertForm : Fragment() {
         }
 
 
-        binding.instalacao.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                if(binding.instalacao.selectedItem == " "){
+        binding.instalacao.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                if (binding.instalacao.selectedItem == " ") {
                     arrayAdapter1.clear()
                     binding.local.adapter = arrayAdapter1
                     arrayAdapter2.clear()
-                    binding.equipamento.adapter =arrayAdapter2
+                    binding.equipamento.adapter = arrayAdapter2
                     return
                 }
                 if (versaoequipamentos != null) {
@@ -130,7 +153,7 @@ class InsertForm : Fragment() {
                     lista1.clear()
                     lista1.add(" ")
                     listaequidb?.forEach { equip ->
-                        if(binding.instalacao.selectedItem.toString() == equip.split("_")[0]) {
+                        if (binding.instalacao.selectedItem.toString() == equip.split("_")[0]) {
                             lista1.add(equip.split("_")[1])
                         }
                     }
@@ -142,17 +165,23 @@ class InsertForm : Fragment() {
                 }
 
             }
+
             override fun onNothingSelected(p0: AdapterView<*>?) {
                 TODO("Not yet implemented")
             }
 
         }
 
-        binding.local.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                if(binding.local.selectedItem == " "){
+        binding.local.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                if (binding.local.selectedItem == " ") {
                     arrayAdapter2.clear()
-                    binding.equipamento.adapter =arrayAdapter2
+                    binding.equipamento.adapter = arrayAdapter2
                     return
                 }
                 if (versaoequipamentos != null) {
@@ -161,7 +190,10 @@ class InsertForm : Fragment() {
                     lista2.clear()
                     lista2.add(" ")
                     listaequidb?.forEach { equip ->
-                        if(binding.instalacao.selectedItem.toString() == equip.split("_")[0] && binding.local.selectedItem.toString() == equip.split("_")[1]) {
+                        if (binding.instalacao.selectedItem.toString() == equip.split("_")[0] && binding.local.selectedItem.toString() == equip.split(
+                                "_"
+                            )[1]
+                        ) {
                             lista2.add("${equip.split("_")[2]} - ${equip.split("_")[3]}")
                         }
                     }
@@ -173,6 +205,7 @@ class InsertForm : Fragment() {
                 }
 
             }
+
             override fun onNothingSelected(p0: AdapterView<*>?) {
                 TODO("Not yet implemented")
             }
@@ -188,28 +221,108 @@ class InsertForm : Fragment() {
             findNavController().navigate(R.id.action_insert_form_to_FirstFragment)
         }
 
-        binding.imgAntes.setOnClickListener{
+        binding.imgAntes.setOnClickListener {
             listImgsAntes.clear()
             getContentAntes.launch("image/*")
 
         }
 
-        binding.imgDepois.setOnClickListener{
+        binding.imgDepois.setOnClickListener {
             listImgsDepois.clear()
             getContentDepois.launch("image/*")
         }
 
-        binding.finalizar.setOnClickListener{
+        binding.finalizar.setOnClickListener {
 
         }
 
         binding.finalizar.setOnClickListener {
 
-            //TODO enviar para um bucket S3 as fotos
+            // enviar para um bucket S3 as fotos
+
+            if (binding.equipamento.selectedItem.toString() == " ") {
+
+                binding.scroll.fullScroll(binding.scroll.top)
+                Toast.makeText(
+                    requireContext(),
+                    "Por favor, preencha o equipamento.",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
+            }
+
+            if ((binding.switchSensitiva.isChecked == binding.switchPreventiva.isChecked && binding.switchPreventiva.isChecked == binding.switchCorretiva.isChecked && binding.switchCorretiva.isChecked == false)) {
+
+                binding.scroll.fullScroll(binding.scroll.top)
+                Toast.makeText(
+                    requireContext(),
+                    "Por favor, selecione ao menos uma manutenção.",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
+            }
+
+            var cancelar = false
+
+            if (listImgsDepois.isEmpty()) {
+                val builder = AlertDialog.Builder(context)
+                builder.setTitle("Sem imagens")
+                builder.setMessage("Não existem imagens após o serviço, deseja continuar?")
+                builder.setPositiveButton("Não") { _, _ ->
+                    Toast.makeText(context, "Envio cancelado.", Toast.LENGTH_SHORT).show()
+                    cancelar = true
+                }
+                builder.setNegativeButton("Sim") { _, _ ->
+                    cancelar = false
+                    inserir()
+                }
+                builder.show()
+                if (cancelar) {
+                    return@setOnClickListener
+                }
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun inserir(){
+//         TODO editar o put pra inserir na DB
+
+        val listKeysImgAntes: MutableList<String> = mutableListOf()
+            var i = 0
+            listImgsAntes.forEach{ arquivo ->
+                i += 1
+                val nomeArquivo = "${binding.equipamento.selectedItem.toString().split("-").last()}_" +
+                        "${SimpleDateFormat("dd-MM-yyyy").format(Date())}_Antes_" +
+                        "${i.toString().padStart(2,'0')}.JPEG".replace("/","-")
+
+                val localArquivo = arquivo.absolutePath
+
+                val meta = binding.equipamento.selectedItem.toString()
+
+                runBlocking {listKeysImgAntes.add( putS3Object(nomeArquivo,localArquivo,meta) ) }
+            }
+
+
+            var listKeysImgDepois: MutableList<String> = mutableListOf()
+            i = 0
+            listImgsDepois.forEach{ arquivo ->
+                i += 1
+                var nomeArquivo = "${binding.equipamento.selectedItem.toString().split("-").last()}_" +
+                        "${SimpleDateFormat("dd-MM-yyyy").format(Date())}_Depois_" +
+                        "${i.toString().padStart(2,'0')}.JPEG".replace("/","-")
+
+                var localArquivo = arquivo.absolutePath
+
+                var meta = binding.equipamento.selectedItem.toString()
+
+                runBlocking {listKeysImgDepois.add( putS3Object(nomeArquivo,localArquivo,meta) ) }
+            }
+
 
             val ID = ((System.currentTimeMillis() - 1645473084517)/1000).toString()
             val pat = binding.chamado.text.toString()
-            val local = binding.local.selectedItem.toString() //TODO impedir de enviar valor nulo para local
+            val local = binding.local.selectedItem.toString()
             val instalacao = binding.instalacao.selectedItem.toString()
             val equipamento = binding.equipamento.selectedItem.toString()
 
@@ -219,61 +332,78 @@ class InsertForm : Fragment() {
             if(binding.switchCorretiva.isChecked) tipoManut.add("Manutenção Corretiva")
 
             val tipoServicos = mutableListOf<String>()
-            if(binding.switchLimpezaFiltros.isChecked) tipoServicos.add("Limpeza de Filtros")
             if(binding.switchRecargaDeGas.isChecked) tipoServicos.add("Recarga de Gás")
-            if(binding.switchLimpezaQuimico.isChecked) tipoServicos.add("Limpeza com Químicos Bactericidas")
+            if(binding.switchLimpezaFiltros.isChecked) tipoServicos.add("Limpeza de Filtros")
+            if(binding.switchLimpezaQuimico.isChecked) tipoServicos.add("Limpeza Geral com Químicos Bactericidas")
+            if(binding.switchDreno.isChecked) tipoServicos.add("Limpeza e desobstrução de Dreno")
+            if(binding.switchControle.isChecked) tipoServicos.add("Ajuste no controle remoto")
+            if(binding.switchRele.isChecked) tipoServicos.add("Ajuste na infra elétrica local")
 
             val tipoTroca = mutableListOf<String>()
-            if(binding.switchRele.isChecked) tipoTroca.add("Troca de Relé")
-            if(binding.switchCapacitor.isChecked) tipoTroca.add("Troca de Capacitor")
+            if(binding.switchSensorTemperatura.isChecked) tipoTroca.add("Troca de Sensor de Temperatura")
+            if(binding.switchSensorDegelo.isChecked) tipoTroca.add("Troca de Sensor de Degelo")
+            if(binding.switchPlaca.isChecked) tipoTroca.add("Troca de Placa de Comando")
+            if(binding.switchVentiladorEvap.isChecked) tipoTroca.add("Troca de Ventilador da Evaporadora")
+            if(binding.switchVentiladorCond.isChecked) tipoTroca.add("Troca de Ventilador da Condensadora")
+            if(binding.switchSerpentina.isChecked) tipoTroca.add("Troca de Serpentina")
+            if(binding.switchCompressor.isChecked) tipoTroca.add("Troca de Compressor")
             if(binding.switchFusivel.isChecked) tipoTroca.add("Troca de Fusível")
-            if(binding.switchVentilador.isChecked) tipoTroca.add("Troca de Ventilador")
+            if(binding.switchCapacitor.isChecked) tipoTroca.add("Troca de Capacitor")
+            if(binding.switchRele.isChecked) tipoTroca.add("Troca de Relé")
+
+
 
             val OBS = binding.OBS.text.toString()
-
+            println("Enviado")
             val DataFim = System.currentTimeMillis().toString()
-            // TODO incluir id do funcionario e do equipamento
+            val login = requireActivity().getSharedPreferences("login", AppCompatActivity.MODE_PRIVATE)
+            val FuncionarioID = login.getString("login","")
+            println("1")
             runBlocking {
                 putItemInTable(
+                    ID,
                     pat,
                     local,
                     instalacao,
-                    equipamento,
                     equipamento,
                     tipoManut,
                     tipoServicos,
                     tipoTroca,
                     OBS,
-                    1.toString(),
-                    DataFim
+                    FuncionarioID!!,
+                    DataFim,
+                    listKeysImgAntes,
+                    listKeysImgDepois
                 )
-//            OBS: String,
-//            FuncionarioID: String,
-//            DataFim: String,
             }
-        }
-
 
     }
 
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    suspend fun putS3Object(bucketName: String, objectKey: String, objectPath: String) {
 
+
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    suspend fun putS3Object( objectKey: String, objectPath: String, meta: String): String {
+        val bucketName = "imagens-refrigeracao"
         val metadataVal = mutableMapOf<String, String>()
-        metadataVal["myVal"] = "test"
+        metadataVal["Local"] = meta
 
         val request = PutObjectRequest {
-            var bucket = bucketName
+            bucket = bucketName
             key = objectKey
             metadata = metadataVal
             this.body = Paths.get(objectPath).asByteStream()
         }
 
-        S3Client { region = "us-east-2" }.use { s3 ->
+        S3Client { region = "us-east-2"
+            credentialsProvider= StaticCredentialsProvider(Credentials("AKIAXJ6IWE3BPJLVFANI","MFr8G6u2JsoYzPLxtSjt3bgE2lVL4qKoZ0NBwOpT"))
+        }.use { s3 ->
             val response =s3.putObject(request)
-            println("Tag information is ${response.eTag}")
+
+            if(response.eTag != null){return objectKey}
         }
+        return ""
     }
 
 
@@ -426,53 +556,56 @@ class InsertForm : Fragment() {
         }
     }
 
-    val tableNameVal = "tabela"
+    val tableNameVal = "ordemServico"
 
 
     private suspend fun putItemInTable(
+        ID: String,
         PAT: String,
         Local: String,
         Instalacao: String,
         Equipamento: String,
-        EquipamentoID: String,
         tipoManut: List<String>,
         tipoServicos: List<String>,
         tipoTroca: List<String>,
         OBS: String,
         FuncionarioID: String,
         DataFim: String,
-       // fotosAntes: List<String>,
-       // fotosDepois: List<String>
+        fotosAntes: List<String>,
+        fotosDepois: List<String>
         ) {
         val itemValues = mutableMapOf<String, AttributeValue>()
 
-        val ordemID = round((System.currentTimeMillis() - 1645735671136).toDouble()).toString()
-
+        println("2")
         // Add all content to the table.
-        itemValues[ordemID] = AttributeValue.N(ordemID)
-        itemValues[PAT] = AttributeValue.S(PAT)
-        itemValues[Local] = AttributeValue.S(Local)
-        itemValues[Instalacao] = AttributeValue.S(Instalacao)
-        itemValues[Equipamento] = AttributeValue.S(Equipamento)
-        itemValues[EquipamentoID] = AttributeValue.S(EquipamentoID)
-        itemValues[tipoManut.toString()] = AttributeValue.Ss(tipoManut)
-        itemValues[tipoServicos.toString()] = AttributeValue.Ss(tipoServicos)
-        itemValues[tipoTroca.toString()] = AttributeValue.Ss(tipoTroca)
-        itemValues[OBS] = AttributeValue.S(OBS)
-        itemValues[FuncionarioID] = AttributeValue.S(FuncionarioID)
-        itemValues[DataFim] = AttributeValue.S(DataFim)
-       // itemValues[fotosAntes.toString()] = AttributeValue.Ss(fotosAntes)
-       // itemValues[fotosDepois.toString()] = AttributeValue.Ss(fotosDepois)
+        itemValues["ordemID"] = AttributeValue.N(ID)
+        itemValues["PAT"] = AttributeValue.S(PAT)
+        itemValues["Local"] = AttributeValue.S(Local)
+        itemValues["Instalacao"] = AttributeValue.S(Instalacao)
+        itemValues["Equipamento"] = AttributeValue.S(Equipamento)
+        itemValues["tipoManut"] = AttributeValue.Ss(tipoManut)
+        itemValues["tipoServicos"] = AttributeValue.Ss(tipoServicos)
+        itemValues["tipoTroca"] = AttributeValue.Ss(tipoTroca)
+        itemValues["OBS"] = AttributeValue.S(OBS)
+        itemValues["FuncionarioID"] = AttributeValue.S(FuncionarioID)
+        itemValues["DataFim"] = AttributeValue.S(DataFim)
+        itemValues["fotosAntes"] = AttributeValue.Ss(fotosAntes)
+        itemValues["fotosDepois"] = AttributeValue.Ss(fotosDepois)
 
 
 
         val request = PutItemRequest {
+
             tableName=tableNameVal
             item = itemValues
         }
-
-        DynamoDbClient { region = "us-east-2" }.use { ddb ->
+        println("3")
+        DynamoDbClient { region="us-east-2"
+            credentialsProvider=
+                StaticCredentialsProvider(Credentials("AKIAXJ6IWE3BPJLVFANI","MFr8G6u2JsoYzPLxtSjt3bgE2lVL4qKoZ0NBwOpT")) }.use { ddb ->
+            println("4")
             ddb.putItem(request)
+
             println(" A new item was placed into $tableNameVal.")
         }
     }

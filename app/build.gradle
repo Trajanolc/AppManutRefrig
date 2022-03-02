@@ -16,7 +16,7 @@ android {
         targetSdk 32
         versionCode 1
         versionName "1.0"
-
+        manifestPlaceholders = [auth0Domain: "@string/com_auth0_domain", auth0Scheme: "@string/com_auth0_scheme"]
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -62,7 +62,10 @@ dependencies {
     implementation("aws.sdk.kotlin:dynamodb:0.+"){
         exclude group: "xmlpull", module: "xmlpull"
     }
-    implementation("aws.sdk.kotlin:s3:0.+")
+    implementation("aws.sdk.kotlin:s3:0.+"){
+        exclude group: "xmlpull", module: "xmlpull"
+    }
+    implementation("com.auth0.android:auth0:2.+")
 
     implementation('id.zelory:compressor:3.0.1')
 
