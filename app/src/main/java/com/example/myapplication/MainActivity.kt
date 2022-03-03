@@ -8,6 +8,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.Menu
@@ -16,6 +17,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -52,6 +54,8 @@ class MainActivity : AppCompatActivity() {
         "dev-l9wd1tpd.us.auth0.com"
     )
 
+    private val emteste = true
+
 
 
 
@@ -74,39 +78,34 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
 
 
-
         //TODO se nao existir login no shared preferences
-        loginWithBrowser(account)
+        if (emteste){
+            val login = getSharedPreferences("login", MODE_PRIVATE)
+            login.edit().clear().putString("login","Trajano").apply()
+        } else{
 
-//        runBlocking {
-//
-//            val versaoequipamentos = getSharedPreferences("Equipamentos", MODE_PRIVATE)
-//
-//            var lista = getSpecificItem("instalacoes2-dev", "empresa", "Equatorial","Equipamentos")
-//            val listastrings = lista.toString().subSequence(10,lista.toString().length-2).split(", ").toMutableSet()
-//            versaoequipamentos.edit().clear().putStringSet("listaEquipamentos",listastrings).apply()
-//
-//        }
+            loginWithBrowser(account)
 
+            runBlocking {
 
+                val versaoequipamentos = getSharedPreferences("Equipamentos", MODE_PRIVATE)
 
+                var lista =
+                    getSpecificItem("instalacoes2-dev", "empresa", "Equatorial", "Equipamentos")
+                val listastrings =
+                    lista.toString().subSequence(10, lista.toString().length - 2).split(", ")
+                        .toMutableSet()
+                versaoequipamentos.edit().clear().putStringSet("listaEquipamentos", listastrings)
+                    .apply()
 
-
-
-//        //atualizar
-//            //atualizar a tabela de locais
-//            //atualizar versão
-//        }
-
-
-
-
-
-
-
-
+            }
+        }
 
     }
+
+
+
+
     private fun loginWithBrowser(account: Auth0) {
         // Setup the WebAuthProvider, using the custom scheme and scope.
 
@@ -292,5 +291,12 @@ class MainActivity : AppCompatActivity() {
             .setNegativeButton("Cancel",null)
             .show()
     }
+
+
+
+
+
 }
+
+
 

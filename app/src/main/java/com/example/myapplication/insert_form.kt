@@ -3,15 +3,13 @@ package com.example.myapplication
 
 
 
-import android.R.attr
 import android.R.attr.*
 import android.app.AlertDialog
-import android.app.Dialog
+import android.app.ProgressDialog
 import android.content.ContentResolver
 import android.content.Context.MODE_PRIVATE
 import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
-import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
@@ -22,12 +20,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.navigation.fragment.findNavController
 import aws.sdk.kotlin.runtime.auth.credentials.Credentials
 import aws.sdk.kotlin.runtime.auth.credentials.StaticCredentialsProvider
@@ -44,15 +43,12 @@ import id.zelory.compressor.constraint.format
 import id.zelory.compressor.constraint.quality
 import id.zelory.compressor.constraint.resolution
 import kotlinx.coroutines.runBlocking
-import okhttp3.internal.toImmutableList
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.nio.file.Paths
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.math.round
 
 
 /**
@@ -66,9 +62,6 @@ class InsertForm : Fragment() {
 
     var listImgsAntes : MutableList<File> = mutableListOf()
     var listImgsDepois : MutableList<File> = mutableListOf()
-
-
-
 
 
     // This property is only valid between onCreateView and
@@ -95,7 +88,6 @@ class InsertForm : Fragment() {
         listImgsDepois.clear()
         listImgsAntes.clear()
 
-
         val versaoequipamentos = this.activity?.getSharedPreferences("Equipamentos", MODE_PRIVATE)
         var lista0 = arrayListOf<String>("0", "1")
         var lista1 = arrayListOf<String>("0", "1")
@@ -119,7 +111,7 @@ class InsertForm : Fragment() {
             val listaequidb =
                 versaoequipamentos.getStringSet("listaEquipamentos", mutableSetOf("0", "1"))
             lista0.clear()
-            lista0.add(" ")
+            lista0.add("Selecione uma Instalação")
             listaequidb?.forEach { equip ->
                 lista0.add(equip.split("_")[0])
 
@@ -140,7 +132,7 @@ class InsertForm : Fragment() {
                 position: Int,
                 id: Long
             ) {
-                if (binding.instalacao.selectedItem == " ") {
+                if (binding.instalacao.selectedItem == "Selecione uma Instalação") {
                     arrayAdapter1.clear()
                     binding.local.adapter = arrayAdapter1
                     arrayAdapter2.clear()
@@ -232,13 +224,12 @@ class InsertForm : Fragment() {
             getContentDepois.launch("image/*")
         }
 
-        binding.finalizar.setOnClickListener {
 
-        }
 
         binding.finalizar.setOnClickListener {
 
             // enviar para um bucket S3 as fotos
+
 
             if (binding.equipamento.selectedItem.toString() == " ") {
 
@@ -248,6 +239,7 @@ class InsertForm : Fragment() {
                     "Por favor, preencha o equipamento.",
                     Toast.LENGTH_SHORT
                 ).show()
+
                 return@setOnClickListener
             }
 
@@ -259,8 +251,12 @@ class InsertForm : Fragment() {
                     "Por favor, selecione ao menos uma manutenção.",
                     Toast.LENGTH_SHORT
                 ).show()
+
                 return@setOnClickListener
             }
+
+
+
 
             var cancelar = false
 
@@ -275,11 +271,16 @@ class InsertForm : Fragment() {
                 builder.setNegativeButton("Sim") { _, _ ->
                     cancelar = false
                     inserir()
+
                 }
                 builder.show()
                 if (cancelar) {
+
                     return@setOnClickListener
                 }
+            }
+            else{
+                inserir()
             }
         }
     }
@@ -351,14 +352,21 @@ class InsertForm : Fragment() {
             if(binding.switchCapacitor.isChecked) tipoTroca.add("Troca de Capacitor")
             if(binding.switchRele.isChecked) tipoTroca.add("Troca de Relé")
 
-
+            if(tipoTroca.isEmpty()&&tipoServicos.isEmpty()&&binding.OBS.text.toString()==""){
+                binding.scroll.fullScroll(binding.scroll.top)
+                Toast.makeText(
+                    requireContext(),
+                    "Por favor, selecione ao menos um serviço, material ou observação.",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return
+            }
 
             val OBS = binding.OBS.text.toString()
             println("Enviado")
             val DataFim = System.currentTimeMillis().toString()
             val login = requireActivity().getSharedPreferences("login", AppCompatActivity.MODE_PRIVATE)
             val FuncionarioID = login.getString("login","")
-            println("1")
             runBlocking {
                 putItemInTable(
                     ID,
@@ -405,6 +413,64 @@ class InsertForm : Fragment() {
         }
         return ""
     }
+
+    private suspend fun putItemInTable(
+        ID: String,
+        PAT: String,
+        Local: String,
+        Instalacao: String,
+        Equipamento: String,
+        tipoManut: List<String>,
+        tipoServicos: List<String>,
+        tipoTroca: List<String>,
+        OBS: String,
+        FuncionarioID: String,
+        DataFim: String,
+        fotosAntes: List<String>,
+        fotosDepois: List<String>
+    ) {
+        val itemValues = mutableMapOf<String, AttributeValue>()
+
+
+        // Add all content to the table.
+        itemValues["ordemID"] = AttributeValue.N(ID)
+        itemValues["PAT"] = AttributeValue.S(PAT)
+        itemValues["Local"] = AttributeValue.S(Local)
+        itemValues["Instalacao"] = AttributeValue.S(Instalacao)
+        itemValues["Equipamento"] = AttributeValue.S(Equipamento)
+        itemValues["tipoManut"] = AttributeValue.Ss(tipoManut)
+        if(tipoServicos.isNotEmpty()) itemValues["tipoServicos"] = AttributeValue.Ss(tipoServicos)
+        if(tipoTroca.isNotEmpty()) itemValues["tipoTroca"] = AttributeValue.Ss(tipoTroca)
+        itemValues["OBS"] = AttributeValue.S(OBS)
+        itemValues["FuncionarioID"] = AttributeValue.S(FuncionarioID)
+        itemValues["DataFim"] = AttributeValue.S(DataFim)
+        if(fotosAntes.isNotEmpty()) itemValues["fotosAntes"] = AttributeValue.Ss(fotosAntes)
+        if(fotosDepois.isNotEmpty()) itemValues["fotosDepois"] = AttributeValue.Ss(fotosDepois)
+
+
+
+        val request = PutItemRequest {
+
+            tableName=tableNameVal
+            item = itemValues
+        }
+
+        DynamoDbClient { region="us-east-2"
+            credentialsProvider=
+                StaticCredentialsProvider(Credentials("AKIAXJ6IWE3BPJLVFANI","MFr8G6u2JsoYzPLxtSjt3bgE2lVL4qKoZ0NBwOpT")) }.use { ddb ->
+
+            ddb.putItem(request)
+
+            val builder = AlertDialog.Builder(context)
+            builder.setTitle("Sucesso")
+            builder.setMessage("Ordem Nº ${ID} referente ao ${Equipamento} enviada com sucesso!")
+            builder.setPositiveButton("Ok") { _, _ ->
+                findNavController().navigate(R.id.action_insert_form_to_FirstFragment)
+            }
+            builder.show()
+        }
+    }
+
 
 
 
@@ -559,56 +625,7 @@ class InsertForm : Fragment() {
     val tableNameVal = "ordemServico"
 
 
-    private suspend fun putItemInTable(
-        ID: String,
-        PAT: String,
-        Local: String,
-        Instalacao: String,
-        Equipamento: String,
-        tipoManut: List<String>,
-        tipoServicos: List<String>,
-        tipoTroca: List<String>,
-        OBS: String,
-        FuncionarioID: String,
-        DataFim: String,
-        fotosAntes: List<String>,
-        fotosDepois: List<String>
-        ) {
-        val itemValues = mutableMapOf<String, AttributeValue>()
 
-        println("2")
-        // Add all content to the table.
-        itemValues["ordemID"] = AttributeValue.N(ID)
-        itemValues["PAT"] = AttributeValue.S(PAT)
-        itemValues["Local"] = AttributeValue.S(Local)
-        itemValues["Instalacao"] = AttributeValue.S(Instalacao)
-        itemValues["Equipamento"] = AttributeValue.S(Equipamento)
-        itemValues["tipoManut"] = AttributeValue.Ss(tipoManut)
-        itemValues["tipoServicos"] = AttributeValue.Ss(tipoServicos)
-        itemValues["tipoTroca"] = AttributeValue.Ss(tipoTroca)
-        itemValues["OBS"] = AttributeValue.S(OBS)
-        itemValues["FuncionarioID"] = AttributeValue.S(FuncionarioID)
-        itemValues["DataFim"] = AttributeValue.S(DataFim)
-        itemValues["fotosAntes"] = AttributeValue.Ss(fotosAntes)
-        itemValues["fotosDepois"] = AttributeValue.Ss(fotosDepois)
-
-
-
-        val request = PutItemRequest {
-
-            tableName=tableNameVal
-            item = itemValues
-        }
-        println("3")
-        DynamoDbClient { region="us-east-2"
-            credentialsProvider=
-                StaticCredentialsProvider(Credentials("AKIAXJ6IWE3BPJLVFANI","MFr8G6u2JsoYzPLxtSjt3bgE2lVL4qKoZ0NBwOpT")) }.use { ddb ->
-            println("4")
-            ddb.putItem(request)
-
-            println(" A new item was placed into $tableNameVal.")
-        }
-    }
 
 
     //TODO resize image before send

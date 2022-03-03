@@ -77,7 +77,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
 
-                        android:text="Selecione a instalaçao:"
+                        android:text="Selecione a instalação:"
                         android:layout_gravity="start"
                         android:textColor="#ffffff"
                         android:textSize="18sp"
@@ -202,7 +202,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="Tipo de Manutenção"
+                    android:text="Tipo de manutenção"
                     android:textColor="#000000"
                     android:textSize="18sp"
                     android:textAlignment="center"
@@ -315,7 +315,7 @@
             <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="Serviço"
+                    android:text="Atividades"
                     android:textColor="#000000"
                     android:textSize="18sp"
                     android:textAlignment="center"
@@ -356,7 +356,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Recarga de Gás"
+                            android:text="Recarga de gás"
                             android:layout_gravity="start"
                             android:textColor="#ffffff"
                             android:textSize="18sp"
@@ -384,7 +384,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Limpeza dos Filtros"
+                            android:text="Limpeza dos filtros"
                             android:layout_gravity="start"
                             android:textColor="#ffffff"
                             android:textSize="18sp"
@@ -412,7 +412,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Limpeza Geral com Quimico"
+                            android:text="Limpeza geral com químico"
                             android:layout_gravity="start"
                             android:textColor="#ffffff"
                             android:textSize="18sp"
@@ -440,7 +440,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Limpeza e Desobstrução de Dreno"
+                        android:text="Limpeza e desobstrução de dreno"
                         android:layout_gravity="start"
                         android:textColor="#ffffff"
                         android:textSize="18sp"
@@ -470,7 +470,7 @@
                         android:layout_gravity="start"
                         android:layout_weight="1"
                         android:padding="7dp"
-                        android:text="Troca de Sensor de Temperatura"
+                        android:text="Troca de sensor de temperatura"
                         android:textColor="#ffffff"
                         android:textSize="18sp" />
 
@@ -499,7 +499,7 @@
                         android:layout_gravity="start"
                         android:layout_weight="1"
                         android:padding="7dp"
-                        android:text="Troca de Sensor de Degelo"
+                        android:text="Troca de sensor de degelo"
                         android:textColor="#ffffff"
                         android:textSize="18sp" />
 
@@ -531,7 +531,7 @@
                         android:layout_gravity="start"
                         android:layout_weight="1"
                         android:padding="7dp"
-                        android:text="Troca de Placa Universal"
+                        android:text="Troca de placa universal"
                         android:textColor="#ffffff"
                         android:textSize="18sp" />
 
@@ -560,7 +560,7 @@
                         android:layout_gravity="start"
                         android:layout_weight="1"
                         android:padding="7dp"
-                        android:text="Troca de Ventilador Evaporadora"
+                        android:text="Troca de ventilador evaporadora"
                         android:textColor="#ffffff"
                         android:textSize="18sp" />
 
@@ -591,7 +591,7 @@
                             android:layout_gravity="start"
                             android:layout_weight="1"
                             android:padding="7dp"
-                            android:text="Troca de Ventilador Condensadora"
+                            android:text="Troca de ventilador cndensadora"
                             android:textColor="#ffffff"
                             android:textSize="18sp" />
 
@@ -622,7 +622,7 @@
                         android:layout_gravity="start"
                         android:layout_weight="1"
                         android:padding="7dp"
-                        android:text="Troca de Serpentina"
+                        android:text="Troca de serpentina"
                         android:textColor="#ffffff"
                         android:textSize="18sp" />
 
@@ -652,7 +652,7 @@
                         android:layout_gravity="start"
                         android:layout_weight="1"
                         android:padding="7dp"
-                        android:text="Troca de Compressor"
+                        android:text="Troca de compressor"
                         android:textColor="#ffffff"
                         android:textSize="18sp" />
 
@@ -680,7 +680,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Troca de Fusível"
+                            android:text="Troca de fusível"
                             android:layout_gravity="start"
                             android:textColor="#ffffff"
                             android:textSize="18sp"
@@ -707,7 +707,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Troca de Capacitor"
+                            android:text="Troca de capacitor"
                             android:layout_gravity="start"
                             android:textColor="#ffffff"
                             android:textSize="18sp"
@@ -737,7 +737,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Troca de Relé"
+                            android:text="Troca de relé"
                             android:layout_gravity="start"
                             android:textColor="#ffffff"
                             android:textSize="18sp"
@@ -765,7 +765,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Ajuste no Controle"
+                        android:text="Ajuste no controle"
                         android:layout_gravity="start"
                         android:textColor="#ffffff"
                         android:textSize="18sp"
@@ -793,7 +793,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Ajuste na Elétrica Local"
+                        android:text="Ajuste na elétrica local"
                         android:layout_gravity="start"
                         android:textColor="#ffffff"
                         android:textSize="18sp"
