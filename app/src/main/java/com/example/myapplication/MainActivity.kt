@@ -40,6 +40,7 @@ import com.auth0.android.management.UsersAPIClient
 
 import com.auth0.android.result.Credentials as Credencias
 import com.auth0.android.result.UserProfile
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -54,7 +55,7 @@ class MainActivity : AppCompatActivity() {
         "dev-l9wd1tpd.us.auth0.com"
     )
 
-    private val emteste = true
+    private val emteste =false
 
 
 
@@ -78,30 +79,56 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
 
 
-        //TODO se nao existir login no shared preferences
+
         if (emteste){
             val login = getSharedPreferences("login", MODE_PRIVATE)
             login.edit().clear().putString("login","Trajano").apply()
-        } else{
+        } else {
 
             loginWithBrowser(account)
-
-            runBlocking {
-
-                val versaoequipamentos = getSharedPreferences("Equipamentos", MODE_PRIVATE)
-
-                var lista =
-                    getSpecificItem("instalacoes2-dev", "empresa", "Equatorial", "Equipamentos")
-                val listastrings =
-                    lista.toString().subSequence(10, lista.toString().length - 2).split(", ")
-                        .toMutableSet()
-                versaoequipamentos.edit().clear().putStringSet("listaEquipamentos", listastrings)
-                    .apply()
-
-            }
         }
 
+            runBlocking {
+                val login = getSharedPreferences("login", MODE_PRIVATE).getString("login","")
+                val versaoequipamentos = getSharedPreferences("Equipamentos", MODE_PRIVATE)
+
+                versaoequipamentos.edit().clear().commit()
+
+                if(login=="geronildo"||login=="elias"||login=="Trajano") {
+                    var lista =
+                        getSpecificItem("instalacoes2-dev", "empresa", "Equatorial", "Equipamentos")
+
+                    val listastrings =
+                        lista.toString().subSequence(10, lista.toString().length - 2).split(", ")
+                            .toMutableSet()
+                    versaoequipamentos.edit()
+                        .putStringSet("listaEquipamentos", listastrings)
+                        .apply()
+                }
+                if(login=="marcus"||login=="Trajano"){
+                    var lista =
+                        getSpecificItem("instalacoes2-dev", "empresa", "Agropalma", "Equipamentos")
+
+                    val listastrings =
+                        lista.toString().subSequence(10, lista.toString().length - 2).split(", ")
+                            .toMutableSet()
+
+                    val versaoEquipamentosNew = getSharedPreferences("Equipamentos", MODE_PRIVATE).getStringSet("listaEquipamentos",
+                        mutableSetOf(""))
+
+                    listastrings.addAll(Collections.unmodifiableCollection(versaoEquipamentosNew))
+
+                    versaoequipamentos.edit()
+                        .putStringSet("listaEquipamentos", listastrings)
+                        .apply()
+                    println(versaoequipamentos.toString())
+                }
+            }
+
     }
+
+
+
 
 
 

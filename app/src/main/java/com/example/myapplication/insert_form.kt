@@ -7,10 +7,13 @@ import android.R.attr.*
 import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.content.ContentResolver
+import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
 import android.graphics.ImageDecoder
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -25,6 +28,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.navigation.fragment.findNavController
@@ -42,6 +46,7 @@ import id.zelory.compressor.constraint.destination
 import id.zelory.compressor.constraint.format
 import id.zelory.compressor.constraint.quality
 import id.zelory.compressor.constraint.resolution
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -89,9 +94,9 @@ class InsertForm : Fragment() {
         listImgsAntes.clear()
 
         val versaoequipamentos = this.activity?.getSharedPreferences("Equipamentos", MODE_PRIVATE)
-        var lista0 = arrayListOf<String>("0", "1")
-        var lista1 = arrayListOf<String>("0", "1")
-        var lista2 = arrayListOf<String>("0", "1")
+        var lista0 = arrayListOf<String>(" ")
+        var lista1 = arrayListOf<String>(" ")
+        var lista2 = arrayListOf<String>(" ")
         val arrayAdapter0 = ArrayAdapter(
             this.requireContext(),
             android.R.layout.simple_spinner_item,
@@ -120,7 +125,6 @@ class InsertForm : Fragment() {
             arrayAdapter0.clear()
             arrayAdapter0.addAll(lista0)
             binding.instalacao.adapter = arrayAdapter0
-
 
         }
 
@@ -231,8 +235,19 @@ class InsertForm : Fragment() {
             // enviar para um bucket S3 as fotos
 
 
-            if (binding.equipamento.selectedItem.toString() == " ") {
 
+
+            if (binding.equipamento.selectedItem == null) {
+
+                binding.scroll.fullScroll(binding.scroll.top)
+                Toast.makeText(
+                    requireContext(),
+                    "Por favor, preencha o equipamento.",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                return@setOnClickListener
+            }else if (binding.equipamento.selectedItem.toString() == " "){
                 binding.scroll.fullScroll(binding.scroll.top)
                 Toast.makeText(
                     requireContext(),
@@ -367,7 +382,7 @@ class InsertForm : Fragment() {
             val DataFim = System.currentTimeMillis().toString()
             val login = requireActivity().getSharedPreferences("login", AppCompatActivity.MODE_PRIVATE)
             val FuncionarioID = login.getString("login","")
-            runBlocking {
+            runBlocking{launch {
                 putItemInTable(
                     ID,
                     pat,
@@ -383,6 +398,7 @@ class InsertForm : Fragment() {
                     listKeysImgAntes,
                     listKeysImgDepois
                 )
+            }
             }
 
     }
@@ -628,9 +644,32 @@ class InsertForm : Fragment() {
 
 
 
-    //TODO resize image before send
-
-    //TODO
+    fun isNetworkAvailable(context: Context?): Boolean {
+        if (context == null) return false
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+            if (capabilities != null) {
+                when {
+                    capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> {
+                        return true
+                    }
+                    capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> {
+                        return true
+                    }
+                    capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> {
+                        return true
+                    }
+                }
+            }
+        } else {
+            val activeNetworkInfo = connectivityManager.activeNetworkInfo
+            if (activeNetworkInfo != null && activeNetworkInfo.isConnected) {
+                return true
+            }
+        }
+        return false
+    }
 
 
 
