@@ -30,7 +30,7 @@ import com.auth0.android.Auth0
 import com.auth0.android.authentication.AuthenticationException
 import com.auth0.android.provider.WebAuthProvider
 import com.example.myapplication.databinding.ActivityMainBinding
-import kotlinx.coroutines.runBlocking
+
 
 import com.auth0.android.authentication.AuthenticationAPIClient
 
@@ -40,6 +40,7 @@ import com.auth0.android.management.UsersAPIClient
 
 import com.auth0.android.result.Credentials as Credencias
 import com.auth0.android.result.UserProfile
+import kotlinx.coroutines.runBlocking
 import java.util.*
 
 
@@ -87,51 +88,83 @@ class MainActivity : AppCompatActivity() {
 
             loginWithBrowser(account)
         }
+        runBlocking {
+            atualizarLista()
+        }
 
-            runBlocking {
-                val login = getSharedPreferences("login", MODE_PRIVATE).getString("login","")
-                val versaoequipamentos = getSharedPreferences("Equipamentos", MODE_PRIVATE)
-
-                versaoequipamentos.edit().clear().commit()
-
-                if(login=="geronildo"||login=="elias"||login=="Trajano") {
-                    var lista =
-                        getSpecificItem("instalacoes2-dev", "empresa", "Equatorial", "Equipamentos")
-
-                    val listastrings =
-                        lista.toString().subSequence(10, lista.toString().length - 2).split(", ")
-                            .toMutableSet()
-                    versaoequipamentos.edit()
-                        .putStringSet("listaEquipamentos", listastrings)
-                        .apply()
-                }
-                if(login=="marcus"||login=="Trajano"){
-                    var lista =
-                        getSpecificItem("instalacoes2-dev", "empresa", "Agropalma", "Equipamentos")
-
-                    val listastrings =
-                        lista.toString().subSequence(10, lista.toString().length - 2).split(", ")
-                            .toMutableSet()
-
-                    val versaoEquipamentosNew = getSharedPreferences("Equipamentos", MODE_PRIVATE).getStringSet("listaEquipamentos",
-                        mutableSetOf(""))
-
-                    listastrings.addAll(Collections.unmodifiableCollection(versaoEquipamentosNew))
-
-                    versaoequipamentos.edit()
-                        .putStringSet("listaEquipamentos", listastrings)
-                        .apply()
-                    println(versaoequipamentos.toString())
-                }
-            }
 
     }
 
 
 
+    suspend fun atualizarLista() {
+
+        runBlocking {
+            val login =
+                getSharedPreferences("login", MODE_PRIVATE).getString("login", "")
+            val versaoequipamentos =
+                getSharedPreferences("Equipamentos", MODE_PRIVATE)
+            versaoequipamentos.edit().clear().apply()
+            println(login)
+            if (login.equals("geronildo") || login.equals("elias")) {
+                var lista =
+                    getSpecificItem(
+                        "instalacoes2-dev",
+                        "empresa",
+                        "Equatorial",
+                        "Equipamentos"
+                    )
+
+                val listastrings =
+                    lista.toString().subSequence(10, lista.toString().length - 2).split(", ")
+                        .toMutableSet()
+                println(listastrings)
+                versaoequipamentos.edit()
+                    .putStringSet("listaEquipamentos", listastrings)
+                    .apply()
+                println(
+                    versaoequipamentos.getStringSet(
+                        "listaEquipamentos",
+                        mutableSetOf("0", "1")
+                    )
+                )
+            }
+            if (login.equals("marcos") || login.equals("Trajano")) {
+                var lista =
+                    getSpecificItem(
+                        "instalacoes2-dev",
+                        "empresa",
+                        "Agropalma",
+                        "Equipamentos"
+                    )
+
+                val listastrings =
+                    lista.toString().subSequence(10, lista.toString().length - 2).split(", ")
+                        .toMutableSet()
 
 
+                versaoequipamentos.edit()
+                    .putStringSet("listaEquipamentos", listastrings)
+                    .apply()
+                println(
+                    versaoequipamentos.getStringSet(
+                        "listaEquipamentos",
+                        mutableSetOf("0", "1")
+                    )
+                )
 
+                val versaoEquipamentosNew =
+                    getSharedPreferences("Equipamentos", MODE_PRIVATE).getStringSet(
+                        "listaEquipamentos",
+                        mutableSetOf("")
+                    )
+
+                listastrings.addAll(Collections.unmodifiableCollection(versaoEquipamentosNew))
+            }
+
+        }
+
+    }
 
     private fun loginWithBrowser(account: Auth0) {
         // Setup the WebAuthProvider, using the custom scheme and scope.
@@ -169,7 +202,12 @@ class MainActivity : AppCompatActivity() {
                                 val login = getSharedPreferences("login", MODE_PRIVATE)
                                 login.edit().clear().putString("login",profile.nickname).apply()
 
+
                                 Toast.makeText(this@MainActivity,"Bem vindo, ${profile.nickname}!",Toast.LENGTH_SHORT).show()
+
+                                runBlocking {
+                                    atualizarLista()
+                                }
                             }
                         })
                 }

@@ -5,10 +5,10 @@ package com.example.myapplication
 
 import android.R.attr.*
 import android.app.AlertDialog
-import android.app.ProgressDialog
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
+import android.content.DialogInterface
 import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
 import android.graphics.ImageDecoder
@@ -23,14 +23,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.getSystemService
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import androidx.navigation.fragment.findNavController
 import aws.sdk.kotlin.runtime.auth.credentials.Credentials
 import aws.sdk.kotlin.runtime.auth.credentials.StaticCredentialsProvider
@@ -90,8 +87,16 @@ class InsertForm : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+
+
+
         listImgsDepois.clear()
         listImgsAntes.clear()
+
+
+
+
 
         val versaoequipamentos = this.activity?.getSharedPreferences("Equipamentos", MODE_PRIVATE)
         var lista0 = arrayListOf<String>(" ")
@@ -316,7 +321,7 @@ class InsertForm : Fragment() {
 
                 val meta = binding.equipamento.selectedItem.toString()
 
-                runBlocking {listKeysImgAntes.add( putS3Object(nomeArquivo,localArquivo,meta) ) }
+                runBlocking { launch{listKeysImgAntes.add( putS3Object(nomeArquivo,localArquivo,meta) ) }}
             }
 
 
@@ -382,7 +387,67 @@ class InsertForm : Fragment() {
             val DataFim = System.currentTimeMillis().toString()
             val login = requireActivity().getSharedPreferences("login", AppCompatActivity.MODE_PRIVATE)
             val FuncionarioID = login.getString("login","")
-            runBlocking{launch {
+
+
+
+            var lista2 = arrayListOf<String>(" ")
+            val versaoequipamentos = this.activity?.getSharedPreferences("Equipamentos", MODE_PRIVATE)
+            val listaequidb =
+                versaoequipamentos!!.getStringSet("listaEquipamentos", mutableSetOf("0", "1"))
+            lista2.clear()
+            listaequidb?.forEach { equip ->
+                if (binding.instalacao.selectedItem.toString() == equip.split("_")[0] && binding.local.selectedItem.toString() == equip.split(
+                        "_")[1])
+                {
+                    lista2.add("${equip.split("_")[2]} - ${equip.split("_")[3]}")
+                }
+            }
+            lista2.remove(binding.equipamento.selectedItem.toString())
+            println(lista2)
+            val listaEquips : Array<String> = lista2.toTypedArray()
+            println(listaEquips)
+            val listaEquipsBol = BooleanArray(listaEquips.size){false}
+            val builder = AlertDialog.Builder(requireContext())
+            val listener : DialogInterface.OnMultiChoiceClickListener = DialogInterface.OnMultiChoiceClickListener {_,i,boolean ->
+                listaEquipsBol.set(i,boolean)
+            }
+            println(listaEquipsBol.toString())
+            println(listaEquips.toString())
+            builder.setTitle("Deseja replicar para outra máquina no mesmo local?")
+
+            builder.setMultiChoiceItems(listaEquips, listaEquipsBol,listener)
+            builder.setPositiveButton("Replicar") {_,_->
+                for(i in listaEquips.indices) {
+                    if (listaEquipsBol[i] == true)
+
+                        runBlocking {
+                            launch {
+                                putItemInTable(
+                                    ID,
+                                    pat,
+                                    local,
+                                    instalacao,
+                                    listaEquips[i],
+                                    tipoManut,
+                                    tipoServicos,
+                                    tipoTroca,
+                                    OBS,
+                                    FuncionarioID!!,
+                                    DataFim,
+                                    listKeysImgAntes,
+                                    listKeysImgDepois
+                                )
+                            }
+                        }
+                    }
+            }
+            builder.setNegativeButton("Não Replicar"){_,_->}
+            builder.show()
+
+
+
+            runBlocking{
+                launch {
                 putItemInTable(
                     ID,
                     pat,
@@ -400,6 +465,8 @@ class InsertForm : Fragment() {
                 )
             }
             }
+
+
 
     }
 
@@ -481,7 +548,12 @@ class InsertForm : Fragment() {
             builder.setTitle("Sucesso")
             builder.setMessage("Ordem Nº ${ID} referente ao ${Equipamento} enviada com sucesso!")
             builder.setPositiveButton("Ok") { _, _ ->
-                findNavController().navigate(R.id.action_insert_form_to_FirstFragment)
+                try {
+                    findNavController().navigate(R.id.action_insert_form_to_FirstFragment)
+                }catch (e: IllegalArgumentException){
+                    //Do nothing
+                }
+
             }
             builder.show()
         }
@@ -620,7 +692,7 @@ class InsertForm : Fragment() {
 
 
                 runBlocking {
-                    var arquivoImg = Compressor.compress(requireContext(), outputFile) {
+                    Compressor.compress(requireContext(), outputFile) {
                         resolution(bitmap!!.width / scale, bitmap!!.height / scale)
                         quality(100)
                         format(Bitmap.CompressFormat.JPEG)
