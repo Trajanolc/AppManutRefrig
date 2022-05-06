@@ -423,7 +423,7 @@ class InsertForm : Fragment() {
                         runBlocking {
                             launch {
                                 putItemInTable(
-                                    ID,
+                                    ((System.currentTimeMillis() - 1645473084517)/1000).toString(),
                                     pat,
                                     local,
                                     instalacao,
@@ -449,7 +449,7 @@ class InsertForm : Fragment() {
             runBlocking{
                 launch {
                 putItemInTable(
-                    ID,
+                    ((System.currentTimeMillis() - 1645473084517)/1000).toString(),
                     pat,
                     local,
                     instalacao,
@@ -617,7 +617,7 @@ class InsertForm : Fragment() {
 
 
                 runBlocking {
-                    var arquivoImg = Compressor.compress(requireContext(), outputFile) {
+                    Compressor.compress(requireContext(), outputFile) {
                         resolution(bitmap!!.width/scale, bitmap!!.height/scale)
                         quality(100)
                         format(Bitmap.CompressFormat.JPEG)
