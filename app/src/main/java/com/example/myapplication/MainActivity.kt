@@ -106,7 +106,7 @@ class MainActivity : AppCompatActivity() {
                 getSharedPreferences("Equipamentos", MODE_PRIVATE)
             versaoequipamentos.edit().clear().apply()
             println(login)
-            if (login.equals("geronildo") || login.equals("elias")) {
+            if (login.equals("geronildo") || login.equals("elias")||login.equals("thalisson")) {
                 var lista =
                     getSpecificItem(
                         "instalacoes2-dev",
