@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
         "dev-l9wd1tpd.us.auth0.com"
     )
 
-    private val emteste =false
+    private val emteste =true
 
 
 

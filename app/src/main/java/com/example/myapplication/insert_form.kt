@@ -3,7 +3,6 @@ package com.example.myapplication
 
 
 
-import android.R.attr.*
 import android.app.AlertDialog
 import android.content.ContentResolver
 import android.content.Context
@@ -37,7 +36,9 @@ import aws.sdk.kotlin.services.dynamodb.model.PutItemRequest
 import aws.sdk.kotlin.services.s3.S3Client
 import aws.sdk.kotlin.services.s3.model.PutObjectRequest
 import aws.smithy.kotlin.runtime.content.asByteStream
+import com.example.myapplication.Entities.ListImg
 import com.example.myapplication.databinding.InsertFormBinding
+import com.example.myapplication.enum.Period
 import id.zelory.compressor.Compressor
 import id.zelory.compressor.constraint.destination
 import id.zelory.compressor.constraint.format
@@ -222,15 +223,19 @@ class InsertForm : Fragment() {
             findNavController().navigate(R.id.action_insert_form_to_FirstFragment)
         }
 
+        var ListImg = ListImg(requireContext())
+
         binding.imgAntes.setOnClickListener {
-            listImgsAntes.clear()
-            getContentAntes.launch("image/*")
+            ListImg.addImgs(
+                requireActivity().activityResultRegistry,
+                Period.BEFORE,
+                binding.imgAntes
+            )
 
         }
 
         binding.imgDepois.setOnClickListener {
-            listImgsDepois.clear()
-            getContentDepois.launch("image/*")
+            ListImg.addImgs(requireActivity().activityResultRegistry,Period.AFTER, binding.imgDepois)
         }
 
 

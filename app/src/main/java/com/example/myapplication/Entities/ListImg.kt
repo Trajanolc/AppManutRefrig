@@ -1,14 +1,18 @@
 package com.example.myapplication.Entities
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
+import android.preference.PreferenceManager
 import android.provider.MediaStore
+import android.widget.ImageView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.ActivityResultRegistry
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat.startActivityForResult
 import com.example.myapplication.enum.ImgSize
 import com.example.myapplication.enum.Period
 import id.zelory.compressor.Compressor
@@ -21,11 +25,20 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 
-class ListImg(val context: Context) {
-    private var listBefore: ArrayList<Uri> = ArrayList(0)
-    private var listAfter: ArrayList<Uri> = ArrayList(0)
 
-    fun AddImgs(registry: ActivityResultRegistry, period: Period): Uri {
+class ListImg(val context: Context) {
+    private var listBefore: ArrayList<Uri> = ArrayList(1)
+    private var listAfter: ArrayList<Uri> = ArrayList(1)
+
+    fun getListBefore():ArrayList<Uri>{
+        return listBefore
+    }
+
+    fun getListAfter():ArrayList<Uri>{
+        return listAfter
+    }
+
+    fun addImgs(registry: ActivityResultRegistry, period: Period, img: ImageView) {
         val getContent: ActivityResultLauncher<String> = registry.register(
             "img", ActivityResultContracts.GetMultipleContents()
         ) { uris ->
@@ -36,12 +49,14 @@ class ListImg(val context: Context) {
                 listAfter.clear()
                 listAfter.addAll(uris)
             }
+            img.setImageURI(uris[0])
 
         }
+
         getContent.launch("image/*")
-        return if (period == Period.BEFORE) listBefore[0] else listAfter[0]
-        //TODO adcionar miniatura de imagem no biding
+
     }
+
 
     fun Compesss() {
         //for reusing propouses
@@ -96,5 +111,25 @@ class ListImg(val context: Context) {
             list.clear()
             list.addAll(listTemp)
         }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as ListImg
+
+        if (context != other.context) return false
+        if (listBefore != other.listBefore) return false
+        if (listAfter != other.listAfter) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = context.hashCode()
+        result = 31 * result + listBefore.hashCode()
+        result = 31 * result + listAfter.hashCode()
+        return result
     }
 }
