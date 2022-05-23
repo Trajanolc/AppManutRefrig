@@ -1,26 +1,24 @@
-package com.example.myapplication.Entities
+package com.example.myapplication.entities
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
-import android.preference.PreferenceManager
 import android.provider.MediaStore
 import android.widget.ImageView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.ActivityResultRegistry
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat.startActivityForResult
 import com.example.myapplication.enum.ImgSize
 import com.example.myapplication.enum.Period
+import com.example.myapplication.services.S3aws
 import id.zelory.compressor.Compressor
 import id.zelory.compressor.constraint.destination
 import id.zelory.compressor.constraint.format
 import id.zelory.compressor.constraint.quality
 import id.zelory.compressor.constraint.resolution
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -30,12 +28,16 @@ class ListImg(val context: Context) {
     private var listBefore: ArrayList<Uri> = ArrayList(1)
     private var listAfter: ArrayList<Uri> = ArrayList(1)
 
-    fun getListBefore():ArrayList<Uri>{
+    fun getListBefore(): ArrayList<Uri> {
         return listBefore
     }
 
-    fun getListAfter():ArrayList<Uri>{
+    fun getListAfter(): ArrayList<Uri> {
         return listAfter
+    }
+
+    fun listsBlank(): Boolean {
+        return listAfter.isEmpty() && listBefore.isEmpty()
     }
 
     fun addImgs(registry: ActivityResultRegistry, period: Period, img: ImageView) {
@@ -58,10 +60,10 @@ class ListImg(val context: Context) {
     }
 
 
-    fun Compesss() {
+    fun compress() {
         //for reusing propouses
-        val lists = listOf(listAfter, listBefore)
-        lists.forEach { list ->
+
+        listOf(listAfter, listBefore).forEach { list ->
 
             //Decode uri
             val listTemp = ArrayList<Uri>(0)
@@ -78,9 +80,7 @@ class ListImg(val context: Context) {
                 // Find the correct scale value. It should be the power of 2.
                 var scale = 1
                 while (bitmap!!.width / scale >= ImgSize.MAX.pixels &&
-                    bitmap.height / scale >= ImgSize.MAX.pixels &&
-                    bitmap.width / scale <= ImgSize.MIN.pixels &&
-                    bitmap.height / scale <= ImgSize.MIN.pixels
+                    bitmap.height / scale >= ImgSize.MAX.pixels
                 ) {
                     scale *= 2
                 }
@@ -112,6 +112,28 @@ class ListImg(val context: Context) {
             list.addAll(listTemp)
         }
     }
+
+    fun sendS3bucket(equipament: String, local: String) {
+        val s3 = S3aws()
+        CoroutineScope(MainScope().coroutineContext).async {
+            if (listBefore.isNotEmpty()) {
+                var i: Int = 0
+                listBefore.forEach {
+                    i++
+                    s3.putS3Object("imagens-refrigeracao", it, local, equipament, i, "Antes")
+                }
+            }
+
+            if (listAfter.isNotEmpty()) {
+                var i: Int = 0
+                listAfter.forEach {
+                    i++
+                    s3.putS3Object("imagens-refrigeracao", it, local, equipament, i, "Depois")
+                }
+            }
+        }
+    }
+
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

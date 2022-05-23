@@ -1,8 +1,6 @@
 package com.example.myapplication
 
 
-
-
 import android.app.AlertDialog
 import android.content.ContentResolver
 import android.content.Context
@@ -36,8 +34,9 @@ import aws.sdk.kotlin.services.dynamodb.model.PutItemRequest
 import aws.sdk.kotlin.services.s3.S3Client
 import aws.sdk.kotlin.services.s3.model.PutObjectRequest
 import aws.smithy.kotlin.runtime.content.asByteStream
-import com.example.myapplication.Entities.ListImg
+import com.example.myapplication.entities.ListImg
 import com.example.myapplication.databinding.InsertFormBinding
+import com.example.myapplication.entities.Order
 import com.example.myapplication.enum.Period
 import id.zelory.compressor.Compressor
 import id.zelory.compressor.constraint.destination
@@ -63,10 +62,6 @@ class InsertForm : Fragment() {
     private var _binding: InsertFormBinding? = null
 
 
-    var listImgsAntes : MutableList<File> = mutableListOf()
-    var listImgsDepois : MutableList<File> = mutableListOf()
-
-
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
@@ -74,8 +69,6 @@ class InsertForm : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-
-
 
     ): View? {
 
@@ -89,16 +82,7 @@ class InsertForm : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-
-
-
-        listImgsDepois.clear()
-        listImgsAntes.clear()
-
-
-
-
-
+        var ListImg = ListImg(requireContext())
         val versaoequipamentos = this.activity?.getSharedPreferences("Equipamentos", MODE_PRIVATE)
         var lista0 = arrayListOf<String>(" ")
         var lista1 = arrayListOf<String>(" ")
@@ -223,7 +207,7 @@ class InsertForm : Fragment() {
             findNavController().navigate(R.id.action_insert_form_to_FirstFragment)
         }
 
-        var ListImg = ListImg(requireContext())
+
 
         binding.imgAntes.setOnClickListener {
             ListImg.addImgs(
@@ -235,226 +219,223 @@ class InsertForm : Fragment() {
         }
 
         binding.imgDepois.setOnClickListener {
-            ListImg.addImgs(requireActivity().activityResultRegistry,Period.AFTER, binding.imgDepois)
+            ListImg.addImgs(
+                requireActivity().activityResultRegistry,
+                Period.AFTER,
+                binding.imgDepois
+            )
         }
 
 
 
         binding.finalizar.setOnClickListener {
 
-            // enviar para um bucket S3 as fotos
+            //Create order Object
+            val order = Order(
+                binding.chamado.text.toString(),
+                binding.local.selectedItem.toString(),
+                binding.instalacao.selectedItem.toString(),
+                binding.equipamento.selectedItem.toString(),
+                binding.OBS.text.toString(),
+                ListImg
+            )
 
+            order.setTypeManut(
+                binding.switchSensitiva.isChecked,
+                binding.switchPreventiva.isChecked,
+                binding.switchCorretiva.isChecked
+            )
 
+            order.setTypeServices(
+                binding.switchRecargaDeGas.isChecked,
+                binding.switchLimpezaFiltros.isChecked,
+                binding.switchLimpezaQuimico.isChecked,
+                binding.switchDreno.isChecked,
+                binding.switchControle.isChecked,
+                binding.switchRele.isChecked
+            )
 
+            order.setTypeSwap(
+                binding.switchSensorTemperatura.isChecked,
+                binding.switchSensorDegelo.isChecked,
+                binding.switchPlaca.isChecked,
+                binding.switchVentiladorEvap.isChecked,
+                binding.switchVentiladorCond.isChecked,
+                binding.switchSerpentina.isChecked,
+                binding.switchCompressor.isChecked,
+                binding.switchFusivel.isChecked,
+                binding.switchCapacitor.isChecked,
+                binding.switchRele.isChecked
+            )
 
-            if (binding.equipamento.selectedItem == null) {
+            //Checks
 
+            //check if equipament is blank
+            if (order.equipamentBlank()) {
                 binding.scroll.fullScroll(binding.scroll.top)
                 Toast.makeText(
                     requireContext(),
                     "Por favor, preencha o equipamento.",
                     Toast.LENGTH_SHORT
                 ).show()
-
-                return@setOnClickListener
-            }else if (binding.equipamento.selectedItem.toString() == " "){
-                binding.scroll.fullScroll(binding.scroll.top)
-                Toast.makeText(
-                    requireContext(),
-                    "Por favor, preencha o equipamento.",
-                    Toast.LENGTH_SHORT
-                ).show()
-
                 return@setOnClickListener
             }
 
-            if ((binding.switchSensitiva.isChecked == binding.switchPreventiva.isChecked && binding.switchPreventiva.isChecked == binding.switchCorretiva.isChecked && binding.switchCorretiva.isChecked == false)) {
-
+            //check if at least one manut is selected
+            if (order.blankManut()) {
                 binding.scroll.fullScroll(binding.scroll.top)
                 Toast.makeText(
                     requireContext(),
                     "Por favor, selecione ao menos uma manutenção.",
                     Toast.LENGTH_SHORT
                 ).show()
-
                 return@setOnClickListener
             }
 
+            //check if at least one service or swap is selected
+            if (order.blankServices() && order.blankSwap()) {
+                binding.scroll.fullScroll(binding.scroll.top)
+                Toast.makeText(
+                    requireContext(),
+                    "Por favor, selecione ao menos um serviço ou material.",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
+            }
 
-
-
-            var cancelar = false
-
-            if (listImgsDepois.isEmpty()) {
+            //Check if there is images
+            if (ListImg.listsBlank()) {
                 val builder = AlertDialog.Builder(context)
                 builder.setTitle("Sem imagens")
                 builder.setMessage("Não existem imagens após o serviço, deseja continuar?")
                 builder.setPositiveButton("Não") { _, _ ->
                     Toast.makeText(context, "Envio cancelado.", Toast.LENGTH_SHORT).show()
-                    cancelar = true
                 }
                 builder.setNegativeButton("Sim") { _, _ ->
-                    cancelar = false
-                    inserir()
-
+                    order.insert()
                 }
                 builder.show()
-                if (cancelar) {
-
-                    return@setOnClickListener
-                }
-            }
-            else{
-                inserir()
+            } else {
+                order.insert()
             }
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun inserir(){
+    public fun inserir(ListImg: ListImg) {
 //         TODO editar o put pra inserir na DB
 
+
         val listKeysImgAntes: MutableList<String> = mutableListOf()
-            var i = 0
-            listImgsAntes.forEach{ arquivo ->
-                i += 1
-                val nomeArquivo = "${binding.equipamento.selectedItem.toString().split("-").last()}_" +
+        var i = 0
+        ListImg.getListBefore().forEach { arquivo ->
+            i += 1
+            val nomeArquivo =
+                "${binding.equipamento.selectedItem.toString().split("-").last().trimStart()}_" +
                         "${SimpleDateFormat("dd-MM-yyyy").format(Date())}_Antes_" +
-                        "${i.toString().padStart(2,'0')}.JPEG".replace("/","-")
+                        "${i.toString().padStart(2, '0')}.JPEG".replace("/", "-")
 
-                val localArquivo = arquivo.absolutePath
+            val localArquivo = arquivo.
 
-                val meta = binding.equipamento.selectedItem.toString()
+            val meta = binding.equipamento.selectedItem.toString()
 
-                runBlocking { launch{listKeysImgAntes.add( putS3Object(nomeArquivo,localArquivo,meta) ) }}
-            }
-
-
-            var listKeysImgDepois: MutableList<String> = mutableListOf()
-            i = 0
-            listImgsDepois.forEach{ arquivo ->
-                i += 1
-                var nomeArquivo = "${binding.equipamento.selectedItem.toString().split("-").last()}_" +
-                        "${SimpleDateFormat("dd-MM-yyyy").format(Date())}_Depois_" +
-                        "${i.toString().padStart(2,'0')}.JPEG".replace("/","-")
-
-                var localArquivo = arquivo.absolutePath
-
-                var meta = binding.equipamento.selectedItem.toString()
-
-                runBlocking {listKeysImgDepois.add( putS3Object(nomeArquivo,localArquivo,meta) ) }
-            }
-
-
-            val ID = ((System.currentTimeMillis() - 1645473084517)/1000).toString()
-            val pat = binding.chamado.text.toString()
-            val local = binding.local.selectedItem.toString()
-            val instalacao = binding.instalacao.selectedItem.toString()
-            val equipamento = binding.equipamento.selectedItem.toString()
-
-            val tipoManut = mutableListOf<String>()
-            if(binding.switchSensitiva.isChecked) tipoManut.add("Manutenção Sensitiva")
-            if(binding.switchPreventiva.isChecked) tipoManut.add("Manutenção Preventiva")
-            if(binding.switchCorretiva.isChecked) tipoManut.add("Manutenção Corretiva")
-
-            val tipoServicos = mutableListOf<String>()
-            if(binding.switchRecargaDeGas.isChecked) tipoServicos.add("Recarga de Gás")
-            if(binding.switchLimpezaFiltros.isChecked) tipoServicos.add("Limpeza de Filtros")
-            if(binding.switchLimpezaQuimico.isChecked) tipoServicos.add("Limpeza Geral com Químicos Bactericidas")
-            if(binding.switchDreno.isChecked) tipoServicos.add("Limpeza e desobstrução de Dreno")
-            if(binding.switchControle.isChecked) tipoServicos.add("Ajuste no controle remoto")
-            if(binding.switchRele.isChecked) tipoServicos.add("Ajuste na infra elétrica local")
-
-            val tipoTroca = mutableListOf<String>()
-            if(binding.switchSensorTemperatura.isChecked) tipoTroca.add("Troca de Sensor de Temperatura")
-            if(binding.switchSensorDegelo.isChecked) tipoTroca.add("Troca de Sensor de Degelo")
-            if(binding.switchPlaca.isChecked) tipoTroca.add("Troca de Placa de Comando")
-            if(binding.switchVentiladorEvap.isChecked) tipoTroca.add("Troca de Ventilador da Evaporadora")
-            if(binding.switchVentiladorCond.isChecked) tipoTroca.add("Troca de Ventilador da Condensadora")
-            if(binding.switchSerpentina.isChecked) tipoTroca.add("Troca de Serpentina")
-            if(binding.switchCompressor.isChecked) tipoTroca.add("Troca de Compressor")
-            if(binding.switchFusivel.isChecked) tipoTroca.add("Troca de Fusível")
-            if(binding.switchCapacitor.isChecked) tipoTroca.add("Troca de Capacitor")
-            if(binding.switchRele.isChecked) tipoTroca.add("Troca de Relé")
-
-            if(tipoTroca.isEmpty()&&tipoServicos.isEmpty()&&binding.OBS.text.toString()==""){
-                binding.scroll.fullScroll(binding.scroll.top)
-                Toast.makeText(
-                    requireContext(),
-                    "Por favor, selecione ao menos um serviço, material ou observação.",
-                    Toast.LENGTH_SHORT
-                ).show()
-                return
-            }
-
-            val OBS = binding.OBS.text.toString()
-            println("Enviado")
-            val DataFim = System.currentTimeMillis().toString()
-            val login = requireActivity().getSharedPreferences("login", AppCompatActivity.MODE_PRIVATE)
-            val FuncionarioID = login.getString("login","")
-
-
-
-            var lista2 = arrayListOf<String>(" ")
-            val versaoequipamentos = this.activity?.getSharedPreferences("Equipamentos", MODE_PRIVATE)
-            val listaequidb =
-                versaoequipamentos!!.getStringSet("listaEquipamentos", mutableSetOf("0", "1"))
-            lista2.clear()
-            listaequidb?.forEach { equip ->
-                if (binding.instalacao.selectedItem.toString() == equip.split("_")[0] && binding.local.selectedItem.toString() == equip.split(
-                        "_")[1])
-                {
-                    lista2.add("${equip.split("_")[2]} - ${equip.split("_")[3]}")
+            runBlocking {
+                launch {
+                    listKeysImgAntes.add(
+                        putS3Object(
+                            nomeArquivo,
+                            localArquivo,
+                            meta
+                        )
+                    )
                 }
             }
-            lista2.remove(binding.equipamento.selectedItem.toString())
-            println(lista2)
-            val listaEquips : Array<String> = lista2.toTypedArray()
-            println(listaEquips)
-            val listaEquipsBol = BooleanArray(listaEquips.size){false}
-            val builder = AlertDialog.Builder(requireContext())
-            val listener : DialogInterface.OnMultiChoiceClickListener = DialogInterface.OnMultiChoiceClickListener {_,i,boolean ->
-                listaEquipsBol.set(i,boolean)
+        }
+
+
+        var listKeysImgDepois: MutableList<String> = mutableListOf()
+        i = 0
+        ListImg.getListAfter().forEach { arquivo ->
+            i += 1
+            var nomeArquivo = "${binding.equipamento.selectedItem.toString().split("-").last()}_" +
+                    "${SimpleDateFormat("dd-MM-yyyy").format(Date())}_Depois_" +
+                    "${i.toString().padStart(2, '0')}.JPEG".replace("/", "-")
+
+            var localArquivo = arquivo.absolutePath
+
+            var meta = binding.equipamento.selectedItem.toString()
+
+            runBlocking { listKeysImgDepois.add(putS3Object(nomeArquivo, localArquivo, meta)) }
+        }
+
+
+        val DataFim = System.currentTimeMillis().toString()
+        val login = requireActivity().getSharedPreferences("login", AppCompatActivity.MODE_PRIVATE)
+        val FuncionarioID = login.getString("login", "")
+
+
+        var lista2 = arrayListOf<String>(" ")
+        val versaoequipamentos = this.activity?.getSharedPreferences("Equipamentos", MODE_PRIVATE)
+        val listaequidb =
+            versaoequipamentos!!.getStringSet("listaEquipamentos", mutableSetOf("0", "1"))
+        lista2.clear()
+        listaequidb?.forEach { equip ->
+            if (binding.instalacao.selectedItem.toString() == equip.split("_")[0] && binding.local.selectedItem.toString() == equip.split(
+                    "_"
+                )[1]
+            ) {
+                lista2.add("${equip.split("_")[2]} - ${equip.split("_")[3]}")
             }
-            println(listaEquipsBol.toString())
-            println(listaEquips.toString())
-            builder.setTitle("Deseja replicar para outra máquina no mesmo local?")
+        }
+        lista2.remove(binding.equipamento.selectedItem.toString())
+        println(lista2)
+        val listaEquips: Array<String> = lista2.toTypedArray()
+        println(listaEquips)
+        val listaEquipsBol = BooleanArray(listaEquips.size) { false }
+        val builder = AlertDialog.Builder(requireContext())
+        val listener: DialogInterface.OnMultiChoiceClickListener =
+            DialogInterface.OnMultiChoiceClickListener { _, i, boolean ->
+                listaEquipsBol.set(i, boolean)
+            }
+        println(listaEquipsBol.toString())
+        println(listaEquips.toString())
+        builder.setTitle("Deseja replicar para outra máquina no mesmo local?")
 
-            builder.setMultiChoiceItems(listaEquips, listaEquipsBol,listener)
-            builder.setPositiveButton("Replicar") {_,_->
-                for(i in listaEquips.indices) {
-                    if (listaEquipsBol[i] == true)
+        builder.setMultiChoiceItems(listaEquips, listaEquipsBol, listener)
+        builder.setPositiveButton("Replicar") { _, _ ->
+            for (i in listaEquips.indices) {
+                if (listaEquipsBol[i] == true)
 
-                        runBlocking {
-                            launch {
-                                putItemInTable(
-                                    ((System.currentTimeMillis() - 1645473084517)/1000).toString(),
-                                    pat,
-                                    local,
-                                    instalacao,
-                                    listaEquips[i],
-                                    tipoManut,
-                                    tipoServicos,
-                                    tipoTroca,
-                                    OBS,
-                                    FuncionarioID!!,
-                                    DataFim,
-                                    listKeysImgAntes,
-                                    listKeysImgDepois
-                                )
-                            }
+                    runBlocking {
+                        launch {
+                            putItemInTable(
+                                ((System.currentTimeMillis() - 1645473084517) / 1000).toString(),
+                                pat,
+                                local,
+                                instalacao,
+                                listaEquips[i],
+                                tipoManut,
+                                tipoServicos,
+                                tipoTroca,
+                                OBS,
+                                FuncionarioID!!,
+                                DataFim,
+                                listKeysImgAntes,
+                                listKeysImgDepois
+                            )
                         }
                     }
             }
-            builder.setNegativeButton("Não Replicar"){_,_->}
-            builder.show()
+        }
+        builder.setNegativeButton("Não Replicar") { _, _ -> }
+        builder.show()
 
 
 
-            runBlocking{
-                launch {
+        runBlocking {
+            launch {
                 putItemInTable(
-                    ((System.currentTimeMillis() - 1645473084517)/1000).toString(),
+                    ((System.currentTimeMillis() - 1645473084517) / 1000).toString(),
                     pat,
                     local,
                     instalacao,
@@ -469,38 +450,14 @@ class InsertForm : Fragment() {
                     listKeysImgDepois
                 )
             }
-            }
-
+        }
 
 
     }
-
-
-
 
 
     @RequiresApi(Build.VERSION_CODES.O)
-    suspend fun putS3Object( objectKey: String, objectPath: String, meta: String): String {
-        val bucketName = "imagens-refrigeracao"
-        val metadataVal = mutableMapOf<String, String>()
-        metadataVal["Local"] = meta
 
-        val request = PutObjectRequest {
-            bucket = bucketName
-            key = objectKey
-            metadata = metadataVal
-            this.body = Paths.get(objectPath).asByteStream()
-        }
-
-        S3Client { region = "us-east-2"
-            credentialsProvider= StaticCredentialsProvider(Credentials("AKIAXJ6IWE3BPJLVFANI","MFr8G6u2JsoYzPLxtSjt3bgE2lVL4qKoZ0NBwOpT"))
-        }.use { s3 ->
-            val response =s3.putObject(request)
-
-            if(response.eTag != null){return objectKey}
-        }
-        return ""
-    }
 
     private suspend fun putItemInTable(
         ID: String,
@@ -527,25 +484,24 @@ class InsertForm : Fragment() {
         itemValues["Instalacao"] = AttributeValue.S(Instalacao)
         itemValues["Equipamento"] = AttributeValue.S(Equipamento)
         itemValues["tipoManut"] = AttributeValue.Ss(tipoManut)
-        if(tipoServicos.isNotEmpty()) itemValues["tipoServicos"] = AttributeValue.Ss(tipoServicos)
-        if(tipoTroca.isNotEmpty()) itemValues["tipoTroca"] = AttributeValue.Ss(tipoTroca)
+        if (tipoServicos.isNotEmpty()) itemValues["tipoServicos"] = AttributeValue.Ss(tipoServicos)
+        if (tipoTroca.isNotEmpty()) itemValues["tipoTroca"] = AttributeValue.Ss(tipoTroca)
         itemValues["OBS"] = AttributeValue.S(OBS)
         itemValues["FuncionarioID"] = AttributeValue.S(FuncionarioID)
         itemValues["DataFim"] = AttributeValue.S(DataFim)
-        if(fotosAntes.isNotEmpty()) itemValues["fotosAntes"] = AttributeValue.Ss(fotosAntes)
-        if(fotosDepois.isNotEmpty()) itemValues["fotosDepois"] = AttributeValue.Ss(fotosDepois)
-
+        if (fotosAntes.isNotEmpty()) itemValues["fotosAntes"] = AttributeValue.Ss(fotosAntes)
+        if (fotosDepois.isNotEmpty()) itemValues["fotosDepois"] = AttributeValue.Ss(fotosDepois)
 
 
         val request = PutItemRequest {
 
-            tableName=tableNameVal
+            tableName = tableNameVal
             item = itemValues
         }
 
-        DynamoDbClient { region="us-east-2"
-            credentialsProvider=
-                StaticCredentialsProvider(Credentials("AKIAXJ6IWE3BPJLVFANI","MFr8G6u2JsoYzPLxtSjt3bgE2lVL4qKoZ0NBwOpT")) }.use { ddb ->
+        DynamoDbClient {
+            region = "us-east-2"
+        }.use { ddb ->
 
             ddb.putItem(request)
 
@@ -555,7 +511,7 @@ class InsertForm : Fragment() {
             builder.setPositiveButton("Ok") { _, _ ->
                 try {
                     findNavController().navigate(R.id.action_insert_form_to_FirstFragment)
-                }catch (e: IllegalArgumentException){
+                } catch (e: IllegalArgumentException) {
                     //Do nothing
                 }
 
@@ -565,167 +521,165 @@ class InsertForm : Fragment() {
     }
 
 
+    private val getContentAntes =
+        registerForActivityResult(ActivityResultContracts.GetMultipleContents()) { urisAntes: List<Uri?> ->
+            urisAntes.forEach { urii ->
 
+                if (urii != null) {
 
-    private val getContentAntes = registerForActivityResult(ActivityResultContracts.GetMultipleContents()) { urisAntes: List<Uri?> ->
-        urisAntes.forEach { urii ->
+                    var bitmap: Bitmap? = null
 
-            if (urii != null) {
+                    try {
 
-                var bitmap: Bitmap? = null
+                        val contentResolver: ContentResolver = this.requireContext().contentResolver
 
-                try {
-
-                    val contentResolver: ContentResolver = this.requireContext().contentResolver
-
-                    bitmap = if (Build.VERSION.SDK_INT < 28) {
-                        MediaStore.Images.Media.getBitmap(contentResolver, urii)
-                    } else {
-                        val source: ImageDecoder.Source =
-                            urii.let { ImageDecoder.createSource(contentResolver, it) }
-                        ImageDecoder.decodeBitmap(source)
+                        bitmap = if (Build.VERSION.SDK_INT < 28) {
+                            MediaStore.Images.Media.getBitmap(contentResolver, urii)
+                        } else {
+                            val source: ImageDecoder.Source =
+                                urii.let { ImageDecoder.createSource(contentResolver, it) }
+                            ImageDecoder.decodeBitmap(source)
+                        }
+                    } catch (e: java.lang.Exception) {
+                        e.printStackTrace()
                     }
-                } catch (e: java.lang.Exception) {
-                    e.printStackTrace()
-                }
 
 
-                // The new size we want to scale to
-                val REQUIRED_SIZE = 512
+                    // The new size we want to scale to
+                    val REQUIRED_SIZE = 512
 
-                // Find the correct scale value. It should be the power of 2.
-                var scale = 1
-                while (bitmap!!.width / scale >= REQUIRED_SIZE &&
-                    bitmap.height / scale >= REQUIRED_SIZE
-                ) {
-                    scale *= 2
-                }
-
-
-                val outputDir = requireContext().cacheDir // context being the Activity pointer
-
-                val outputFile =
-                    File.createTempFile(urii.toString().split("%").last(), ".JPEG", outputDir)
-
-
-
-                println(bitmap.byteCount)
-
-                val bos = ByteArrayOutputStream()
-                bitmap.compress(CompressFormat.JPEG, 100, bos)
-                val bitmapdata: ByteArray = bos.toByteArray()
-
-                val fos = FileOutputStream(outputFile)
-                fos.write(bitmapdata)
-                fos.flush()
-                fos.close()
-
-
-                runBlocking {
-                    Compressor.compress(requireContext(), outputFile) {
-                        resolution(bitmap!!.width/scale, bitmap!!.height/scale)
-                        quality(100)
-                        format(Bitmap.CompressFormat.JPEG)
-                        destination(outputFile)
+                    // Find the correct scale value. It should be the power of 2.
+                    var scale = 1
+                    while (bitmap!!.width / scale >= REQUIRED_SIZE &&
+                        bitmap.height / scale >= REQUIRED_SIZE
+                    ) {
+                        scale *= 2
                     }
+
+
+                    val outputDir = requireContext().cacheDir // context being the Activity pointer
+
+                    val outputFile =
+                        File.createTempFile(urii.toString().split("%").last(), ".JPEG", outputDir)
+
+
+
+                    println(bitmap.byteCount)
+
+                    val bos = ByteArrayOutputStream()
+                    bitmap.compress(CompressFormat.JPEG, 100, bos)
+                    val bitmapdata: ByteArray = bos.toByteArray()
+
+                    val fos = FileOutputStream(outputFile)
+                    fos.write(bitmapdata)
+                    fos.flush()
+                    fos.close()
+
+
+                    runBlocking {
+                        Compressor.compress(requireContext(), outputFile) {
+                            resolution(bitmap!!.width / scale, bitmap!!.height / scale)
+                            quality(100)
+                            format(Bitmap.CompressFormat.JPEG)
+                            destination(outputFile)
+                        }
+                    }
+
+                    listImgsAntes.add(outputFile)
+
+                    binding.imgAntes.setImageURI(urisAntes[0])
+
                 }
+            }
 
-                listImgsAntes.add(outputFile)
 
-                binding.imgAntes.setImageURI(urisAntes[0])
+        }
+
+    private val getContentDepois =
+        registerForActivityResult(ActivityResultContracts.GetMultipleContents()) { urisDepois: List<Uri?> ->
+            urisDepois.forEach { urii ->
+
+                if (urii != null) {
+
+                    var bitmap: Bitmap? = null
+
+
+
+                    try {
+
+
+                        val contentResolver: ContentResolver = this.requireContext().contentResolver
+
+
+                        bitmap = if (Build.VERSION.SDK_INT < 28) {
+                            MediaStore.Images.Media.getBitmap(contentResolver, urii)
+                        } else {
+                            val source: ImageDecoder.Source =
+                                urii.let { ImageDecoder.createSource(contentResolver, it) }
+                            ImageDecoder.decodeBitmap(source)
+                        }
+                    } catch (e: java.lang.Exception) {
+                        e.printStackTrace()
+                    }
+
+
+                    // The new size we want to scale to
+                    val REQUIRED_SIZE = 512
+
+                    // Find the correct scale value. It should be the power of 2.
+                    var scale = 1
+                    while (bitmap!!.width / scale >= REQUIRED_SIZE &&
+                        bitmap!!.height / scale >= REQUIRED_SIZE
+                    ) {
+                        scale *= 2
+                    }
+
+
+                    val outputDir = requireContext().cacheDir // context being the Activity pointer
+
+                    val outputFile =
+                        File.createTempFile(urii.toString().split("%").last(), ".JPEG", outputDir)
+
+
+                    val bos = ByteArrayOutputStream()
+                    bitmap.compress(CompressFormat.JPEG, 100, bos)
+                    val bitmapdata: ByteArray = bos.toByteArray()
+
+                    val fos = FileOutputStream(outputFile)
+                    fos.write(bitmapdata)
+                    fos.flush()
+                    fos.close()
+
+
+                    runBlocking {
+                        Compressor.compress(requireContext(), outputFile) {
+                            resolution(bitmap!!.width / scale, bitmap!!.height / scale)
+                            quality(100)
+                            format(Bitmap.CompressFormat.JPEG)
+                            destination(outputFile)
+                        }
+                    }
+
+
+                    listImgsDepois.add(outputFile)
+                    binding.imgDepois.setImageURI(urisDepois[0])
+
+
+                }
 
             }
         }
-
-
-    }
-
-    private val getContentDepois = registerForActivityResult(ActivityResultContracts.GetMultipleContents()) { urisDepois: List<Uri?> ->
-        urisDepois.forEach { urii ->
-
-            if (urii != null) {
-
-                var bitmap: Bitmap? = null
-
-
-
-                try {
-
-
-                    val contentResolver: ContentResolver = this.requireContext().contentResolver
-
-
-                    bitmap = if (Build.VERSION.SDK_INT < 28) {
-                        MediaStore.Images.Media.getBitmap(contentResolver, urii)
-                    } else {
-                        val source: ImageDecoder.Source =
-                            urii.let { ImageDecoder.createSource(contentResolver, it) }
-                        ImageDecoder.decodeBitmap(source)
-                    }
-                } catch (e: java.lang.Exception) {
-                    e.printStackTrace()
-                }
-
-
-                // The new size we want to scale to
-                val REQUIRED_SIZE = 512
-
-                // Find the correct scale value. It should be the power of 2.
-                var scale = 1
-                while (bitmap!!.width / scale >= REQUIRED_SIZE &&
-                    bitmap!!.height / scale >= REQUIRED_SIZE
-                ) {
-                    scale *= 2
-                }
-
-
-                val outputDir = requireContext().cacheDir // context being the Activity pointer
-
-                val outputFile =
-                    File.createTempFile(urii.toString().split("%").last(), ".JPEG", outputDir)
-
-
-
-                val bos = ByteArrayOutputStream()
-                bitmap.compress(CompressFormat.JPEG, 100, bos)
-                val bitmapdata: ByteArray = bos.toByteArray()
-
-                val fos = FileOutputStream(outputFile)
-                fos.write(bitmapdata)
-                fos.flush()
-                fos.close()
-
-
-                runBlocking {
-                    Compressor.compress(requireContext(), outputFile) {
-                        resolution(bitmap!!.width / scale, bitmap!!.height / scale)
-                        quality(100)
-                        format(Bitmap.CompressFormat.JPEG)
-                        destination(outputFile)
-                    }
-                }
-
-
-                listImgsDepois.add(outputFile)
-                binding.imgDepois.setImageURI(urisDepois[0])
-
-
-            }
-
-        }
-    }
 
     val tableNameVal = "ordemServico"
 
 
-
-
-
     fun isNetworkAvailable(context: Context?): Boolean {
         if (context == null) return false
-        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            val capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+            val capabilities =
+                connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
             if (capabilities != null) {
                 when {
                     capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> {
@@ -749,17 +703,10 @@ class InsertForm : Fragment() {
     }
 
 
-
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-
-
-
-
-
 
 
 }

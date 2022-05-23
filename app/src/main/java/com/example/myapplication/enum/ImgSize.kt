@@ -1,5 +1,5 @@
 package com.example.myapplication.enum
 
 enum class ImgSize (val pixels: Int){
-    MAX(512),MIN(128)
+    MAX(512)
 }
