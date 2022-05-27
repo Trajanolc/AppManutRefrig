@@ -1,19 +1,58 @@
 package com.example.myapplication.entities
 
+import android.app.Activity
+import android.content.Context
+import androidx.appcompat.app.AppCompatActivity
+import com.example.myapplication.services.DynamoAws
+import com.example.myapplication.services.S3aws
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.async
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
+
 
 data class Order(
-    private val pat: String,
-    private val local: String,
-    private val plant: String,
-    private val equipment: String,
-    private val obs: String,
-    private val listImg: ListImg
+    val pat: String,
+    val local: String,
+    val plant: String,
+    val equipment: String,
+    val obs: String,
+    val listImg: ListImg,
+    val context: Context
 ) {
 
-    private val id: String = ((System.currentTimeMillis() - 1645473084517) / 1000).toString()
+    val employeeId = context.getSharedPreferences("login", AppCompatActivity.MODE_PRIVATE)
+        .getString("login", "")
+    val dateEnd = System.currentTimeMillis().toString()
+    val id: String = ((System.currentTimeMillis() - 1645473084517) / 1000).toString()
     private var typeManut: ArrayList<String> = ArrayList(0)
     private var typeServices: ArrayList<String> = ArrayList(0)
     private var typeSwap: ArrayList<String> = ArrayList(0)
+    private var imgKeysBefore: ArrayList<String> = ArrayList(0)
+    private var imgKeysAfter: ArrayList<String> = ArrayList(0)
+
+    fun getTypeManut(): ArrayList<String> {
+        return typeManut
+    }
+
+    fun getTypeServices(): ArrayList<String> {
+        return if (typeServices.isNotEmpty()) typeServices else arrayListOf(" ")
+    }
+
+    fun getTypeSwap(): ArrayList<String> {
+        return if (typeSwap.isNotEmpty()) typeSwap else arrayListOf("Não foram realizadas trocas")
+    }
+
+    fun getImgKeysBefore(): ArrayList<String> {
+        return imgKeysBefore
+    }
+
+    fun getImgKeysAfter(): ArrayList<String> {
+        return imgKeysAfter
+    }
+
 
     //Setters
     fun setTypeManut(sensitiva: Boolean, preventiva: Boolean, corretiva: Boolean) {
@@ -65,8 +104,8 @@ data class Order(
     }
 
     //BlankChecks
-    fun equipamentBlank() : Boolean{
-        return equipment.isBlank() || equipment.equals(" ")
+    fun equipamentBlank(): Boolean {
+        return equipment.isBlank() || equipment == " "
     }
 
     fun blankManut(): Boolean {
@@ -81,9 +120,38 @@ data class Order(
         return typeSwap.isEmpty()
     }
 
-    fun insert(){
+    fun generateImgKeys() {
+        var i = 0
+        imgKeysBefore.clear()
+        listImg.getListBefore().forEach { _ ->
+            i++
+            imgKeysBefore.add(
+                "${equipment.split("-").last().trimStart()}_" +
+                        "${SimpleDateFormat("dd-MM-yyyy").format(Date())}_Antes_" +
+                        "${i.toString().padStart(2, '0')}.JPEG".replace("/", "-")
+            )
+        }
+
+        i = 0
+        imgKeysAfter.clear()
+        listImg.getListAfter().forEach { _ ->
+            i++
+            imgKeysAfter.add(
+                "${equipment.split("-").last().trimStart()}_" +
+                        "${SimpleDateFormat("dd-MM-yyyy").format(Date())}_Depois_" +
+                        "${i.toString().padStart(2, '0')}.JPEG".replace("/", "-")
+            )
+        }
+
+    }
+
+    fun insert() {
         listImg.compress()
-        listImg.sendS3bucket(equipment,local)
+        generateImgKeys()
+        listImg.sendS3bucket(local, imgKeysBefore, imgKeysAfter)
+        CoroutineScope(MainScope().coroutineContext).async{
+            DynamoAws().putDynamoDB(this@Order,"ordemServico",context)
+        }
 
     }
 }

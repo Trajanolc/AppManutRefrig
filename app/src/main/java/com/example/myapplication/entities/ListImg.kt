@@ -25,8 +25,9 @@ import java.io.FileOutputStream
 
 
 class ListImg(val context: Context) {
-    private var listBefore: ArrayList<Uri> = ArrayList(1)
-    private var listAfter: ArrayList<Uri> = ArrayList(1)
+    private var listBefore: ArrayList<Uri> = ArrayList(0)
+    private var listAfter: ArrayList<Uri> = ArrayList(0)
+
 
     fun getListBefore(): ArrayList<Uri> {
         return listBefore
@@ -58,7 +59,6 @@ class ListImg(val context: Context) {
         getContent.launch("image/*")
 
     }
-
 
     fun compress() {
         //for reusing propouses
@@ -113,27 +113,26 @@ class ListImg(val context: Context) {
         }
     }
 
-    fun sendS3bucket(equipament: String, local: String) {
+    fun sendS3bucket(local: String, keysBefore :ArrayList<String>, keysAfter: ArrayList<String>) {
         val s3 = S3aws()
         CoroutineScope(MainScope().coroutineContext).async {
             if (listBefore.isNotEmpty()) {
-                var i: Int = 0
+                var i = 0
                 listBefore.forEach {
+                    s3.putS3Object("imagens-refrigeracao", it, local, keysBefore[i])
                     i++
-                    s3.putS3Object("imagens-refrigeracao", it, local, equipament, i, "Antes")
                 }
             }
 
             if (listAfter.isNotEmpty()) {
-                var i: Int = 0
+                var i = 0
                 listAfter.forEach {
+                    s3.putS3Object("imagens-refrigeracao", it, local, keysAfter[i])
                     i++
-                    s3.putS3Object("imagens-refrigeracao", it, local, equipament, i, "Depois")
                 }
             }
         }
     }
-
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

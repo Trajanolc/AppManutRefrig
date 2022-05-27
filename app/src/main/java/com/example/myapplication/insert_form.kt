@@ -237,7 +237,8 @@ class InsertForm : Fragment() {
                 binding.instalacao.selectedItem.toString(),
                 binding.equipamento.selectedItem.toString(),
                 binding.OBS.text.toString(),
-                ListImg
+                ListImg,
+                requireContext()
             )
 
             order.setTypeManut(
@@ -317,6 +318,7 @@ class InsertForm : Fragment() {
                 builder.show()
             } else {
                 order.insert()
+
             }
         }
     }
