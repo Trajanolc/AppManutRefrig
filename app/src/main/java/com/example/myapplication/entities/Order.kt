@@ -1,10 +1,9 @@
 package com.example.myapplication.entities
 
-import android.app.Activity
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.example.myapplication.services.DynamoAws
-import com.example.myapplication.services.S3aws
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
@@ -22,11 +21,10 @@ data class Order(
     val listImg: ListImg,
     val context: Context
 ) {
-
-    val employeeId = context.getSharedPreferences("login", AppCompatActivity.MODE_PRIVATE)
+    internal val employeeId = context.getSharedPreferences("login", AppCompatActivity.MODE_PRIVATE)
         .getString("login", "")
-    val dateEnd = System.currentTimeMillis().toString()
-    val id: String = ((System.currentTimeMillis() - 1645473084517) / 1000).toString()
+    internal val dateEnd = System.currentTimeMillis().toString()
+    internal val id: String = ((System.currentTimeMillis() - 1645473084517) / 1000).toString()
     private var typeManut: ArrayList<String> = ArrayList(0)
     private var typeServices: ArrayList<String> = ArrayList(0)
     private var typeSwap: ArrayList<String> = ArrayList(0)
@@ -145,12 +143,12 @@ data class Order(
 
     }
 
-    fun insert() {
+    fun insert(fragment: Fragment) {
         listImg.compress()
         generateImgKeys()
         listImg.sendS3bucket(local, imgKeysBefore, imgKeysAfter)
         CoroutineScope(MainScope().coroutineContext).async{
-            DynamoAws().putDynamoDB(this@Order,"ordemServico",context)
+            DynamoAws().putItem(this@Order,"ordemServico",context)
         }
 
     }
