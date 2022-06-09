@@ -45,6 +45,7 @@ class ListImg(val context: Context) {
         val getContent: ActivityResultLauncher<String> = registry.register(
             "img", ActivityResultContracts.GetMultipleContents()
         ) { uris ->
+            if(uris.isEmpty()) return@register
             if (period == Period.BEFORE) {
                 listBefore.clear()
                 listBefore.addAll(uris)

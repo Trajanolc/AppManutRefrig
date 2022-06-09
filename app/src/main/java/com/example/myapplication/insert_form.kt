@@ -53,10 +53,6 @@ import java.nio.file.Paths
 import java.text.SimpleDateFormat
 import java.util.*
 
-
-/**
- * A simple [Fragment] subclass as the default destination in the navigation.
- */
 class InsertForm : Fragment() {
 
 
@@ -96,11 +92,12 @@ class InsertForm : Fragment() {
                 position: Int,
                 id: Long
             ) {
-                ListEquip.plantCheck(binding.instalacao.selectedItem.toString())
+                ListEquip.plantAtt(binding.instalacao.selectedItem.toString())
+                //binding.local.adapter = ListEquip.arrayAdapterLocal
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
-                TODO("Not yet implemented")
+                ListEquip.resetPlant()
             }
         }
 
@@ -111,14 +108,14 @@ class InsertForm : Fragment() {
                 position: Int,
                 id: Long
             ) {
-                ListEquip.localCheck(
+                ListEquip.localAtt(
                     binding.instalacao.selectedItem.toString(),
                     binding.local.selectedItem.toString()
                 )
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
-                TODO("Not yet implemented")
+                ListEquip.resetPlant()
             }
 
         }
@@ -243,7 +240,6 @@ class InsertForm : Fragment() {
                 builder.show()
             } else {
                 order.insert(this)
-
             }
         }
     }

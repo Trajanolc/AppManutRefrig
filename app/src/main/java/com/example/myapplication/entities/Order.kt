@@ -1,8 +1,12 @@
 package com.example.myapplication.entities
 
 import android.content.Context
+import android.content.DialogInterface
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.example.myapplication.R
 import com.example.myapplication.services.DynamoAws
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
@@ -16,15 +20,17 @@ data class Order(
     val pat: String,
     val local: String,
     val plant: String,
-    val equipment: String,
+    var equipment: String,
     val obs: String,
     val listImg: ListImg,
     val context: Context
 ) {
+
     internal val employeeId = context.getSharedPreferences("login", AppCompatActivity.MODE_PRIVATE)
         .getString("login", "")
     internal val dateEnd = System.currentTimeMillis().toString()
-    internal val id: String = ((System.currentTimeMillis() - 1645473084517) / 1000).toString()
+    internal var id: String = ((System.currentTimeMillis() - 1645473084517) / 1000).toString()
+
     private var typeManut: ArrayList<String> = ArrayList(0)
     private var typeServices: ArrayList<String> = ArrayList(0)
     private var typeSwap: ArrayList<String> = ArrayList(0)
@@ -115,7 +121,7 @@ data class Order(
     }
 
     fun blankSwap(): Boolean {
-        return typeSwap.isEmpty()
+        return typeServices.isEmpty()
     }
 
     fun generateImgKeys() {
@@ -147,9 +153,52 @@ data class Order(
         listImg.compress()
         generateImgKeys()
         listImg.sendS3bucket(local, imgKeysBefore, imgKeysAfter)
-        CoroutineScope(MainScope().coroutineContext).async{
-            DynamoAws().putItem(this@Order,"ordemServico",context)
+
+        CoroutineScope(MainScope().coroutineContext).async {
+            DynamoAws().putOrder(this@Order, "ordemServico", context)
+            replicateOrder()
         }
+
+
+        fragment.findNavController().navigate(R.id.action_insert_form_to_FirstFragment)
+
+
+    }
+
+    private fun replicateOrder() {
+        val arrayEquipsReplicate = ListEquip(context).getNearEquips(plant, local)
+        arrayEquipsReplicate.remove(equipment)
+        if (arrayEquipsReplicate.isEmpty()) return
+        val checkedEquipsReplicate = BooleanArray(arrayEquipsReplicate.size)
+
+
+        val builder = AlertDialog.Builder(context)
+        val listener = DialogInterface.OnMultiChoiceClickListener { _, i, boolean ->
+            checkedEquipsReplicate[i] = boolean
+        }
+
+        builder.setTitle("Deseja replicar para outra máquina no mesmo local?")
+
+        builder.setMultiChoiceItems(
+            arrayEquipsReplicate.toTypedArray(),
+            checkedEquipsReplicate,
+            listener
+        )
+        builder.setPositiveButton("Replicar") { _, _ ->
+            CoroutineScope(MainScope().coroutineContext).async {
+                checkedEquipsReplicate.forEachIndexed { i, equip ->
+                    if (equip) {
+                        this@Order.equipment = arrayEquipsReplicate[i]
+                        this@Order.id = (Integer.parseInt(this@Order.id) + i + 1).toString() //Add 1 in ID
+
+                        DynamoAws().putOrder(this@Order, "ordemServico", context)
+                    }
+                }
+            }
+        }
+        builder.setNegativeButton("Não Replicar") { _, _ -> }
+        builder.show()
+
 
     }
 }

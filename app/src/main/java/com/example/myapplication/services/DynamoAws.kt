@@ -8,15 +8,14 @@ import aws.sdk.kotlin.services.dynamodb.DynamoDbClient
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import aws.sdk.kotlin.services.dynamodb.model.GetItemRequest
 import aws.sdk.kotlin.services.dynamodb.model.PutItemRequest
-import com.example.myapplication.R
 import com.example.myapplication.entities.Order
 import com.example.myapplication.enum.HCredentials
 
 class DynamoAws {
-    private val credentialsAWS = StaticCredentialsProvider(Credentials(HCredentials.AWS_ACESS_KEY.cred,HCredentials.AWS_SECRET_KEY.cred
+    private val credentialsAWS = StaticCredentialsProvider(Credentials(HCredentials.AWS_ACCESS_KEY.cred,HCredentials.AWS_SECRET_KEY.cred
     ))
 
-    suspend fun putItem(
+    suspend fun putOrder(
         Order: Order,
         table: String,
         context: Context
@@ -57,14 +56,7 @@ class DynamoAws {
             val builder = AlertDialog.Builder(context)
             builder.setTitle("Sucesso")
             builder.setMessage("Ordem Nº ${Order.id} referente ao ${Order.equipment} enviada com sucesso!")
-            builder.setPositiveButton("Ok") { _, _ ->
-                //try {
-                //    findNavController().navigate(R.id.action_insert_form_to_FirstFragment)
-                //} catch (e: IllegalArgumentException) {
-                //Do nothing
-                //}
-
-            }
+            builder.setPositiveButton("Ok") { _, _ -> }
             builder.show()
         }
     }
@@ -82,7 +74,7 @@ class DynamoAws {
             tableName = tableNameVal
             key = keyToGet
         }
-        println(request)
+
 
         DynamoDbClient {
             region = "us-east-2"

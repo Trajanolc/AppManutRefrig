@@ -36,9 +36,6 @@ class Autentication (val context : Context){
         }
         runBlocking {
             val profile = context.getSharedPreferences("login", AppCompatActivity.MODE_PRIVATE).getString("login"," ")
-            println(profile + " auth")
-            println(System.getenv().toString())
-            println(System.getenv("AWS_SECRET_ACCESS_KEY"))
             when(profile){ //TODO change to a call in DB later
                 "geroinildo", "elias", "thalisson" -> listEquip.organizeEquips(arrayListOf("Equatorial"))
                 "Trajano" -> listEquip.organizeEquips(arrayListOf("Equatorial","Agropalma"))

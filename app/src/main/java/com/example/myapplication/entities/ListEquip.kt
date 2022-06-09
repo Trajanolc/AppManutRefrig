@@ -1,5 +1,6 @@
 package com.example.myapplication.entities
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
@@ -12,7 +13,7 @@ class ListEquip(val context: Context) {
     private val equips = context.getSharedPreferences(
         "Equipamentos",
         Context.MODE_PRIVATE
-    ).getStringSet("listaEquipamentos", mutableSetOf("Erro"))
+    ).getStringSet("Equipamentos", mutableSetOf("Erro"))
 
     var arrayAdapterPlant: ArrayAdapter<String> = ArrayAdapter(
         context,
@@ -27,66 +28,62 @@ class ListEquip(val context: Context) {
         android.R.layout.simple_spinner_item
     )
 
+    //initializers
+    @SuppressLint("MutatingSharedPrefs")
     suspend fun organizeEquips(plants: ArrayList<String>) {
-        context.getSharedPreferences("Equipamentos", AppCompatActivity.MODE_PRIVATE).edit().clear()
-            .apply()
-
+        context.getSharedPreferences("Equipamentos", AppCompatActivity.MODE_PRIVATE).edit()
+            .remove("Equipamentos").apply()
         plants.forEach { plant ->
-            println(plant + " plant")
-            val equips = getEquipsFromDB(plant)
 
-            context.getSharedPreferences("Equipamentos", AppCompatActivity.MODE_PRIVATE).edit()
-                .putStringSet("listaEquipamentos", equips)
-                .apply()
-            println(equips + " equips")
+            val equips = getEquipsFromDB(plant)
+            val sharedPref =
+                context.getSharedPreferences("Equipamentos", AppCompatActivity.MODE_PRIVATE)
+            val newEquips = sharedPref.getStringSet("Equipamentos", mutableSetOf("Off limits"))
+            newEquips!!.remove("Off limits")
+            newEquips.addAll(equips)
+            sharedPref.edit().putStringSet("Equipamentos", newEquips).apply()
         }
-        println(
-            context.getSharedPreferences("Equipamentos", AppCompatActivity.MODE_PRIVATE)
-                .getStringSet(
-                    "listaEquipamentos",
-                    mutableSetOf(" ")
-                )
-        )
+
 
     }
 
-    suspend fun getEquipsFromDB(plant: String): MutableSet<String> {//adcionar objeto funcionario linkando as áreas dele getEquipsFromDB(empresa : String){
-        println("entrou aq")
+    suspend fun getEquipsFromDB(plant: String): MutableSet<String> {//TODO adcionar objeto funcionario linkando as áreas dele getEquipsFromDB(empresa : String){
+
         val request = DynamoAws().getItem(
             "instalacoes2-dev",
             "empresa",
             keyVal = plant,
             "Equipamentos"
         )
-        val requestreturn = request.toString().subSequence(10, request.toString().length - 2).split(", ")
-            .toMutableSet() //Transform the result and returns "Plant_Local_Equipment"
-        println(requestreturn)
+        val requestreturn =
+            request.toString().subSequence(10, request.toString().length - 2).split(", ")
+                .toMutableSet() //Transform the result and returns a set of "Plant_Local_Equipment"
+
         return requestreturn
 
     }
 
-    fun plantCheck(plant: String) {
-        if (plant == "Selecione uma Instalação" || plant == " ") {
+    //att
+    fun plantAtt(plant: String) {
+        if (plant == "Selecione uma Instalação" || plant == " ") { //0 selection check
             resetLocal()
-        } else {
-            val listLocals = ArrayList<String>(0)
-
-            equips!!.forEach { equip ->
-                if (plant == equip.split("_")[0]) {
-                    listLocals.add(equip.split("_")[1])
-                }
-            }
-            arrayAdapterLocal =
-                ArrayAdapter(
-                    context,
-                    android.R.layout.simple_spinner_item,
-                    listLocals.distinct().sorted()
-                )
-            resetEquip()
+            return
         }
+
+        val listLocals = ArrayList<String>(0)
+
+        equips!!.forEach { equip ->
+            if (plant.equals(equip.split("_")[0])) {
+                listLocals.add(equip.split("_")[1])
+            }
+        }
+        arrayAdapterLocal.clear()
+        arrayAdapterLocal.addAll(listLocals.distinct().sorted())
+        resetEquip()
     }
 
-    fun localCheck(plant: String, local: String) {
+
+    fun localAtt(plant: String, local: String) {
         if (local == " ") {
             resetEquip()
         } else {
@@ -100,20 +97,32 @@ class ListEquip(val context: Context) {
                 }
             }
 
-            arrayAdapterEquip =
-                ArrayAdapter(
-                    context,
-                    android.R.layout.simple_spinner_item,
-                    listEquips.distinct().sorted()
-                )
+            arrayAdapterEquip.clear()
+            arrayAdapterEquip.addAll(listEquips.distinct().sorted())
         }
     }
 
+    fun getNearEquips(plant: String, local: String): ArrayList<String> {
+        if (local == " ") {
+            return arrayListOf("Falha") //TODO Transformar em erro
+        }
+        val listEquips = ArrayList<String>(0)
+
+        equips!!.forEach { equip ->
+            if (plant == equip.split("_")[0] &&
+                local == equip.split("_")[1]
+            ) {
+                listEquips.add("${equip.split("_")[2]} - ${equip.split("_")[3]}")
+            }
+        }
+        return listEquips
+    }
 
     //Reseters
     fun resetPlant() {
         val listPlant: ArrayList<String> = ArrayList(0)
         listPlant.add(" Selecione uma Instalação")// to stay on top
+        println(equips)
         equips!!.forEach { equip ->
             listPlant.add(equip.split("_")[0])
         }

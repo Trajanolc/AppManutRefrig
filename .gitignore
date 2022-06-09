@@ -14,7 +14,7 @@
 .cxx
 local.properties
 /visualStudio
-*/HCredentials.kt
+app/src/main/java/com/example/myapplication/enum/HCredentials.kt
 
 #amplify-do-not-edit-begin
 amplify/\#current-cloud-backend
