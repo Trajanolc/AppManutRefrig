@@ -155,7 +155,7 @@ data class Order(
         listImg.sendS3bucket(local, imgKeysBefore, imgKeysAfter)
 
         CoroutineScope(MainScope().coroutineContext).async {
-            DynamoAws().putOrder(this@Order, "ordemServico", context)
+            DynamoAws().putOrder(this@Order, context)
             replicateOrder()
         }
 
@@ -191,7 +191,7 @@ data class Order(
                         this@Order.equipment = arrayEquipsReplicate[i]
                         this@Order.id = (Integer.parseInt(this@Order.id) + i + 1).toString() //Add 1 in ID
 
-                        DynamoAws().putOrder(this@Order, "ordemServico", context)
+                        DynamoAws().putOrder(this@Order, context)
                     }
                 }
             }

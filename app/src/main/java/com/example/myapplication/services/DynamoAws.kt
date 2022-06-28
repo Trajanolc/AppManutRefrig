@@ -17,10 +17,9 @@ class DynamoAws {
 
     suspend fun putOrder(
         Order: Order,
-        table: String,
         context: Context
     ) {
-
+        val table = "ordemServico"
         val itemValues = mutableMapOf<String, AttributeValue>()
 
         // Add all content to the table.

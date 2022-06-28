@@ -47,7 +47,7 @@ class ListEquip(val context: Context) {
 
     }
 
-    suspend fun getEquipsFromDB(plant: String): MutableSet<String> {//TODO adcionar objeto funcionario linkando as áreas dele getEquipsFromDB(empresa : String){
+    suspend fun getEquipsFromDB(plant: String): MutableSet<String> {
 
         val request = DynamoAws().getItem(
             "instalacoes2-dev",

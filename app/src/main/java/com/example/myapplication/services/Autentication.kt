@@ -13,10 +13,10 @@ import com.auth0.android.result.UserProfile
 import com.example.myapplication.R
 import com.example.myapplication.entities.ListEquip
 import com.example.myapplication.enum.HCredentials
+import com.example.myapplication.enum.Debugging
 import kotlinx.coroutines.*
 
 class Autentication (val context : Context){
-    val emteste = true
     var account = Auth0(
         HCredentials.AUTH_CLIENT_ID.cred,
         HCredentials.AUTH_DOMAIN.cred
@@ -28,20 +28,15 @@ class Autentication (val context : Context){
 
     suspend fun login(){
 
-        if (emteste){
+        if (Debugging.LOGIN.B){
             context.getSharedPreferences("login", AppCompatActivity.MODE_PRIVATE).edit().clear()
                 .putString("login","Trajano").apply()
+            runBlocking {
+
+                listEquip.organizeEquips(arrayListOf("Equatorial","Agropalma"))
+            }
         } else {
             loginWithBrowser(account)
-        }
-        runBlocking {
-            val profile = context.getSharedPreferences("login", AppCompatActivity.MODE_PRIVATE).getString("login"," ")
-            when(profile){ //TODO change to a call in DB later
-                "geroinildo", "elias", "thalisson" -> listEquip.organizeEquips(arrayListOf("Equatorial"))
-                "Trajano" -> listEquip.organizeEquips(arrayListOf("Equatorial","Agropalma"))
-                "" -> listEquip.organizeEquips(arrayListOf("Equatorial","Agropalma"))
-            }
-
         }
     }
 
@@ -64,7 +59,7 @@ class Autentication (val context : Context){
     }
 
     fun loginOut(){
-        if(cachedUserProfile == null){
+        if(context.getSharedPreferences("login", AppCompatActivity.MODE_PRIVATE).getString("login","") == ""){
             CoroutineScope(MainScope().coroutineContext).async {
                 Autentication(context).login()
             }
@@ -113,6 +108,16 @@ class Autentication (val context : Context){
                                     AppCompatActivity.MODE_PRIVATE
                                 )
                                 login.edit().clear().putString("login",profile.nickname).apply()
+
+                                runBlocking{
+                                    val plants = DynamoAws().getItem("Usuarios","email",profile.name!!,"empresas")
+                                    val plantsStrings = plants.toString().substring(10,plants.toString().length - 2).split(", ")
+                                    val arrayOfPlants : ArrayList<String> = arrayListOf()
+                                    plantsStrings.forEach { plant ->
+                                        arrayOfPlants.add(plant)
+                                    }
+                                    listEquip.organizeEquips(arrayOfPlants)
+                                }
 
 
                                 Toast.makeText(context,"Bem vindo, ${profile.nickname}!",
