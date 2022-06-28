@@ -370,6 +370,49 @@
 
                     </LinearLayout>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    tools:layout_editor_absoluteX="1dp"
+                    tools:layout_editor_absoluteY="1dp"
+                    android:layout_marginHorizontal="5dp"
+                    android:layout_marginTop="5dp"
+                    android:visibility="gone"
+                    android:id="@+id/recargaGasLayout"
+                    tools:ignore="MissingConstraints">
+                    <TextView
+                        android:id="@+id/txtQntRecargaGas"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Quantidade recarregada:"
+                        android:layout_gravity="start"
+                        android:textColor="#ffffff"
+                        android:textSize="18sp"
+                        android:padding="7dp"/>
+
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/txtInputGasKG"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:inputType="numberDecimal"
+                        android:background="@color/white"
+                        android:layout_marginVertical="3dp"
+                        android:textAlignment="textEnd"
+                        android:layout_weight="1" />
+                    <TextView
+                        android:id="@+id/txtKG"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0"
+                        android:text="KG"
+                        android:layout_gravity="end"
+                        android:textColor="#ffffff"
+                        android:textSize="18sp"
+                        android:padding="7dp"/>
+
+                </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"

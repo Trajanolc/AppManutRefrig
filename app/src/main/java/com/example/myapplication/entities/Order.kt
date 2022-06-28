@@ -37,6 +37,8 @@ data class Order(
     private var imgKeysBefore: ArrayList<String> = ArrayList(0)
     private var imgKeysAfter: ArrayList<String> = ArrayList(0)
 
+    var gasKG: String = "0.0"
+
     fun getTypeManut(): ArrayList<String> {
         return typeManut
     }
@@ -105,6 +107,15 @@ data class Order(
         if (fusivel) typeSwap.add("Troca de Fusível")
         if (capacit) typeSwap.add("Troca de Capacitor")
         if (rele) typeSwap.add("Troca de Relé")
+    }
+
+    fun setNumericInfo(
+        gas: Boolean,
+        gasKGInput: String
+    ) {
+        if (gas) {
+            gasKG = gasKGInput
+        }
     }
 
     //BlankChecks
@@ -189,7 +200,8 @@ data class Order(
                 checkedEquipsReplicate.forEachIndexed { i, equip ->
                     if (equip) {
                         this@Order.equipment = arrayEquipsReplicate[i]
-                        this@Order.id = (Integer.parseInt(this@Order.id) + i + 1).toString() //Add 1 in ID
+                        this@Order.id =
+                            (Integer.parseInt(this@Order.id) + i + 1).toString() //Add 1 in ID
 
                         DynamoAws().putOrder(this@Order, context)
                     }

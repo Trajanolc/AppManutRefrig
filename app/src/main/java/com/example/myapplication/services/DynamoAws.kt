@@ -34,6 +34,8 @@ class DynamoAws {
         itemValues["OBS"] = AttributeValue.S(Order.obs)
         itemValues["FuncionarioID"] = AttributeValue.S(Order.employeeId!!)
         itemValues["DataFim"] = AttributeValue.S(Order.dateEnd)
+        itemValues["gas_KG"] = AttributeValue.N(Order.gasKG)
+
         if (Order.getImgKeysBefore().isNotEmpty()) itemValues["fotosAntes"] =
             AttributeValue.Ss(Order.getImgKeysBefore())
         if (Order.getImgKeysAfter().isNotEmpty()) itemValues["fotosDepois"] =

@@ -39,6 +39,7 @@ import com.example.myapplication.databinding.InsertFormBinding
 import com.example.myapplication.entities.ListEquip
 import com.example.myapplication.entities.Order
 import com.example.myapplication.enum.Period
+import com.example.myapplication.services.DecimalDigitsInputFilter
 import id.zelory.compressor.Compressor
 import id.zelory.compressor.constraint.destination
 import id.zelory.compressor.constraint.format
@@ -77,6 +78,8 @@ class InsertForm : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.txtInputGasKG.filters = arrayOf(DecimalDigitsInputFilter(2,3))
 
         val ListEquip = ListEquip(requireContext())
         ListEquip.resetPlant()
@@ -121,7 +124,9 @@ class InsertForm : Fragment() {
         }
 
 
-
+        binding.switchRecargaDeGas.setOnCheckedChangeListener { _, isChecked ->
+            binding.recargaGasLayout.visibility = if (isChecked) View.VISIBLE else View.GONE
+        }
 
 
 
@@ -189,6 +194,11 @@ class InsertForm : Fragment() {
                 binding.switchFusivel.isChecked,
                 binding.switchCapacitor.isChecked,
                 binding.switchRele.isChecked
+            )
+
+            order.setNumericInfo(
+                binding.switchRecargaDeGas.isChecked,
+                binding.txtInputGasKG.text.toString()
             )
 
             //Checks
