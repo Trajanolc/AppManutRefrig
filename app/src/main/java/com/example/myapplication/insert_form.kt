@@ -96,6 +96,7 @@ class InsertForm : Fragment() {
                 id: Long
             ) {
                 ListEquip.plantAtt(binding.instalacao.selectedItem.toString())
+
                 //binding.local.adapter = ListEquip.arrayAdapterLocal
             }
 

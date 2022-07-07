@@ -46,7 +46,7 @@ class ListImg(val context: Context) {
             "img", ActivityResultContracts.GetMultipleContents()
         ) { uris ->
             if(uris.isEmpty()) return@register
-            if (period == Period.BEFORE) {
+            if (period.equals(Period.BEFORE)) {
                 listBefore.clear()
                 listBefore.addAll(uris)
             } else {
@@ -63,12 +63,12 @@ class ListImg(val context: Context) {
 
     fun compress() {
         //for reusing propouses
-
+        var i = 1
         listOf(listAfter, listBefore).forEach { list ->
 
             //Decode uri
             val listTemp = ArrayList<Uri>(0)
-            listBefore.forEach { uri ->
+            list.forEach { uri ->
                 val bitmap = if (Build.VERSION.SDK_INT < 28) {
                     MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
                 } else {
@@ -105,12 +105,22 @@ class ListImg(val context: Context) {
                         quality(100)
                         format(Bitmap.CompressFormat.JPEG)
                         destination(outputFile)
-                        listTemp.add(Uri.fromFile(outputFile))
+                        Uri.fromFile(outputFile)
                     }
+                    listTemp.add(Uri.fromFile(outputFile))
                 }
             }
-            list.clear()
-            list.addAll(listTemp)
+            if(i.equals(1)) {
+                this.listAfter.clear()
+                this.listAfter.addAll(listTemp)
+            }
+            else {
+                this.listBefore.clear()
+                this.listBefore.addAll(listTemp)
+            }
+            i++
+            listTemp.clear()
+
         }
     }
 

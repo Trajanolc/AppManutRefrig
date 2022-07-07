@@ -33,7 +33,7 @@ class DynamoAws {
         itemValues["tipoTroca"] = AttributeValue.Ss(Order.getTypeSwap())
         itemValues["OBS"] = AttributeValue.S(Order.obs)
         itemValues["FuncionarioID"] = AttributeValue.S(Order.employeeId!!)
-        itemValues["DataFim"] = AttributeValue.S(Order.dateEnd)
+        itemValues["DataFim"] = AttributeValue.N(Order.dateEnd)
         itemValues["gas_KG"] = AttributeValue.N(Order.gasKG)
 
         if (Order.getImgKeysBefore().isNotEmpty()) itemValues["fotosAntes"] =

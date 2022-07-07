@@ -79,7 +79,6 @@ class ListEquip(val context: Context) {
         }
         arrayAdapterLocal.clear()
         arrayAdapterLocal.addAll(listLocals.distinct().sorted())
-        resetEquip()
     }
 
 
