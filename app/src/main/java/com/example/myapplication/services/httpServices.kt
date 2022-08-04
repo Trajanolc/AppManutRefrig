@@ -27,18 +27,23 @@ class httpServices {
             var orderDTOList : List<OrderDTO> = listOf<OrderDTO>()
 
             val request = Request.Builder()
-                .url("${HCredentials.API_ORDER_URL}/orders/month/matheus")
+                .url("${HCredentials.API_ORDER_URL.cred}/orders/latest/$employee")
                 .build()
             val countDownLatch = CountDownLatch(1)
             client.newCall(request).enqueue(object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
                     e.printStackTrace()
                     countDownLatch.countDown();
+
                 }
 
                 override fun onResponse(call: Call, response: Response) {
                     response.use {
-                        if (!response.isSuccessful) throw IOException("Unexpected code $response")
+                        if (!response.isSuccessful) {
+                            countDownLatch.countDown();
+                            throw IOException("Unexpected code $response")
+                        }
+
 
                         orderDTOList = jsonAdapter.fromJson(response.body!!.source())!!
                         countDownLatch.countDown();
@@ -47,7 +52,6 @@ class httpServices {
                 }
             })
             countDownLatch.await()
-
             if (orderDTOList.equals(arrayListOf<OrderDTO>())) throw IOException("Nothing found")
 
             return orderDTOList
