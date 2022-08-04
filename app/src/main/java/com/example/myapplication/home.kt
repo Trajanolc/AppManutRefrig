@@ -8,15 +8,13 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import aws.sdk.kotlin.runtime.auth.credentials.*
-import aws.sdk.kotlin.runtime.config.profile.loadActiveAwsProfile
-import aws.sdk.kotlin.services.dynamodb.DynamoDbClient
-import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
-import aws.sdk.kotlin.services.dynamodb.model.AttributeValue.*
-import aws.sdk.kotlin.services.dynamodb.model.GetItemRequest
 import com.example.myapplication.databinding.HomeBinding
-import kotlinx.coroutines.runBlocking
-import com.auth0.android.result.UserProfile
+import com.example.myapplication.adpters.HomeListAdapter
+import com.example.myapplication.entities.OrderDTO
+import com.example.myapplication.services.httpServices
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.async
 
 
 /**
@@ -44,53 +42,38 @@ class Home : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val login = requireActivity().getSharedPreferences("login", AppCompatActivity.MODE_PRIVATE).getString("login","")
 
         binding.addOS.setOnClickListener {
-            val login = requireActivity().getSharedPreferences("login", AppCompatActivity.MODE_PRIVATE)
-            println(login.getString("login",""))
-            if(login.getString("login","") != "") {
+            if(login != "") {
                 findNavController().navigate(R.id.action_FirstFragment_to_insert_form)
             }
                 else {
                 Toast.makeText(requireContext(), "Por favor, faça o login antes", Toast.LENGTH_SHORT).show()
             }
-
-
-
-
-
-
         }
-    }
-
-    suspend fun getSpecificItem(tableNameVal: String, keyName: String, keyVal: String,coluna: String):AttributeValue? {
-
-        val keyToGet = mutableMapOf<String, AttributeValue>()
-        var retorno : AttributeValue? = null
-        keyToGet[keyName] = AttributeValue.S(keyVal)
-        val request = GetItemRequest {
-            tableName = tableNameVal
-            key = keyToGet
-        }
+        val recycerview = binding.recyclerView
+        recycerview.visibility = View.GONE
+        val orderList = arrayListOf<OrderDTO>()
+        var oAdapter = HomeListAdapter(orderList)
+        recycerview.adapter = oAdapter
 
 
-        DynamoDbClient { region="us-east-2"
-        credentialsProvider=StaticCredentialsProvider(Credentials("AKIAXJ6IWE3BPJLVFANI","MFr8G6u2JsoYzPLxtSjt3bgE2lVL4qKoZ0NBwOpT"))}.use { ddb ->
+        CoroutineScope(MainScope().coroutineContext).async {
+            if (login != "") {
+                orderList.clear()
+                orderList.addAll(httpServices.getEmployeeOrder(login!!))
 
-                val returnedItem = ddb.getItem(request)
-                val numbersMap = returnedItem.item
-
-                numbersMap?.forEach { key1 ->
-                    if(key1.key == coluna) {
-                        retorno = key1.value
-                    }
+                if(orderList.isNotEmpty()) {
+                    oAdapter.notifyItemMoved(0, orderList.size - 1)
+                    recycerview.visibility = View.VISIBLE
                 }
-
-
+            }
 
         }
-    return retorno
+
     }
+
 
 
     override fun onDestroyView() {

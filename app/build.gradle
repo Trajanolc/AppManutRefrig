@@ -66,10 +66,11 @@ dependencies {
     implementation("aws.sdk.kotlin:s3:0.14.4-beta"){
         exclude group: "xmlpull", module: "xmlpull"
     }
-    implementation("com.auth0.android:auth0:2.+")
+    implementation("com.auth0.android:auth0:2.7.0")
 
     implementation('id.zelory:compressor:3.0.1')
 
+    implementation("com.squareup.moshi:moshi-kotlin:1.13.0")
 
 
 }

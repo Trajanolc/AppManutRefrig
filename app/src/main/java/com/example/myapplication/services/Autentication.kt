@@ -30,7 +30,7 @@ class Autentication (val context : Context){
 
         if (Debugging.LOGIN.B){
             context.getSharedPreferences("login", AppCompatActivity.MODE_PRIVATE).edit().clear()
-                .putString("login","Trajano").apply()
+                .putString("login","elias").apply()
             runBlocking {
 
                 listEquip.organizeEquips(arrayListOf("Equatorial","Agropalma"))
