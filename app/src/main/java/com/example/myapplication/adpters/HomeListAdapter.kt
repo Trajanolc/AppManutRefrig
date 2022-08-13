@@ -6,11 +6,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
-import com.example.myapplication.entities.Order
-import com.example.myapplication.entities.OrderDTO
+import com.example.myapplication.entities.SimplifiedOrderDTO
 import com.example.myapplication.services.CalendarServices
 
-class HomeListAdapter (private val orderArray: List<OrderDTO>) :
+class HomeListAdapter (private val simplifiedOrderArray: List<SimplifiedOrderDTO>) :
     RecyclerView.Adapter<HomeListAdapter.ViewHolder>() {
 
 
@@ -41,12 +40,12 @@ class HomeListAdapter (private val orderArray: List<OrderDTO>) :
 
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
-        viewHolder.unitID.text = orderArray[position].ordemID.toString()
-        viewHolder.unitEquip.text = "${orderArray[position].local} - ${orderArray[position].equipamento}"
-        viewHolder.unitDate.text = CalendarServices.milisToDate(orderArray[position].dataFim)
+        viewHolder.unitID.text = simplifiedOrderArray[position].ordemID.toString()
+        viewHolder.unitEquip.text = "${simplifiedOrderArray[position].local} - ${simplifiedOrderArray[position].equipamento}"
+        viewHolder.unitDate.text = CalendarServices.milisToDate(simplifiedOrderArray[position].dataFim)
     }
 
     // Return the size of your dataset (invoked by the layout manager)
-    override fun getItemCount() = orderArray.size
+    override fun getItemCount() = simplifiedOrderArray.size
 
 }

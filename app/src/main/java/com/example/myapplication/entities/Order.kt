@@ -2,22 +2,26 @@ package com.example.myapplication.entities
 
 import android.content.Context
 import android.content.DialogInterface
+import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
+import com.example.myapplication.InsertForm
 import com.example.myapplication.R
+import com.example.myapplication.exceptions.OrderException
 import com.example.myapplication.services.DynamoAws
+import com.example.myapplication.services.httpServices
+import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
 
 data class Order(
-    val pat: String,
+    var pat: String,
     val local: String,
     val plant: String,
     var equipment: String,
@@ -25,6 +29,9 @@ data class Order(
     val listImg: ListImg,
     val context: Context
 ) {
+    init {
+        if (equipment.isBlank()) throw OrderException("Por favor, selecione o equipamento.")
+    }
 
     internal val employeeId = context.getSharedPreferences("login", AppCompatActivity.MODE_PRIVATE)
         .getString("login", "")
@@ -44,7 +51,7 @@ data class Order(
     }
 
     fun getTypeServices(): ArrayList<String> {
-        return if (typeServices.isNotEmpty()) typeServices else arrayListOf(" ")
+        return if (typeServices.isNotEmpty()) typeServices else arrayListOf("Troca de componentes")
     }
 
     fun getTypeSwap(): ArrayList<String> {
@@ -66,6 +73,7 @@ data class Order(
         if (sensitiva) typeManut.add("Manutenção Sensitiva")
         if (preventiva) typeManut.add("Manutenção Preventiva")
         if (corretiva) typeManut.add("Manutenção Corretiva")
+        if (typeManut.isEmpty()) throw OrderException("Por favor, selecione ao menos um tipo de manutenção.")
     }
 
     fun setTypeServices(
@@ -107,6 +115,8 @@ data class Order(
         if (fusivel) typeSwap.add("Troca de Fusível")
         if (capacit) typeSwap.add("Troca de Capacitor")
         if (rele) typeSwap.add("Troca de Relé")
+
+        if (typeSwap.isEmpty() && typeManut.isEmpty()) throw OrderException("Por favor, selecione ao menos um tipo de serviço ou troca de material.")
     }
 
     fun setNumericInfo(
@@ -118,22 +128,6 @@ data class Order(
         }
     }
 
-    //BlankChecks
-    fun equipamentBlank(): Boolean {
-        return equipment.isBlank() || equipment == " "
-    }
-
-    fun blankManut(): Boolean {
-        return typeManut.isEmpty()
-    }
-
-    fun blankServices(): Boolean {
-        return typeSwap.isEmpty()
-    }
-
-    fun blankSwap(): Boolean {
-        return typeServices.isEmpty()
-    }
 
     fun generateImgKeys() {
         var i = 0
@@ -160,19 +154,38 @@ data class Order(
 
     }
 
-    fun insert(fragment: Fragment) {
+    //Checks if has images or the user confirms there's no images to attach, otherwise cancel the insert.
+    fun checkImagesAndInsert(fragment: InsertForm) {
+
+         if (listImg.listsIsNotBlank()) insert(fragment) else checkImages(fragment)
+
+    }
+
+    private fun checkImages(fragment: InsertForm) {
+        val builder = android.app.AlertDialog.Builder(context)
+        builder.setTitle("Sem imagens")
+        builder.setMessage("Não existem imagens anexas, deseja continuar?")
+        builder.setPositiveButton("Não") { _, _ ->
+            fragment.goUp("Envio cancelado.")
+        }
+        builder.setNegativeButton("Sim") { _, _ -> insert(fragment) }
+        builder.show()
+    }
+
+
+    private fun insert(fragment: InsertForm) {
+
+
         listImg.compress()
         generateImgKeys()
         listImg.sendS3bucket(local, imgKeysBefore, imgKeysAfter)
+        fragment.goHome()
 
-        CoroutineScope(MainScope().coroutineContext).async {
-            DynamoAws().putOrder(this@Order, context)
-            replicateOrder()
+        CoroutineScope(MainScope().coroutineContext).launch {
+            httpServices.addOrder(this@Order.serialize())
         }
 
-
-        fragment.findNavController().navigate(R.id.action_insert_form_to_FirstFragment)
-
+        replicateOrder()
 
     }
 
@@ -184,8 +197,8 @@ data class Order(
 
 
         val builder = AlertDialog.Builder(context)
-        val listener = DialogInterface.OnMultiChoiceClickListener { _, i, boolean ->
-            checkedEquipsReplicate[i] = boolean
+        val listener = DialogInterface.OnMultiChoiceClickListener { _, i, isChecked ->
+            checkedEquipsReplicate[i] = isChecked
         }
 
         builder.setTitle("Deseja replicar para outra máquina no mesmo local?")
@@ -202,15 +215,56 @@ data class Order(
                         this@Order.equipment = arrayEquipsReplicate[i]
                         this@Order.id =
                             (Integer.parseInt(this@Order.id) + i + 1).toString() //Add 1 in ID
-
-                        DynamoAws().putOrder(this@Order, context)
+                        replication()
                     }
                 }
             }
         }
         builder.setNegativeButton("Não Replicar") { _, _ -> }
         builder.show()
-
-
     }
+
+
+    fun replication(){
+
+        val textInputLayout = TextInputLayout(context)
+
+        val editText = EditText(context)
+        editText.text.insert(0,"PAT")
+        editText.paddingLeft.plus(20)
+        editText.paddingRight.plus(20)
+
+
+        val inputBuilder = AlertDialog.Builder(context)
+        inputBuilder.setTitle("Replicação")
+        inputBuilder.setMessage("Insira a PAT para o equipamento $local - $equipment")
+        inputBuilder.setView(editText)
+        inputBuilder.setPositiveButton("Ok") {_,_ ->
+            this@Order.pat = editText.text.toString()
+            httpServices.addOrder(this@Order.serialize())
+        }
+        inputBuilder.show()
+        editText.requestFocus()
+    }
+
+    fun serialize():OrderDTO{
+        return OrderDTO(
+            id,
+            dateEnd,
+            equipment,
+            getImgKeysBefore(),
+            getImgKeysAfter(),
+            employeeId!!,
+            gasKG,
+            plant,
+            local,
+            obs,
+            pat,
+            getTypeServices(),
+            getTypeManut(),
+            getTypeSwap()
+        )
+    }
+
+
 }

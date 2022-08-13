@@ -37,8 +37,8 @@ class ListImg(val context: Context) {
         return listAfter
     }
 
-    fun listsBlank(): Boolean {
-        return listAfter.isEmpty() && listBefore.isEmpty()
+    fun listsIsNotBlank(): Boolean {
+        return !(listAfter.isEmpty() && listBefore.isEmpty())
     }
 
     fun addImgs(registry: ActivityResultRegistry, period: Period, img: ImageView) {

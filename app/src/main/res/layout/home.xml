@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:background="#5777AB"
     tools:context=".Home">
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addOS"
         android:layout_width="wrap_content"
@@ -13,346 +14,120 @@
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="@dimen/fab_margin"
         android:layout_marginBottom="16dp"
-        app:srcCompat="@android:drawable/ic_input_add"
-        tools:ignore="MissingConstraints"
         android:contentDescription="Adcionar nova ordem de manutenção"
-        />
+        app:srcCompat="@android:drawable/ic_input_add"
+        tools:ignore="MissingConstraints" />
 
-        <LinearLayout
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#5777AB"
+        android:gravity="start"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="1dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@drawable/layout_topbf"
+            android:padding="10dp"
+            android:text="Lembre-se de realizar o serviço com segurança!"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="18sp" />
+
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:gravity="start"
-            android:background="#5777AB"
-            tools:layout_editor_absoluteX="1dp"
-            tools:layout_editor_absoluteY="1dp">
+            android:layout_marginBottom="70dp"
+            android:gravity="center">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/layout_topbf"
-                android:padding="10dp"
-                android:layout_margin="10dp"
-                android:text="Lembre-se de realizar o serviço com segurança!"
-                android:textAlignment="center"
-                android:textColor="#000000"
-                android:textSize="18sp" />
-            <FrameLayout
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/swipeRefresh"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:layout_marginBottom="70dp">
-                <ScrollView
+                android:translationZ="2dp">
+
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:translationZ="2dp">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        >
+                        android:background="@drawable/layout_bf"
+                        android:orientation="horizontal">
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
+                        <TextView
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:background="@drawable/layout_bf">
+                            android:layout_weight="0.5"
+                            android:paddingVertical="7dp"
+                            android:paddingLeft="20dp"
+                            android:text="ID"
+                            android:textAlignment="textStart"
+                            android:textColor="#ffffff"
+                            android:textSize="14sp" />
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="0.5"
-                                android:paddingVertical="7dp"
-                                android:paddingLeft="20dp"
-                                android:text="ID"
-                                android:textAlignment="textStart"
-                                android:textColor="#ffffff"
-                                android:textSize="14sp" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:paddingVertical="7dp"
-                                android:paddingHorizontal="5dp"
-                                android:text="Local"
-                                android:textAlignment="center"
-                                android:textColor="#ffffff"
-                                android:textSize="14sp" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="0.5"
-                                android:paddingVertical="7dp"
-                                android:paddingRight="20dp"
-                                android:text="Data"
-                                android:textAlignment="textEnd"
-                                android:textColor="#ffffff"
-                                android:textSize="14sp"
-                                />
-
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="match_parent"
+                        <TextView
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_marginVertical="7dp"
-                            android:paddingVertical="5dp"
-                            android:background="@drawable/layout_bf">
-                            <androidx.recyclerview.widget.RecyclerView
-                                android:id="@+id/recycler_view"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                app:layoutManager="LinearLayoutManager"/>
-                        </LinearLayout>
+                            android:layout_weight="1"
+                            android:paddingHorizontal="5dp"
+                            android:paddingVertical="7dp"
+                            android:text="Local"
+                            android:textAlignment="center"
+                            android:textColor="#ffffff"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:paddingVertical="7dp"
+                            android:paddingRight="20dp"
+                            android:text="Data"
+                            android:textAlignment="textEnd"
+                            android:textColor="#ffffff"
+                            android:textSize="14sp" />
+
                     </LinearLayout>
-                </ScrollView>
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:minHeight="73.5dp"
-                    android:minWidth="165dp"
-                    android:background="@drawable/mori"
-                    android:translationZ="1dp"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="7dp"
+                        android:background="@drawable/layout_bf"
+                        android:orientation="horizontal"
+                        android:paddingVertical="5dp">
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recycler_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:layoutManager="LinearLayoutManager" />
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/mori"
+                android:minWidth="165dp"
+                android:minHeight="73.5dp"
+                android:translationZ="1dp" />
 
 
-            </FrameLayout>
+        </FrameLayout>
 
-        </LinearLayout>
-
-
-
+    </LinearLayout>
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 
-
-
-<!--<LinearLayout-->
-<!--android:layout_width="match_parent"-->
-<!--android:layout_height="wrap_content"-->
-<!--android:orientation="horizontal"-->
-<!--android:layout_margin="3dp"-->
-<!--android:background="@drawable/layout_bf">-->
-
-<!--<TextView-->
-<!--    android:layout_width="wrap_content"-->
-<!--    android:layout_height="wrap_content"-->
-<!--    android:layout_margin="10dp"-->
-<!--    android:text="Preventiva: Bloco A - Diretoria - 01A"-->
-<!--    android:textColor="#ffffff"-->
-<!--    android:textSize="14sp" />-->
-
-<!--<View-->
-<!--    android:layout_width="0dp"-->
-<!--    android:layout_height="0dp"-->
-<!--    android:layout_weight="1" />-->
-
-<!--<ImageButton-->
-<!--    android:layout_width="wrap_content"-->
-<!--    android:layout_height="match_parent"-->
-<!--    android:layout_marginHorizontal="5dp"-->
-<!--    android:background="@drawable/layout_bf"-->
-<!--    android:src="@android:drawable/ic_menu_share" />-->
-
-<!--<ImageButton-->
-<!--    android:layout_width="wrap_content"-->
-<!--    android:layout_height="match_parent"-->
-<!--    android:layout_marginHorizontal="5dp"-->
-<!--    android:background="@drawable/layout_bf"-->
-<!--    android:src="@android:drawable/ic_menu_edit" />-->
-
-<!--<ImageButton-->
-<!--    android:layout_width="wrap_content"-->
-<!--    android:layout_height="match_parent"-->
-<!--    android:layout_gravity="end"-->
-<!--    android:background="@drawable/layout_bf"-->
-<!--    android:src="@android:drawable/ic_menu_delete" />-->
-
-
-
-<!--</LinearLayout>-->
-
-<!--<LinearLayout-->
-<!--android:layout_width="match_parent"-->
-<!--android:layout_height="wrap_content"-->
-<!--android:orientation="horizontal"-->
-<!--android:layout_margin="3dp"-->
-<!--android:background="@drawable/layout_bf">-->
-
-<!--<TextView-->
-<!--    android:layout_width="wrap_content"-->
-<!--    android:layout_height="wrap_content"-->
-<!--    android:layout_margin="10dp"-->
-<!--    android:text="Preventiva: Bloco E - Refeitorio - 01E"-->
-<!--    android:textColor="#ffffff"-->
-<!--    android:textSize="14sp" />-->
-
-<!--<View-->
-<!--    android:layout_width="0dp"-->
-<!--    android:layout_height="0dp"-->
-<!--    android:layout_weight="1" />-->
-
-<!--<ImageButton-->
-<!--    android:layout_width="wrap_content"-->
-<!--    android:layout_height="match_parent"-->
-<!--    android:layout_marginHorizontal="5dp"-->
-<!--    android:background="@drawable/layout_bf"-->
-<!--    android:src="@android:drawable/ic_menu_share" />-->
-
-<!--<ImageButton-->
-<!--    android:layout_width="wrap_content"-->
-<!--    android:layout_height="match_parent"-->
-<!--    android:layout_marginHorizontal="5dp"-->
-<!--    android:background="@drawable/layout_bf"-->
-<!--    android:src="@android:drawable/ic_menu_edit" />-->
-
-<!--<ImageButton-->
-<!--    android:layout_width="wrap_content"-->
-<!--    android:layout_height="match_parent"-->
-<!--    android:layout_gravity="end"-->
-<!--    android:background="@drawable/layout_bf"-->
-<!--    android:src="@android:drawable/ic_menu_delete" />-->
-
-
-
-<!--</LinearLayout>-->
-
-<!--<LinearLayout-->
-<!--android:layout_width="match_parent"-->
-<!--android:layout_height="wrap_content"-->
-<!--android:orientation="horizontal"-->
-<!--android:layout_margin="3dp"-->
-<!--android:background="@drawable/layout_bf">-->
-
-<!--<TextView-->
-<!--    android:layout_width="wrap_content"-->
-<!--    android:layout_height="wrap_content"-->
-<!--    android:layout_margin="10dp"-->
-<!--    android:text="Corretiva: BR - Atendimento - 01BR"-->
-<!--    android:textColor="#ffffff"-->
-<!--    android:textSize="14sp" />-->
-
-<!--<View-->
-<!--    android:layout_width="0dp"-->
-<!--    android:layout_height="0dp"-->
-<!--    android:layout_weight="1" />-->
-
-<!--<ImageButton-->
-<!--    android:layout_width="wrap_content"-->
-<!--    android:layout_height="match_parent"-->
-<!--    android:layout_marginHorizontal="5dp"-->
-<!--    android:background="@drawable/layout_bf"-->
-<!--    android:src="@android:drawable/ic_menu_share" />-->
-
-<!--<ImageButton-->
-<!--    android:layout_width="wrap_content"-->
-<!--    android:layout_height="match_parent"-->
-<!--    android:layout_marginHorizontal="5dp"-->
-<!--    android:background="@drawable/layout_bf"-->
-<!--    android:src="@android:drawable/ic_menu_edit" />-->
-
-<!--<ImageButton-->
-<!--    android:layout_width="wrap_content"-->
-<!--    android:layout_height="match_parent"-->
-<!--    android:layout_gravity="end"-->
-<!--    android:background="@drawable/layout_bf"-->
-<!--    android:src="@android:drawable/ic_menu_delete" />-->
-
-
-
-<!--</LinearLayout>-->
-
-<!--<LinearLayout-->
-<!--android:layout_width="match_parent"-->
-<!--android:layout_height="wrap_content"-->
-<!--android:orientation="horizontal"-->
-<!--android:layout_margin="3dp"-->
-<!--android:background="@drawable/layout_bf">-->
-
-<!--<TextView-->
-<!--    android:layout_width="wrap_content"-->
-<!--    android:layout_height="wrap_content"-->
-<!--    android:layout_margin="10dp"-->
-<!--    android:text="Corretiva: Guamá - Comando - 01JU"-->
-<!--    android:textColor="#ffffff"-->
-<!--    android:textSize="14sp" />-->
-
-<!--<View-->
-<!--    android:layout_width="0dp"-->
-<!--    android:layout_height="0dp"-->
-<!--    android:layout_weight="1" />-->
-
-<!--<ImageButton-->
-<!--    android:layout_width="wrap_content"-->
-<!--    android:layout_height="match_parent"-->
-<!--    android:layout_marginHorizontal="5dp"-->
-<!--    android:background="@drawable/layout_bf"-->
-<!--    android:src="@android:drawable/ic_menu_share" />-->
-
-<!--<ImageButton-->
-<!--    android:layout_width="wrap_content"-->
-<!--    android:layout_height="match_parent"-->
-<!--    android:layout_marginHorizontal="5dp"-->
-<!--    android:background="@drawable/layout_bf"-->
-<!--    android:src="@android:drawable/ic_menu_edit" />-->
-
-<!--<ImageButton-->
-<!--    android:layout_width="wrap_content"-->
-<!--    android:layout_height="match_parent"-->
-<!--    android:layout_gravity="end"-->
-<!--    android:background="@drawable/layout_bf"-->
-<!--    android:src="@android:drawable/ic_menu_delete" />-->
-
-
-
-<!--</LinearLayout>-->
-
-<!--<LinearLayout-->
-<!--android:layout_width="match_parent"-->
-<!--android:layout_height="wrap_content"-->
-<!--android:orientation="horizontal"-->
-<!--android:layout_margin="3dp"-->
-<!--android:background="@drawable/layout_bf">-->
-
-<!--<TextView-->
-<!--    android:layout_width="wrap_content"-->
-<!--    android:layout_height="wrap_content"-->
-<!--    android:layout_margin="10dp"-->
-<!--    android:text="Corretiva: Castanhal - Comando - 01TA"-->
-<!--    android:textColor="#ffffff"-->
-<!--    android:textSize="14sp" />-->
-
-<!--<View-->
-<!--    android:layout_width="0dp"-->
-<!--    android:layout_height="0dp"-->
-<!--    android:layout_weight="1" />-->
-
-<!--<ImageButton-->
-<!--    android:layout_width="wrap_content"-->
-<!--    android:layout_height="match_parent"-->
-<!--    android:layout_marginHorizontal="5dp"-->
-<!--    android:background="@drawable/layout_bf"-->
-<!--    android:src="@android:drawable/ic_menu_share" />-->
-
-<!--<ImageButton-->
-<!--    android:layout_width="wrap_content"-->
-<!--    android:layout_height="match_parent"-->
-<!--    android:layout_marginHorizontal="5dp"-->
-<!--    android:background="@drawable/layout_bf"-->
-<!--    android:src="@android:drawable/ic_menu_edit" />-->
-
-<!--<ImageButton-->
-<!--    android:layout_width="wrap_content"-->
-<!--    android:layout_height="match_parent"-->
-<!--    android:layout_gravity="end"-->
-<!--    android:background="@drawable/layout_bf"-->
-<!--    android:src="@android:drawable/ic_menu_delete" />-->
-
-
-
-<!--</LinearLayout>-->

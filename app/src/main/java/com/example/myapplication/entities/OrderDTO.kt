@@ -1,9 +1,23 @@
 package com.example.myapplication.entities
 
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.Serializable
 
-@JsonClass(generateAdapter = true)
-class OrderDTO(var ordemID: Int, var local: String, var equipamento: String, var dataFim: Long){
+@Serializable
+data class OrderDTO(val ordemID: String,
+                    val dataFim: String,
+                    val equipamento: String,
+                    val fotosAntes: ArrayList<String>,
+                    val fotosDepois: ArrayList<String>,
+                    val funcionarioID: String,
+                    val gas_KG: String,
+                    val instalacao: String,
+                    val local:String,
+                    val obs:String,
+                    val pat:String,
+                    val tipoServicos: ArrayList<String>,
+                    val tipoManut: ArrayList<String>,
+                    val tipoTroca: ArrayList<String>)
+{
 
 
 }
