@@ -6,6 +6,7 @@ import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import aws.sdk.kotlin.services.dynamodb.DynamoDbClient
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
+import com.example.myapplication.R
 import com.example.myapplication.services.DynamoAws
 
 class ListEquip(val context: Context) {
@@ -17,19 +18,17 @@ class ListEquip(val context: Context) {
 
     var arrayAdapterPlant: ArrayAdapter<String> = ArrayAdapter(
         context,
-        android.R.layout.simple_spinner_item
+        R.layout.spinner_layout
     )
     var arrayAdapterLocal: ArrayAdapter<String> = ArrayAdapter(
         context,
-        android.R.layout.simple_spinner_item
+        R.layout.spinner_layout
     )
     var arrayAdapterEquip: ArrayAdapter<String> = ArrayAdapter(
         context,
-        android.R.layout.simple_spinner_item
+        R.layout.spinner_layout
     )
 
-    //initializers
-    @SuppressLint("MutatingSharedPrefs")
     suspend fun organizeEquips(plants: ArrayList<String>) {
         context.getSharedPreferences("Equipamentos", AppCompatActivity.MODE_PRIVATE).edit()
             .remove("Equipamentos").apply()
@@ -47,7 +46,7 @@ class ListEquip(val context: Context) {
 
     }
 
-    suspend fun getEquipsFromDB(plant: String): MutableSet<String> {
+    private suspend fun getEquipsFromDB(plant: String): MutableSet<String> {
 
         val request = DynamoAws().getItem(
             "instalacoes2-dev",
@@ -65,7 +64,7 @@ class ListEquip(val context: Context) {
 
     //att
     fun plantAtt(plant: String) {
-        if (plant == "Selecione uma Instalação" || plant == " ") { //0 selection check
+        if (plant == "Selecione uma Instalação" || plant == "") { //0 selection check
             resetLocal()
             return
         }
@@ -78,12 +77,14 @@ class ListEquip(val context: Context) {
             }
         }
         arrayAdapterLocal.clear()
+        arrayAdapterLocal.add("")
         arrayAdapterLocal.addAll(listLocals.distinct().sorted())
+
     }
 
 
     fun localAtt(plant: String, local: String) {
-        if (local == " ") {
+        if (local == "") {
             resetEquip()
         } else {
             val listEquips = ArrayList<String>(0)
@@ -97,9 +98,43 @@ class ListEquip(val context: Context) {
             }
 
             arrayAdapterEquip.clear()
+            arrayAdapterEquip.add("")
             arrayAdapterEquip.addAll(listEquips.distinct().sorted())
+            arrayAdapterEquip.notifyDataSetChanged()
         }
     }
+
+
+
+    //Reseters
+    fun resetPlant() {
+        val listPlant: ArrayList<String> = ArrayList(0)
+        listPlant.add(" Selecione uma Instalação")// to stay on top
+        println(equips)
+        equips!!.forEach { equip ->
+            listPlant.add(equip.split("_")[0])
+        }
+        arrayAdapterPlant =
+            ArrayAdapter(
+                context,
+                R.layout.spinner_layout,
+                listPlant.distinct().sorted()
+            )
+        resetLocal()
+    }
+
+    private fun resetLocal() {
+        arrayAdapterLocal.clear()
+        arrayAdapterLocal.add("")
+        resetEquip()
+    }
+
+    private fun resetEquip() {
+        arrayAdapterEquip.clear()
+        arrayAdapterEquip.add("")
+    }
+
+
 
     fun getNearEquips(plant: String, local: String): ArrayList<String> {
         if (local == " ") {
@@ -116,34 +151,4 @@ class ListEquip(val context: Context) {
         }
         return listEquips
     }
-
-    //Reseters
-    fun resetPlant() {
-        val listPlant: ArrayList<String> = ArrayList(0)
-        listPlant.add(" Selecione uma Instalação")// to stay on top
-        println(equips)
-        equips!!.forEach { equip ->
-            listPlant.add(equip.split("_")[0])
-        }
-        arrayAdapterPlant =
-            ArrayAdapter(
-                context,
-                android.R.layout.simple_spinner_item,
-                listPlant.distinct().sorted()
-            )
-        resetLocal()
-    }
-
-    private fun resetLocal() {
-        arrayAdapterLocal.clear()
-        arrayAdapterLocal.add(" ")
-        resetEquip()
-    }
-
-    private fun resetEquip() {
-        arrayAdapterEquip.clear()
-        arrayAdapterEquip.add(" ")
-    }
-
-
 }

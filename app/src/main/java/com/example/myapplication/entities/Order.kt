@@ -68,11 +68,12 @@ data class Order(
 
 
     //Setters
-    fun setTypeManut(sensitiva: Boolean, preventiva: Boolean, corretiva: Boolean) {
+    fun setTypeManut(sensitiva: Boolean, preventiva: Boolean, corretiva: Boolean, subst: Boolean) {
         typeManut.clear()
         if (sensitiva) typeManut.add("Manutenção Sensitiva")
         if (preventiva) typeManut.add("Manutenção Preventiva")
         if (corretiva) typeManut.add("Manutenção Corretiva")
+        if (subst) typeManut.add("Substituição de Equipamento")
         if (typeManut.isEmpty()) throw OrderException("Por favor, selecione ao menos um tipo de manutenção.")
     }
 
@@ -103,7 +104,8 @@ data class Order(
         compressor: Boolean,
         fusivel: Boolean,
         capacit: Boolean,
-        rele: Boolean
+        contac: Boolean,
+        placaRecep: Boolean
     ) {
         if (sensorTemp) typeSwap.add("Troca de Sensor de Temperatura")
         if (sensorDegelo) typeSwap.add("Troca de Sensor de Degelo")
@@ -114,7 +116,8 @@ data class Order(
         if (compressor) typeSwap.add("Troca de Compressor")
         if (fusivel) typeSwap.add("Troca de Fusível")
         if (capacit) typeSwap.add("Troca de Capacitor")
-        if (rele) typeSwap.add("Troca de Relé")
+        if (contac) typeSwap.add("Troca de Contactora")
+        if (placaRecep) typeSwap.add("Troca de Placa Receptora")
 
         if (typeSwap.isEmpty() && typeManut.isEmpty()) throw OrderException("Por favor, selecione ao menos um tipo de serviço ou troca de material.")
     }

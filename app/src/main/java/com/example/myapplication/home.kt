@@ -77,8 +77,12 @@ class Home : Fragment() {
         recycerview.adapter = oAdapter
         CoroutineScope(MainScope().coroutineContext).async {
             if (login != "") {
+
+                val response = httpServices.getEmployeeOrder(login!!)
                 orderList.clear()
-                orderList.addAll(httpServices.getEmployeeOrder(login!!))
+                orderList.addAll(response.first)
+                binding.ordersCount.text="Ordens realizadas esse mês: ${response.second}"
+                binding.ordersCount.visibility = View.VISIBLE
 
                 if (orderList.isNotEmpty()) {
                     oAdapter.notifyItemMoved(0, orderList.size - 1)

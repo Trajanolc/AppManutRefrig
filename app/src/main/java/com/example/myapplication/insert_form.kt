@@ -48,12 +48,12 @@ class InsertForm : Fragment() {
 
         binding.txtInputGasKG.filters = arrayOf(DecimalDigitsInputFilter(2, 3))
 
-        val ListEquip = ListEquip(requireContext())
-        ListEquip.resetPlant()
+        val listEquip = ListEquip(requireContext())
+        listEquip.resetPlant()
 
-        binding.instalacao.adapter = ListEquip.arrayAdapterPlant
-        binding.local.adapter = ListEquip.arrayAdapterLocal
-        binding.equipamento.adapter = ListEquip.arrayAdapterEquip
+        binding.instalacao.adapter = listEquip.arrayAdapterPlant
+        binding.local.adapter = listEquip.arrayAdapterLocal
+        binding.equipamento.adapter = listEquip.arrayAdapterEquip
 
         binding.instalacao.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
@@ -62,13 +62,13 @@ class InsertForm : Fragment() {
                 position: Int,
                 id: Long
             ) {
-                ListEquip.plantAtt(binding.instalacao.selectedItem.toString())
-
-                //binding.local.adapter = ListEquip.arrayAdapterLocal
+                listEquip.plantAtt(binding.instalacao.selectedItem.toString())
+                binding.local.setSelection(0)
+                binding.equipamento.setSelection(0)
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
-                ListEquip.resetPlant()
+                listEquip.resetPlant()
             }
         }
 
@@ -79,14 +79,15 @@ class InsertForm : Fragment() {
                 position: Int,
                 id: Long
             ) {
-                ListEquip.localAtt(
+                listEquip.localAtt(
                     binding.instalacao.selectedItem.toString(),
                     binding.local.selectedItem.toString()
                 )
+                binding.equipamento.setSelection(0)
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
-                ListEquip.resetPlant()
+                listEquip.resetPlant()
             }
 
         }
@@ -103,9 +104,9 @@ class InsertForm : Fragment() {
         }
 
 
-        val ListImg = ListImg(requireContext())
+        val listImg = ListImg(requireContext())
         binding.imgAntes.setOnClickListener {
-            ListImg.addImgs(
+            listImg.addImgs(
                 requireActivity().activityResultRegistry,
                 Period.BEFORE,
                 binding.imgAntes
@@ -114,7 +115,7 @@ class InsertForm : Fragment() {
         }
 
         binding.imgDepois.setOnClickListener {
-            ListImg.addImgs(
+            listImg.addImgs(
                 requireActivity().activityResultRegistry,
                 Period.AFTER,
                 binding.imgDepois
@@ -133,14 +134,15 @@ class InsertForm : Fragment() {
                     binding.instalacao.selectedItem.toString(),
                     binding.equipamento.selectedItem.toString(),
                     binding.OBS.text.toString(),
-                    ListImg,
+                    listImg,
                     requireContext()
                 )
 
                 order.setTypeManut(
                     binding.switchSensitiva.isChecked,
                     binding.switchPreventiva.isChecked,
-                    binding.switchCorretiva.isChecked
+                    binding.switchCorretiva.isChecked,
+                    binding.switchSubst.isChecked
                 )
 
                 order.setTypeServices(
@@ -149,7 +151,7 @@ class InsertForm : Fragment() {
                     binding.switchLimpezaQuimico.isChecked,
                     binding.switchDreno.isChecked,
                     binding.switchControle.isChecked,
-                    binding.switchRele.isChecked
+                    binding.switchEletrica.isChecked
                 )
 
                 order.setTypeSwap(
@@ -162,7 +164,8 @@ class InsertForm : Fragment() {
                     binding.switchCompressor.isChecked,
                     binding.switchFusivel.isChecked,
                     binding.switchCapacitor.isChecked,
-                    binding.switchRele.isChecked
+                    binding.switchContac.isChecked,
+                    binding.switchPlacaRecep.isChecked
                 )
 
                 order.setNumericInfo(

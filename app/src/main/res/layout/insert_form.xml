@@ -6,33 +6,33 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#5777AB">
+    android:background="#5777AB"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="1dp"
-        tools:ignore="MissingConstraints">
+        tools:layout_editor_absoluteY="1dp">
 
-<!--        <Gerencia de manutenção-->
-<!--        <TextView-->
-<!--            android:id="@+id/txtTitulo"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="Gerência de manutenção Refrigeração"-->
+        <!--        <Gerencia de manutenção-->
+        <!--        <TextView-->
+        <!--            android:id="@+id/txtTitulo"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:text="Gerência de manutenção Refrigeração"-->
 
-<!--            android:textAlignment="center"-->
-<!--            android:textColor="#ffffff"-->
-<!--            android:textSize="24sp"-->
-<!--            android:padding="10dp"-->
-<!--            android:layout_marginBottom="5dp"-->
-<!--            android:background="@drawable/layout_bf"-->
-<!--            />-->
+        <!--            android:textAlignment="center"-->
+        <!--            android:textColor="#ffffff"-->
+        <!--            android:textSize="24sp"-->
+        <!--            android:padding="10dp"-->
+        <!--            android:layout_marginBottom="5dp"-->
+        <!--            android:background="@drawable/layout_bf"-->
+        <!--            />-->
 
-<!--        Insira as informações abaixo-->
+        <!--        Insira as informações abaixo-->
 
 
         <ScrollView
@@ -42,158 +42,162 @@
 
 
             <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            tools:layout_editor_absoluteX="1dp"
-            tools:layout_editor_absoluteY="1dp"
-            tools:ignore="MissingConstraints">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                tools:ignore="MissingConstraints"
+                tools:layout_editor_absoluteX="1dp"
+                tools:layout_editor_absoluteY="1dp">
 
 
-               <TextView
+                <TextView
                     android:id="@+id/txtSubTitulo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Insira as informações baixo"
                     android:layout_gravity="center"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/layout_bf"
+                    android:padding="10dp"
+                    android:text="Insira as informações baixo"
                     android:textAlignment="center"
                     android:textColor="#ffffff"
-                    android:textSize="18sp"
-                    android:layout_margin="5dp"
-                    android:padding="10dp"
-                    android:background="@drawable/layout_bf"/>
-       <!--        selecione a instalaçao-->
-              <LinearLayout
+                    android:textSize="18sp" />
+                <!--        selecione a instalaçao-->
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    tools:layout_editor_absoluteX="1dp"
-                    tools:layout_editor_absoluteY="1dp"
-                  android:layout_margin="5dp"
+                    android:layout_margin="5dp"
                     android:background="@drawable/layout_bf"
-                    tools:ignore="MissingConstraints">
+                    android:orientation="horizontal"
+                    tools:ignore="MissingConstraints"
+                    tools:layout_editor_absoluteX="1dp"
+                    tools:layout_editor_absoluteY="1dp">
+
                     <TextView
                         android:id="@+id/txtSelectInstalacao"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
 
-                        android:text="Selecione a instalação:"
                         android:layout_gravity="start"
+                        android:padding="7dp"
+                        android:text="Selecione a instalação:"
                         android:textColor="#ffffff"
-                        android:textSize="18sp"
-                        android:padding="7dp"/>
+
+                        android:textSize="18sp" />
 
                     <Spinner
                         android:id="@+id/instalacao"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
                         android:layout_gravity="start"
+                        android:layout_weight="1"
                         android:padding="10dp"
-                        android:spinnerMode="dropdown"
-
-
+                        android:background="@android:drawable/btn_dropdown"
                         />
 
                 </LinearLayout>
 
-        <!--        Selecione o local-->
-              <LinearLayout
+                <!--        Selecione o local-->
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    tools:layout_editor_absoluteX="1dp"
-                    tools:layout_editor_absoluteY="1dp"
                     android:layout_margin="5dp"
                     android:background="@drawable/layout_bf"
-                    tools:ignore="MissingConstraints">
+                    android:orientation="horizontal"
+                    tools:ignore="MissingConstraints"
+                    tools:layout_editor_absoluteX="1dp"
+                    tools:layout_editor_absoluteY="1dp">
+
                     <TextView
                         android:id="@+id/form2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Selecione o local:"
                         android:layout_gravity="start"
+                        android:padding="7dp"
+                        android:text="Selecione o local:"
                         android:textColor="#ffffff"
-                        android:textSize="18sp"
-                        android:padding="7dp"/>
+                        android:textSize="18sp" />
 
                     <Spinner
                         android:id="@+id/local"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
+                        android:layout_gravity="start"
                         android:layout_weight="1"
                         android:background="@android:drawable/btn_dropdown"
-                        android:layout_gravity="start"
                         android:padding="10dp"
-                        android:spinnerMode="dropdown"/>
+                        android:spinnerMode="dropdown" />
 
                 </LinearLayout>
 
-        <!--        Equipamento-->
-            <LinearLayout
+                <!--        Equipamento-->
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    tools:layout_editor_absoluteX="1dp"
-                    tools:layout_editor_absoluteY="1dp"
                     android:layout_margin="5dp"
                     android:background="@drawable/layout_bf"
-                    tools:ignore="MissingConstraints">
+                    android:orientation="horizontal"
+                    tools:ignore="MissingConstraints"
+                    tools:layout_editor_absoluteX="1dp"
+                    tools:layout_editor_absoluteY="1dp">
+
                     <TextView
                         android:id="@+id/form3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Equipamento:"
                         android:layout_gravity="start"
+                        android:padding="7dp"
+                        android:text="Equipamento:"
                         android:textColor="#ffffff"
-                        android:textSize="18sp"
-                        android:padding="7dp"/>
+                        android:textSize="18sp" />
 
                     <Spinner
                         android:id="@+id/equipamento"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
+                        android:layout_gravity="start"
                         android:layout_weight="1"
                         android:background="@android:drawable/btn_dropdown"
-                        android:layout_gravity="start"
                         android:padding="10dp"
-                        android:spinnerMode="dropdown"/>
+                        android:spinnerMode="dropdown" />
 
                 </LinearLayout>
 
-            <TextView
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="Insira o codigo do chamado (caso exista)"
-                    android:textColor="#000000"
-                    android:textSize="18sp"
-                    android:textAlignment="center"
                     android:layout_gravity="center"
                     android:layout_marginHorizontal="5dp"
-                    android:background="@drawable/layout_topbf"
                     android:layout_marginTop="10dp"
+                    android:background="@drawable/layout_topbf"
                     android:paddingBottom="10dp"
+                    android:text="Insira o codigo do chamado (caso exista)"
+                    android:textAlignment="center"
+                    android:textColor="#000000"
+                    android:textSize="18sp"
 
-            />
+                    />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="5dp"
+                    android:background="@drawable/layout_bf"
                     android:orientation="horizontal"
                     tools:layout_editor_absoluteX="1dp"
-                    tools:layout_editor_absoluteY="1dp"
-                    android:layout_marginHorizontal="5dp"
-                    android:background="@drawable/layout_bf">
+                    tools:layout_editor_absoluteY="1dp">
+
                     <EditText
                         android:id="@+id/chamado"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:ems="10"
                         android:layout_marginHorizontal="20dp"
                         android:layout_marginVertical="5dp"
-                        android:inputType="text"
-                        android:textColor="#000000"
                         android:background="#ffffff"
-                        android:text="PAT" />
+                        android:ems="10"
+                        android:inputType="text"
+                        android:text="PAT"
+                        android:textColor="#000000" />
 
 
                 </LinearLayout>
@@ -202,48 +206,50 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="Tipo de manutenção"
-                    android:textColor="#000000"
-                    android:textSize="18sp"
-                    android:textAlignment="center"
                     android:layout_gravity="center"
                     android:layout_marginHorizontal="5dp"
-                    android:background="@drawable/layout_topbf"
                     android:layout_marginTop="10dp"
+                    android:background="@drawable/layout_topbf"
                     android:paddingBottom="10dp"
+                    android:text="Tipo de manutenção"
+                    android:textAlignment="center"
+                    android:textColor="#000000"
+                    android:textSize="18sp"
 
                     />
-            <LinearLayout
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    tools:layout_editor_absoluteX="1dp"
-                    tools:layout_editor_absoluteY="1dp"
                     android:layout_marginHorizontal="5dp"
                     android:layout_marginTop="-5dp"
-                    android:paddingTop="-5dp"
                     android:background="@drawable/layout_bf"
-                    tools:ignore="MissingConstraints">
+                    android:orientation="vertical"
+                    android:paddingTop="-5dp"
+                    tools:ignore="MissingConstraints"
+                    tools:layout_editor_absoluteX="1dp"
+                    tools:layout_editor_absoluteY="1dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        tools:layout_editor_absoluteX="1dp"
-                        tools:layout_editor_absoluteY="1dp"
                         android:layout_marginHorizontal="5dp"
                         android:layout_marginTop="5dp"
-                        tools:ignore="MissingConstraints">
+                        android:orientation="horizontal"
+                        tools:ignore="MissingConstraints"
+                        tools:layout_editor_absoluteX="1dp"
+                        tools:layout_editor_absoluteY="1dp">
+
                         <TextView
                             android:id="@+id/txtSensitiva"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Manutenção sensitiva"
                             android:layout_gravity="start"
+                            android:layout_weight="1"
+                            android:padding="7dp"
+                            android:text="Manutenção sensitiva"
                             android:textColor="#ffffff"
-                            android:textSize="18sp"
-                            android:padding="7dp"/>
+                            android:textSize="18sp" />
 
                         <androidx.appcompat.widget.SwitchCompat
                             android:id="@+id/switchSensitiva"
@@ -257,21 +263,22 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        tools:layout_editor_absoluteX="1dp"
-                        tools:layout_editor_absoluteY="1dp"
                         android:layout_marginHorizontal="5dp"
-                        tools:ignore="MissingConstraints">
+                        android:orientation="horizontal"
+                        tools:ignore="MissingConstraints"
+                        tools:layout_editor_absoluteX="1dp"
+                        tools:layout_editor_absoluteY="1dp">
+
                         <TextView
                             android:id="@+id/txtPreventiva"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Manutenção preventiva"
                             android:layout_gravity="start"
+                            android:layout_weight="1"
+                            android:padding="7dp"
+                            android:text="Manutenção preventiva"
                             android:textColor="#ffffff"
-                            android:textSize="18sp"
-                            android:padding="7dp"/>
+                            android:textSize="18sp" />
 
                         <androidx.appcompat.widget.SwitchCompat
                             android:id="@+id/switchPreventiva"
@@ -284,22 +291,23 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        tools:layout_editor_absoluteX="1dp"
-                        tools:layout_editor_absoluteY="1dp"
                         android:layout_marginHorizontal="5dp"
+                        android:orientation="horizontal"
+                        tools:ignore="MissingConstraints"
+                        tools:layout_editor_absoluteX="1dp"
 
-                        tools:ignore="MissingConstraints">
+                        tools:layout_editor_absoluteY="1dp">
+
                         <TextView
                             android:id="@+id/txtCorretiva"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Manutenção corretiva"
                             android:layout_gravity="start"
+                            android:layout_weight="1"
+                            android:padding="7dp"
+                            android:text="Manutenção corretiva"
                             android:textColor="#ffffff"
-                            android:textSize="18sp"
-                            android:padding="7dp"/>
+                            android:textSize="18sp" />
 
                         <androidx.appcompat.widget.SwitchCompat
                             android:id="@+id/switchCorretiva"
@@ -309,58 +317,88 @@
 
                     </LinearLayout>
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="5dp"
+                        android:orientation="horizontal"
+                        tools:ignore="MissingConstraints"
+                        tools:layout_editor_absoluteX="1dp"
+
+                        tools:layout_editor_absoluteY="1dp">
+
+                        <TextView
+                            android:id="@+id/txtSubst"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="start"
+                            android:layout_weight="1"
+                            android:padding="7dp"
+                            android:text="Substituição de Equipamento"
+                            android:textColor="#ffffff"
+                            android:textSize="18sp" />
+
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/switchSubst"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1" />
+
+                    </LinearLayout>
+
                 </LinearLayout>
 
                 <!--      Seleção do serviços  -->
-            <TextView
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="Atividades"
-                    android:textColor="#000000"
-                    android:textSize="18sp"
-                    android:textAlignment="center"
                     android:layout_gravity="center"
                     android:layout_marginHorizontal="5dp"
-                    android:background="@drawable/layout_topbf"
                     android:layout_marginTop="10dp"
+                    android:background="@drawable/layout_topbf"
                     android:paddingBottom="10dp"
+                    android:text="Atividades"
+                    android:textAlignment="center"
+                    android:textColor="#000000"
+                    android:textSize="18sp"
 
                     />
 
-            <LinearLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    tools:layout_editor_absoluteX="1dp"
-                    tools:layout_editor_absoluteY="1dp"
                     android:layout_marginHorizontal="5dp"
                     android:layout_marginTop="-5dp"
-                    android:paddingTop="-5dp"
                     android:background="@drawable/layout_bf"
-                    tools:ignore="MissingConstraints">
+                    android:orientation="vertical"
+                    android:paddingTop="-5dp"
+                    tools:ignore="MissingConstraints"
+                    tools:layout_editor_absoluteX="1dp"
+                    tools:layout_editor_absoluteY="1dp">
 
-    <!--            Gas-->
+                    <!--            Gas-->
 
 
-                <LinearLayout
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        tools:layout_editor_absoluteX="1dp"
-                        tools:layout_editor_absoluteY="1dp"
                         android:layout_marginHorizontal="5dp"
                         android:layout_marginTop="5dp"
-                        tools:ignore="MissingConstraints">
+                        android:orientation="horizontal"
+                        tools:ignore="MissingConstraints"
+                        tools:layout_editor_absoluteX="1dp"
+                        tools:layout_editor_absoluteY="1dp">
+
                         <TextView
                             android:id="@+id/txtRecargaDeGas"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Recarga de gás"
                             android:layout_gravity="start"
+                            android:layout_weight="1"
+                            android:padding="7dp"
+                            android:text="Recarga de gás"
                             android:textColor="#ffffff"
-                            android:textSize="18sp"
-                            android:padding="7dp"/>
+                            android:textSize="18sp" />
 
                         <androidx.appcompat.widget.SwitchCompat
                             android:id="@+id/switchRecargaDeGas"
@@ -370,68 +408,71 @@
 
                     </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    tools:layout_editor_absoluteX="1dp"
-                    tools:layout_editor_absoluteY="1dp"
-                    android:layout_marginHorizontal="5dp"
-                    android:layout_marginTop="5dp"
-                    android:visibility="gone"
-                    android:id="@+id/recargaGasLayout"
-                    tools:ignore="MissingConstraints">
-                    <TextView
-                        android:id="@+id/txtQntRecargaGas"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:id="@+id/recargaGasLayout"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Quantidade recarregada:"
-                        android:layout_gravity="start"
-                        android:textColor="#ffffff"
-                        android:textSize="18sp"
-                        android:padding="7dp"/>
+                        android:layout_marginHorizontal="5dp"
+                        android:layout_marginTop="5dp"
+                        android:orientation="horizontal"
+                        android:visibility="gone"
+                        tools:ignore="MissingConstraints"
+                        tools:layout_editor_absoluteX="1dp"
+                        tools:layout_editor_absoluteY="1dp">
 
-                    <androidx.appcompat.widget.AppCompatEditText
-                        android:id="@+id/txtInputGasKG"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:inputType="numberDecimal"
-                        android:background="@color/white"
-                        android:layout_marginVertical="3dp"
-                        android:textAlignment="textEnd"
-                        android:layout_weight="1" />
-                    <TextView
-                        android:id="@+id/txtKG"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0"
-                        android:text="KG"
-                        android:layout_gravity="end"
-                        android:textColor="#ffffff"
-                        android:textSize="18sp"
-                        android:padding="7dp"/>
+                        <TextView
+                            android:id="@+id/txtQntRecargaGas"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="start"
+                            android:layout_weight="1"
+                            android:padding="7dp"
+                            android:text="Quantidade recarregada:"
+                            android:textColor="#ffffff"
+                            android:textSize="18sp" />
 
-                </LinearLayout>
+                        <androidx.appcompat.widget.AppCompatEditText
+                            android:id="@+id/txtInputGasKG"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginVertical="3dp"
+                            android:layout_weight="1"
+                            android:background="@color/white"
+                            android:inputType="numberDecimal"
+                            android:textAlignment="textEnd" />
+
+                        <TextView
+                            android:id="@+id/txtKG"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:layout_weight="0"
+                            android:padding="7dp"
+                            android:text="KG"
+                            android:textColor="#ffffff"
+                            android:textSize="18sp" />
+
+                    </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        tools:layout_editor_absoluteX="1dp"
-                        tools:layout_editor_absoluteY="1dp"
                         android:layout_marginHorizontal="5dp"
-                        tools:ignore="MissingConstraints">
+                        android:orientation="horizontal"
+                        tools:ignore="MissingConstraints"
+                        tools:layout_editor_absoluteX="1dp"
+                        tools:layout_editor_absoluteY="1dp">
+
                         <TextView
                             android:id="@+id/txtLimpezaFiltros"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Limpeza dos filtros"
                             android:layout_gravity="start"
+                            android:layout_weight="1"
+                            android:padding="7dp"
+                            android:text="Limpeza dos filtros"
                             android:textColor="#ffffff"
-                            android:textSize="18sp"
-                            android:padding="7dp"/>
+                            android:textSize="18sp" />
 
                         <androidx.appcompat.widget.SwitchCompat
                             android:id="@+id/switchLimpezaFiltros"
@@ -444,22 +485,23 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        tools:layout_editor_absoluteX="1dp"
-                        tools:layout_editor_absoluteY="1dp"
                         android:layout_marginHorizontal="5dp"
+                        android:orientation="horizontal"
+                        tools:ignore="MissingConstraints"
+                        tools:layout_editor_absoluteX="1dp"
 
-                        tools:ignore="MissingConstraints">
+                        tools:layout_editor_absoluteY="1dp">
+
                         <TextView
                             android:id="@+id/txtLimpezaQuimico"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Limpeza geral com químico"
                             android:layout_gravity="start"
+                            android:layout_weight="1"
+                            android:padding="7dp"
+                            android:text="Limpeza geral com químico"
                             android:textColor="#ffffff"
-                            android:textSize="18sp"
-                            android:padding="7dp"/>
+                            android:textSize="18sp" />
 
                         <androidx.appcompat.widget.SwitchCompat
                             android:id="@+id/switchLimpezaQuimico"
@@ -469,163 +511,190 @@
 
                     </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    tools:layout_editor_absoluteX="1dp"
-                    tools:layout_editor_absoluteY="1dp"
-                    android:layout_marginHorizontal="5dp"
-
-                    tools:ignore="MissingConstraints">
-                    <TextView
-                        android:id="@+id/txtDreno"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Limpeza e desobstrução de dreno"
-                        android:layout_gravity="start"
-                        android:textColor="#ffffff"
-                        android:textSize="18sp"
-                        android:padding="7dp"/>
+                        android:layout_marginHorizontal="5dp"
+                        android:orientation="horizontal"
+                        tools:ignore="MissingConstraints"
+                        tools:layout_editor_absoluteX="1dp"
 
-                    <androidx.appcompat.widget.SwitchCompat
-                        android:id="@+id/switchDreno"
-                        android:layout_width="wrap_content"
+                        tools:layout_editor_absoluteY="1dp">
+
+                        <TextView
+                            android:id="@+id/txtDreno"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="start"
+                            android:layout_weight="1"
+                            android:padding="7dp"
+                            android:text="Limpeza e desobstrução de dreno"
+                            android:textColor="#ffffff"
+                            android:textSize="18sp" />
+
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/switchDreno"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                        android:layout_marginHorizontal="5dp"
+                        android:orientation="horizontal"
+                        tools:ignore="MissingConstraints"
+                        tools:layout_editor_absoluteX="1dp"
+                        tools:layout_editor_absoluteY="1dp">
 
-                </LinearLayout>
+                        <TextView
+                            android:id="@+id/txtSensorTemp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="start"
+                            android:layout_weight="1"
+                            android:padding="7dp"
+                            android:text="Troca de sensor de temperatura"
+                            android:textColor="#ffffff"
+                            android:textSize="18sp" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    tools:layout_editor_absoluteX="1dp"
-                    tools:layout_editor_absoluteY="1dp"
-                    android:layout_marginHorizontal="5dp"
-                    tools:ignore="MissingConstraints">
 
-                    <TextView
-                        android:id="@+id/txtSensorTemp"
-                        android:layout_width="wrap_content"
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/switchSensorTemperatura"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="start"
-                        android:layout_weight="1"
-                        android:padding="7dp"
-                        android:text="Troca de sensor de temperatura"
-                        android:textColor="#ffffff"
-                        android:textSize="18sp" />
+                        android:layout_marginHorizontal="5dp"
+                        android:orientation="horizontal"
+                        tools:ignore="MissingConstraints"
+                        tools:layout_editor_absoluteX="1dp"
+                        tools:layout_editor_absoluteY="1dp">
+
+                        <TextView
+                            android:id="@+id/txtSensorDegelo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="start"
+                            android:layout_weight="1"
+                            android:padding="7dp"
+                            android:text="Troca de sensor de degelo"
+                            android:textColor="#ffffff"
+                            android:textSize="18sp" />
 
 
-                    <androidx.appcompat.widget.SwitchCompat
-                        android:id="@+id/switchSensorTemperatura"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/switchSensorDegelo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1" />
 
-                </LinearLayout>
+                    </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    tools:layout_editor_absoluteX="1dp"
-                    tools:layout_editor_absoluteY="1dp"
-                    android:layout_marginHorizontal="5dp"
-                    tools:ignore="MissingConstraints">
 
-                    <TextView
-                        android:id="@+id/txtSensorDegelo"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="start"
-                        android:layout_weight="1"
-                        android:padding="7dp"
-                        android:text="Troca de sensor de degelo"
-                        android:textColor="#ffffff"
-                        android:textSize="18sp" />
+                        android:layout_marginHorizontal="5dp"
+                        android:orientation="horizontal"
+                        tools:ignore="MissingConstraints"
+                        tools:layout_editor_absoluteX="1dp"
+                        tools:layout_editor_absoluteY="1dp">
+
+                        <TextView
+                            android:id="@+id/txtPlaca"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="start"
+                            android:layout_weight="1"
+                            android:padding="7dp"
+                            android:text="Troca de placa universal"
+                            android:textColor="#ffffff"
+                            android:textSize="18sp" />
 
 
-                    <androidx.appcompat.widget.SwitchCompat
-                        android:id="@+id/switchSensorDegelo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/switchPlaca"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1" />
 
-                </LinearLayout>
+                    </LinearLayout>
 
-
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    tools:layout_editor_absoluteX="1dp"
-                    tools:layout_editor_absoluteY="1dp"
-                    android:layout_marginHorizontal="5dp"
-                    tools:ignore="MissingConstraints">
-
-                    <TextView
-                        android:id="@+id/txtPlaca"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="start"
-                        android:layout_weight="1"
-                        android:padding="7dp"
-                        android:text="Troca de placa universal"
-                        android:textColor="#ffffff"
-                        android:textSize="18sp" />
+                        android:layout_marginHorizontal="5dp"
+                        tools:ignore="MissingConstraints"
+                        tools:layout_editor_absoluteX="1dp"
+                        tools:layout_editor_absoluteY="1dp">
+
+                        <TextView
+                            android:id="@+id/txtPlacaRecep"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="start"
+                            android:layout_weight="1"
+                            android:padding="7dp"
+                            android:text="Troca de placa receptora"
+                            android:textColor="#ffffff"
+                            android:textSize="18sp" />
 
 
-                    <androidx.appcompat.widget.SwitchCompat
-                        android:id="@+id/switchPlaca"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    tools:layout_editor_absoluteX="1dp"
-                    tools:layout_editor_absoluteY="1dp"
-                    android:layout_marginHorizontal="5dp"
-                    tools:ignore="MissingConstraints">
-
-                    <TextView
-                        android:id="@+id/txtVentiladorEvap"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="start"
-                        android:layout_weight="1"
-                        android:padding="7dp"
-                        android:text="Troca de ventilador evaporadora"
-                        android:textColor="#ffffff"
-                        android:textSize="18sp" />
-
-
-                    <androidx.appcompat.widget.SwitchCompat
-                        android:id="@+id/switchVentiladorEvap"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
-
-                </LinearLayout>
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/switchPlacaRecep"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1" />
+                    </LinearLayout>
 
 
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        tools:layout_editor_absoluteX="1dp"
-                        tools:layout_editor_absoluteY="1dp"
                         android:layout_marginHorizontal="5dp"
-                        tools:ignore="MissingConstraints">
+                        android:orientation="horizontal"
+                        tools:ignore="MissingConstraints"
+                        tools:layout_editor_absoluteX="1dp"
+                        tools:layout_editor_absoluteY="1dp">
+
+                        <TextView
+                            android:id="@+id/txtVentiladorEvap"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="start"
+                            android:layout_weight="1"
+                            android:padding="7dp"
+                            android:text="Troca de ventilador evaporadora"
+                            android:textColor="#ffffff"
+                            android:textSize="18sp" />
+
+
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/switchVentiladorEvap"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1" />
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="5dp"
+                        android:orientation="horizontal"
+                        tools:ignore="MissingConstraints"
+                        tools:layout_editor_absoluteX="1dp"
+                        tools:layout_editor_absoluteY="1dp">
 
                         <TextView
                             android:id="@+id/txtVentiladorCond"
@@ -634,7 +703,7 @@
                             android:layout_gravity="start"
                             android:layout_weight="1"
                             android:padding="7dp"
-                            android:text="Troca de ventilador cndensadora"
+                            android:text="Troca de ventilador condensadora"
                             android:textColor="#ffffff"
                             android:textSize="18sp" />
 
@@ -648,86 +717,87 @@
                     </LinearLayout>
 
 
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    tools:layout_editor_absoluteX="1dp"
-                    tools:layout_editor_absoluteY="1dp"
-                    android:layout_marginHorizontal="5dp"
-                    tools:ignore="MissingConstraints">
-
-                    <TextView
-                        android:id="@+id/txtSerpentina"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="start"
-                        android:layout_weight="1"
-                        android:padding="7dp"
-                        android:text="Troca de serpentina"
-                        android:textColor="#ffffff"
-                        android:textSize="18sp" />
+                        android:layout_marginHorizontal="5dp"
+                        android:orientation="horizontal"
+                        tools:ignore="MissingConstraints"
+                        tools:layout_editor_absoluteX="1dp"
+                        tools:layout_editor_absoluteY="1dp">
+
+                        <TextView
+                            android:id="@+id/txtSerpentina"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="start"
+                            android:layout_weight="1"
+                            android:padding="7dp"
+                            android:text="Troca de serpentina"
+                            android:textColor="#ffffff"
+                            android:textSize="18sp" />
 
 
-                    <androidx.appcompat.widget.SwitchCompat
-                        android:id="@+id/switchSerpentina"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/switchSerpentina"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1" />
 
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    tools:layout_editor_absoluteX="1dp"
-                    tools:layout_editor_absoluteY="1dp"
-                    android:layout_marginHorizontal="5dp"
-                    tools:ignore="MissingConstraints">
-
-                    <TextView
-                        android:id="@+id/txtVentilador"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="start"
-                        android:layout_weight="1"
-                        android:padding="7dp"
-                        android:text="Troca de compressor"
-                        android:textColor="#ffffff"
-                        android:textSize="18sp" />
-
-
-                    <androidx.appcompat.widget.SwitchCompat
-                        android:id="@+id/switchCompressor"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
-
-                </LinearLayout>
+                    </LinearLayout>
 
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        tools:layout_editor_absoluteX="1dp"
-                        tools:layout_editor_absoluteY="1dp"
                         android:layout_marginHorizontal="5dp"
+                        android:orientation="horizontal"
+                        tools:ignore="MissingConstraints"
+                        tools:layout_editor_absoluteX="1dp"
+                        tools:layout_editor_absoluteY="1dp">
 
-                        tools:ignore="MissingConstraints">
+                        <TextView
+                            android:id="@+id/txtVentilador"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="start"
+                            android:layout_weight="1"
+                            android:padding="7dp"
+                            android:text="Troca de compressor"
+                            android:textColor="#ffffff"
+                            android:textSize="18sp" />
+
+
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/switchCompressor"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1" />
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="5dp"
+                        android:orientation="horizontal"
+                        tools:ignore="MissingConstraints"
+                        tools:layout_editor_absoluteX="1dp"
+
+                        tools:layout_editor_absoluteY="1dp">
+
                         <TextView
                             android:id="@+id/txtFusivel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Troca de fusível"
                             android:layout_gravity="start"
+                            android:layout_weight="1"
+                            android:padding="7dp"
+                            android:text="Troca de fusível"
                             android:textColor="#ffffff"
-                            android:textSize="18sp"
-                            android:padding="7dp"/>
+                            android:textSize="18sp" />
+
                         <androidx.appcompat.widget.SwitchCompat
                             android:id="@+id/switchFusivel"
                             android:layout_width="wrap_content"
@@ -739,22 +809,23 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        tools:layout_editor_absoluteX="1dp"
-                        tools:layout_editor_absoluteY="1dp"
                         android:layout_marginHorizontal="5dp"
+                        android:orientation="horizontal"
+                        tools:ignore="MissingConstraints"
+                        tools:layout_editor_absoluteX="1dp"
 
-                        tools:ignore="MissingConstraints">
+                        tools:layout_editor_absoluteY="1dp">
+
                         <TextView
                             android:id="@+id/txtCapacitor"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Troca de capacitor"
                             android:layout_gravity="start"
+                            android:layout_weight="1"
+                            android:padding="7dp"
+                            android:text="Troca de capacitor"
                             android:textColor="#ffffff"
-                            android:textSize="18sp"
-                            android:padding="7dp"/>
+                            android:textSize="18sp" />
 
                         <androidx.appcompat.widget.SwitchCompat
                             android:id="@+id/switchCapacitor"
@@ -765,149 +836,149 @@
                     </LinearLayout>
 
 
-
-                <LinearLayout
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        tools:layout_editor_absoluteX="1dp"
-                        tools:layout_editor_absoluteY="1dp"
                         android:layout_marginHorizontal="5dp"
+                        android:orientation="horizontal"
+                        tools:ignore="MissingConstraints"
+                        tools:layout_editor_absoluteX="1dp"
 
-                        tools:ignore="MissingConstraints">
+                        tools:layout_editor_absoluteY="1dp">
+
                         <TextView
-                            android:id="@+id/txtRele"
+                            android:id="@+id/txtContac"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Troca de relé"
                             android:layout_gravity="start"
+                            android:layout_weight="1"
+                            android:padding="7dp"
+                            android:text="Troca de contactora"
                             android:textColor="#ffffff"
-                            android:textSize="18sp"
-                            android:padding="7dp"/>
+                            android:textSize="18sp" />
 
                         <androidx.appcompat.widget.SwitchCompat
-                            android:id="@+id/switchRele"
+                            android:id="@+id/switchContac"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_weight="1" />
 
                     </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    tools:layout_editor_absoluteX="1dp"
-                    tools:layout_editor_absoluteY="1dp"
-                    android:layout_marginHorizontal="5dp"
-
-                    tools:ignore="MissingConstraints">
-                    <TextView
-                        android:id="@+id/txtControle"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Ajuste no controle"
-                        android:layout_gravity="start"
-                        android:textColor="#ffffff"
-                        android:textSize="18sp"
-                        android:padding="7dp"/>
+                        android:layout_marginHorizontal="5dp"
+                        android:orientation="horizontal"
+                        tools:ignore="MissingConstraints"
+                        tools:layout_editor_absoluteX="1dp"
 
-                    <androidx.appcompat.widget.SwitchCompat
-                        android:id="@+id/switchControle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                        tools:layout_editor_absoluteY="1dp">
+
+                        <TextView
+                            android:id="@+id/txtControle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="start"
+                            android:layout_weight="1"
+                            android:padding="7dp"
+                            android:text="Ajuste no controle"
+                            android:textColor="#ffffff"
+                            android:textSize="18sp" />
+
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/switchControle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="5dp"
+                        android:orientation="horizontal"
+                        tools:ignore="MissingConstraints"
+                        tools:layout_editor_absoluteX="1dp"
+
+                        tools:layout_editor_absoluteY="1dp">
+
+                        <TextView
+                            android:id="@+id/txtEletrica"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="start"
+                            android:layout_weight="1"
+                            android:padding="7dp"
+                            android:text="Ajuste na elétrica local"
+                            android:textColor="#ffffff"
+                            android:textSize="18sp" />
+
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/switchEletrica"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    tools:layout_editor_absoluteX="1dp"
-                    tools:layout_editor_absoluteY="1dp"
-                    android:layout_marginHorizontal="5dp"
-
-                    tools:ignore="MissingConstraints">
-                    <TextView
-                        android:id="@+id/txtEletrica"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Ajuste na elétrica local"
-                        android:layout_gravity="start"
-                        android:textColor="#ffffff"
-                        android:textSize="18sp"
-                        android:padding="7dp"/>
-
-                    <androidx.appcompat.widget.SwitchCompat
-                        android:id="@+id/switchEletrica"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Observações"
-                android:textColor="#000000"
-                android:textSize="18sp"
-                android:textAlignment="center"
-                android:layout_gravity="center"
-                android:layout_marginHorizontal="5dp"
-                android:background="@drawable/layout_topbf"
-                android:layout_marginTop="10dp"
-                android:paddingBottom="10dp"
-
-                />
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                tools:layout_editor_absoluteX="1dp"
-                tools:layout_editor_absoluteY="1dp"
-                android:layout_marginHorizontal="5dp"
-                android:background="@drawable/layout_bf">
-
-
-
-                <EditText
-                    android:id="@+id/OBS"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="start|top"
-                    android:inputType="textMultiLine"
-                    android:layout_marginHorizontal="20dp"
-                    android:layout_marginVertical="5dp"
-                    android:textColor="#000000"
-                    android:background="#ffffff"
-                    android:text=""
-                    android:lines="3"/>
-            </LinearLayout>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="Insira as imagens abaixo"
-                    android:textColor="#000000"
-                    android:textSize="18sp"
-                    android:textAlignment="center"
                     android:layout_gravity="center"
                     android:layout_marginHorizontal="5dp"
-                    android:background="@drawable/layout_topbf"
                     android:layout_marginTop="10dp"
+                    android:background="@drawable/layout_topbf"
                     android:paddingBottom="10dp"
+                    android:text="Observações"
+                    android:textAlignment="center"
+                    android:textColor="#000000"
+                    android:textSize="18sp"
 
                     />
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="5dp"
+                    android:background="@drawable/layout_bf"
+                    android:orientation="horizontal"
+                    tools:layout_editor_absoluteX="1dp"
+                    tools:layout_editor_absoluteY="1dp">
+
+
+                    <EditText
+                        android:id="@+id/OBS"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="20dp"
+                        android:layout_marginVertical="5dp"
+                        android:background="#ffffff"
+                        android:gravity="start|top"
+                        android:inputType="textMultiLine"
+                        android:lines="3"
+                        android:text=""
+                        android:textColor="#000000" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_marginHorizontal="5dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/layout_topbf"
+                    android:paddingBottom="10dp"
+                    android:text="Insira as imagens abaixo"
+                    android:textAlignment="center"
+                    android:textColor="#000000"
+                    android:textSize="18sp"
+
+                    />
 
 
                 <LinearLayout
@@ -916,35 +987,36 @@
                     android:orientation="horizontal">
 
 
-
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
+                        android:layout_marginHorizontal="5dp"
                         android:layout_weight="1"
-                        android:orientation="vertical"
                         android:background="@drawable/layout_bf"
-                        android:layout_marginHorizontal="5dp">
+                        android:orientation="vertical">
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:textColor="#ffffff"
-                            android:textSize="18sp"
                             android:layout_marginVertical="10dp"
                             android:text="Antes"
-                            />
+                            android:textColor="#ffffff"
+                            android:textSize="18sp" />
+
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
+
                             <ImageView
                                 android:id="@+id/imgAntes"
                                 android:layout_width="match_parent"
                                 android:layout_height="0dp"
-                                app:layout_constraintDimensionRatio="1:1"
-                                app:srcCompat="@android:drawable/ic_menu_add"
-                                android:background="#000000"
                                 android:layout_gravity="center"
-                                android:layout_margin="10dp"/>
+                                android:layout_margin="10dp"
+                                android:background="#000000"
+                                app:layout_constraintDimensionRatio="1:1"
+                                app:srcCompat="@android:drawable/ic_menu_add" />
                         </androidx.constraintlayout.widget.ConstraintLayout>
                     </LinearLayout>
 
@@ -952,78 +1024,75 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:background="@drawable/layout_bf"
                         android:layout_marginHorizontal="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/layout_bf"
+                        android:orientation="vertical"
                         android:paddingBottom="10dp">
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:textColor="#ffffff"
-                            android:textSize="18sp"
                             android:layout_marginVertical="10dp"
                             android:text="Depois"
-                            />
+                            android:textColor="#ffffff"
+                            android:textSize="18sp" />
+
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
+
                             <ImageView
                                 android:id="@+id/imgDepois"
                                 android:layout_width="match_parent"
                                 android:layout_height="0dp"
-                                app:layout_constraintDimensionRatio="1:1"
-                                app:srcCompat="@android:drawable/ic_menu_add"
-                                android:background="#000000"
                                 android:layout_gravity="center"
-                                android:layout_margin="15dp"/>
+                                android:layout_margin="15dp"
+                                android:background="#000000"
+                                app:layout_constraintDimensionRatio="1:1"
+                                app:srcCompat="@android:drawable/ic_menu_add" />
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                     </LinearLayout>
-
 
 
                 </LinearLayout>
 
 
-
-
-
-
-
-            <androidx.coordinatorlayout.widget.CoordinatorLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <com.google.android.material.bottomappbar.BottomAppBar
-                    android:id="@+id/bottomAppBar"
-                    style="@style/Widget.MaterialComponents.BottomAppBar.Colored"
+                <androidx.coordinatorlayout.widget.CoordinatorLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:layout_marginTop="15dp"
-                    android:backgroundTint="#27477B">
+                    android:layout_height="wrap_content">
 
-                    <Button
-                        android:id="@+id/returnHome"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/retornar"
-                        android:textColor="#000000"
-                        android:backgroundTint="#FF0000"
-                        android:layout_margin="7dp"
-                        />
-                    <Button
-                        android:id="@+id/finalizar"
+                    <com.google.android.material.bottomappbar.BottomAppBar
+                        android:id="@+id/bottomAppBar"
+                        style="@style/Widget.MaterialComponents.BottomAppBar.Colored"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Confirmar"
-                        android:textColor="#000000"
-                        android:layout_margin="7dp"
-                        android:backgroundTint="#EA811F"/>
+                        android:layout_gravity="bottom"
+                        android:layout_marginTop="15dp"
+                        android:backgroundTint="#27477B">
 
-                </com.google.android.material.bottomappbar.BottomAppBar>
-            </androidx.coordinatorlayout.widget.CoordinatorLayout>
+                        <Button
+                            android:id="@+id/returnHome"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="7dp"
+                            android:backgroundTint="#FF0000"
+                            android:text="@string/retornar"
+                            android:textColor="#000000" />
+
+                        <Button
+                            android:id="@+id/finalizar"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="7dp"
+                            android:backgroundTint="#EA811F"
+                            android:text="Confirmar"
+                            android:textColor="#000000" />
+
+                    </com.google.android.material.bottomappbar.BottomAppBar>
+                </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
             </LinearLayout>
         </ScrollView>

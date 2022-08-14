@@ -55,7 +55,9 @@ class httpServices {
         }
 
 
-        fun getEmployeeOrder(employee: String): List<SimplifiedOrderDTO> {
+        fun getEmployeeOrder(employee: String): Pair<List<SimplifiedOrderDTO>,Int> {
+
+            var ordersCount : Int = 0
 
             val client = OkHttpClient()
 
@@ -90,7 +92,7 @@ class httpServices {
                             countDownLatch.countDown();
                             throw HttpException("Unexpected code $response")
                         }
-                        val body = response.body
+                        ordersCount = Integer.parseInt(response.headers["X-Total-Count"].toString())
                         simplifiedOrderDTOList = jsonAdapter.fromJson(response.body!!.source())!!
                         countDownLatch.countDown();
 
@@ -104,7 +106,7 @@ class httpServices {
                 "Nothing found"
             )
 
-            return simplifiedOrderDTOList
+            return Pair(simplifiedOrderDTOList,ordersCount)
         }
     }
 
