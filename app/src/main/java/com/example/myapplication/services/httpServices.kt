@@ -25,7 +25,6 @@ class httpServices {
             val body = Json.encodeToString(order).toRequestBody()
 
 
-
             val request =
                 Request.Builder()
                     .post(body)
@@ -33,7 +32,7 @@ class httpServices {
                     .addHeader("content-type", "application/json")
                     .build()
             val countDownLatch = CountDownLatch(1)
-            client.newCall(request).enqueue(object: Callback{
+            client.newCall(request).enqueue(object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
                     e.printStackTrace()
                     countDownLatch.countDown();
@@ -55,9 +54,9 @@ class httpServices {
         }
 
 
-        fun getEmployeeOrder(employee: String): Pair<List<SimplifiedOrderDTO>,Int> {
+        fun getEmployeeOrder(employee: String): Pair<List<SimplifiedOrderDTO>, Int> {
 
-            var ordersCount : Int = 0
+            var ordersCount: Int = 0
 
             val client = OkHttpClient()
 
@@ -71,9 +70,14 @@ class httpServices {
 
             var simplifiedOrderDTOList: List<SimplifiedOrderDTO> = listOf()
 
-            val request = Request.Builder()
-                .url("${HCredentials.API_ORDER_URL.cred}/orders/month/${employee}")
-                .build()
+            val request = if (employee.equals("rayssa"))
+                Request.Builder()
+                    .url("${HCredentials.API_ORDER_URL.cred}/orders/month/")
+                    .build()
+            else
+                Request.Builder()
+                    .url("${HCredentials.API_ORDER_URL.cred}/orders/month/${employee}")
+                    .build()
 
             val countDownLatch = CountDownLatch(1)
 
@@ -106,7 +110,7 @@ class httpServices {
                 "Nothing found"
             )
 
-            return Pair(simplifiedOrderDTOList,ordersCount)
+            return Pair(simplifiedOrderDTOList, ordersCount)
         }
     }
 

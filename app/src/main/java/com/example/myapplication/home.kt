@@ -15,6 +15,7 @@ import com.example.myapplication.services.httpServices
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 
 
 /**
@@ -76,8 +77,8 @@ class Home : Fragment() {
         var oAdapter = HomeListAdapter(orderList)
         recycerview.adapter = oAdapter
         CoroutineScope(MainScope().coroutineContext).async {
+            delay(500)
             if (login != "") {
-
                 val response = httpServices.getEmployeeOrder(login!!)
                 orderList.clear()
                 orderList.addAll(response.first)

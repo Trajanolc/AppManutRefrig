@@ -872,6 +872,126 @@
                         android:orientation="horizontal"
                         tools:ignore="MissingConstraints"
                         tools:layout_editor_absoluteX="1dp"
+                        android:id="@+id/LayoutMotor"
+                        android:visibility="gone"
+                        tools:layout_editor_absoluteY="1dp">
+
+                        <TextView
+                            android:id="@+id/txtMotor"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="start"
+                            android:layout_weight="1"
+                            android:padding="7dp"
+                            android:text="Troca de motor"
+                            android:textColor="#ffffff"
+                            android:textSize="18sp" />
+
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/switchMotor"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="5dp"
+                        android:orientation="horizontal"
+                        tools:ignore="MissingConstraints"
+                        tools:layout_editor_absoluteX="1dp"
+                        android:id="@+id/LayoutTurbina"
+                        android:visibility="gone"
+                        tools:layout_editor_absoluteY="1dp">
+
+                        <TextView
+                            android:id="@+id/txtTurbina"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="start"
+                            android:layout_weight="1"
+                            android:padding="7dp"
+                            android:text="Troca de turbina"
+                            android:textColor="#ffffff"
+                            android:textSize="18sp" />
+
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/switchTurbina"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="5dp"
+                        android:orientation="horizontal"
+                        tools:ignore="MissingConstraints"
+                        tools:layout_editor_absoluteX="1dp"
+                        android:id="@+id/LayoutFiltroBebedouro"
+                        android:visibility="gone"
+                        tools:layout_editor_absoluteY="1dp">
+
+                        <TextView
+                            android:id="@+id/txtFiltroBebedouro"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="start"
+                            android:layout_weight="1"
+                            android:padding="7dp"
+                            android:text="Troca de filtro de bebedouro"
+                            android:textColor="#ffffff"
+                            android:textSize="18sp" />
+
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/switchFiltroBebedouro"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="5dp"
+                        android:orientation="horizontal"
+                        tools:ignore="MissingConstraints"
+                        tools:layout_editor_absoluteX="1dp"
+                        android:id="@+id/LayoutExpansor"
+                        android:visibility="gone"
+                        tools:layout_editor_absoluteY="1dp">
+
+                        <TextView
+                            android:id="@+id/txtExpansor"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="start"
+                            android:layout_weight="1"
+                            android:padding="7dp"
+                            android:text="Troca de expansor"
+                            android:textColor="#ffffff"
+                            android:textSize="18sp" />
+
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/switchExpansor"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="5dp"
+                        android:orientation="horizontal"
+                        tools:ignore="MissingConstraints"
+                        tools:layout_editor_absoluteX="1dp"
 
                         tools:layout_editor_absoluteY="1dp">
 
@@ -901,7 +1021,7 @@
                         android:orientation="horizontal"
                         tools:ignore="MissingConstraints"
                         tools:layout_editor_absoluteX="1dp"
-
+                        android:id="@+id/LayoutEletrica"
                         tools:layout_editor_absoluteY="1dp">
 
                         <TextView

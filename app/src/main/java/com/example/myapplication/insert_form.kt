@@ -51,6 +51,8 @@ class InsertForm : Fragment() {
         val listEquip = ListEquip(requireContext())
         listEquip.resetPlant()
 
+        ajustServicesVisibility(listEquip.getPlantList())
+
         binding.instalacao.adapter = listEquip.arrayAdapterPlant
         binding.local.adapter = listEquip.arrayAdapterLocal
         binding.equipamento.adapter = listEquip.arrayAdapterEquip
@@ -165,7 +167,11 @@ class InsertForm : Fragment() {
                     binding.switchFusivel.isChecked,
                     binding.switchCapacitor.isChecked,
                     binding.switchContac.isChecked,
-                    binding.switchPlacaRecep.isChecked
+                    binding.switchPlacaRecep.isChecked,
+                    binding.switchMotor.isChecked,
+                    binding.switchTurbina.isChecked,
+                    binding.switchFiltroBebedouro.isChecked,
+                    binding.switchExpansor.isChecked
                 )
 
                 order.setNumericInfo(
@@ -207,6 +213,15 @@ class InsertForm : Fragment() {
         ).show()
     }
 
+    fun ajustServicesVisibility(plantList: List<String>){
+        if(plantList.contains("AGROPALMA")){
+            binding.LayoutMotor.visibility=View.VISIBLE
+            binding.LayoutTurbina.visibility=View.VISIBLE
+            binding.LayoutFiltroBebedouro.visibility=View.VISIBLE
+            binding.LayoutExpansor.visibility=View.VISIBLE
+        }
+        if(plantList.equals(arrayListOf<String>("AGROPALMA"))) binding.LayoutEletrica.visibility=View.GONE
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()

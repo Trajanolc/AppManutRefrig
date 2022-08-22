@@ -105,7 +105,11 @@ data class Order(
         fusivel: Boolean,
         capacit: Boolean,
         contac: Boolean,
-        placaRecep: Boolean
+        placaRecep: Boolean,
+        motor: Boolean,
+        turbina: Boolean,
+        filtroBebedouro: Boolean,
+        expansor: Boolean
     ) {
         if (sensorTemp) typeSwap.add("Troca de Sensor de Temperatura")
         if (sensorDegelo) typeSwap.add("Troca de Sensor de Degelo")
@@ -118,6 +122,10 @@ data class Order(
         if (capacit) typeSwap.add("Troca de Capacitor")
         if (contac) typeSwap.add("Troca de Contactora")
         if (placaRecep) typeSwap.add("Troca de Placa Receptora")
+        if (motor) typeSwap.add("Troca de Motor")
+        if (turbina) typeSwap.add("Troca de Turbina")
+        if (filtroBebedouro) typeSwap.add("Troca de Filtro de Bebedouro")
+        if (expansor) typeSwap.add("Troca de Expansor")
 
         if (typeSwap.isEmpty() && typeManut.isEmpty()) throw OrderException("Por favor, selecione ao menos um tipo de serviço ou troca de material.")
     }

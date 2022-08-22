@@ -42,8 +42,6 @@ class ListEquip(val context: Context) {
             newEquips.addAll(equips)
             sharedPref.edit().putStringSet("Equipamentos", newEquips).apply()
         }
-
-
     }
 
     private suspend fun getEquipsFromDB(plant: String): MutableSet<String> {
@@ -104,13 +102,10 @@ class ListEquip(val context: Context) {
         }
     }
 
-
-
     //Reseters
     fun resetPlant() {
         val listPlant: ArrayList<String> = ArrayList(0)
         listPlant.add(" Selecione uma Instalação")// to stay on top
-        println(equips)
         equips!!.forEach { equip ->
             listPlant.add(equip.split("_")[0])
         }
@@ -135,6 +130,7 @@ class ListEquip(val context: Context) {
     }
 
 
+    //Getters
 
     fun getNearEquips(plant: String, local: String): ArrayList<String> {
         if (local == " ") {
@@ -150,5 +146,13 @@ class ListEquip(val context: Context) {
             }
         }
         return listEquips
+    }
+
+    fun getPlantList(): List<String> {
+        val listPlant: ArrayList<String> = ArrayList(0)
+        equips!!.forEach { equip ->
+            listPlant.add(equip.split("_")[0])
+        }
+        return listPlant.distinct().sorted()
     }
 }
