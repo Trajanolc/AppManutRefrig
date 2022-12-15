@@ -438,6 +438,7 @@
                             android:layout_marginVertical="3dp"
                             android:layout_weight="1"
                             android:background="@color/white"
+                            android:textColor="@color/purple_500"
                             android:inputType="numberDecimal"
                             android:textAlignment="textEnd" />
 
