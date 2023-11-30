@@ -56,7 +56,7 @@ class httpServices {
 
         fun getEmployeeOrder(employee: String): Pair<List<SimplifiedOrderDTO>, Int> {
 
-            var ordersCount: Int = 0
+             var ordersCount: Int = 0
 
             val client = OkHttpClient()
 
@@ -70,13 +70,13 @@ class httpServices {
 
             var simplifiedOrderDTOList: List<SimplifiedOrderDTO> = listOf()
 
-            val request = if (employee.equals("rayssa"))
+            val request = if (employee.equals("Mario Marques"))
                 Request.Builder()
                     .url("${HCredentials.API_ORDER_URL.cred}/orders/month/")
                     .build()
             else
                 Request.Builder()
-                    .url("${HCredentials.API_ORDER_URL.cred}/orders/month/${employee}")
+                    .url("${HCredentials.API_ORDER_URL.cred}/orders/month/${employee.replace(" ","-")}")
                     .build()
 
             val countDownLatch = CountDownLatch(1)
@@ -85,7 +85,7 @@ class httpServices {
                 override fun onFailure(call: Call, e: IOException) {
                     e.printStackTrace()
                     countDownLatch.countDown();
-                    throw HttpException("Call failed")
+
 
 
                 }

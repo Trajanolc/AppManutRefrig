@@ -1,6 +1,8 @@
 package com.example.myapplication.entities
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
@@ -10,6 +12,7 @@ import android.widget.ImageView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.ActivityResultRegistry
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat.startActivityForResult
 import com.example.myapplication.enum.ImgSize
 import com.example.myapplication.enum.Period
 import com.example.myapplication.services.S3aws
@@ -41,7 +44,16 @@ class ListImg(val context: Context) {
         return !(listAfter.isEmpty() && listBefore.isEmpty())
     }
 
+    private fun cargarImagenDeGaleria() {
+
+    }
+
+
     fun addImgs(registry: ActivityResultRegistry, period: Period, img: ImageView) {
+
+
+
+
         val getContent: ActivityResultLauncher<String> = registry.register(
             "img", ActivityResultContracts.GetMultipleContents()
         ) { uris ->
@@ -86,10 +98,11 @@ class ListImg(val context: Context) {
                     scale *= 2
                 }
 
+
+                val fileName = "temp_image_${System.currentTimeMillis()}.JPEG"
                 //Create Temp File
-                val outputDir = context.cacheDir // context being the Activity pointer
-                val outputFile =
-                    File.createTempFile(uri.toString().split("%").last(), ".JPEG", outputDir)
+                val outputDir = context.filesDir // context being the Activity pointer
+                val outputFile = File.createTempFile(fileName, null, outputDir)
                 val bos = ByteArrayOutputStream()
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos)
                 val bitmapData: ByteArray = bos.toByteArray()

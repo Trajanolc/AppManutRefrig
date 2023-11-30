@@ -13,8 +13,8 @@ android {
         applicationId "com.example.myapplication"
         minSdk 26
         targetSdk 32
-        versionCode 7
-        versionName "1.5.2"
+        versionCode 9
+        versionName "1.5.3"
         manifestPlaceholders = [auth0Domain: "@string/com_auth0_domain", auth0Scheme: "@string/com_auth0_scheme"]
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

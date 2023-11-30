@@ -42,19 +42,19 @@ class Home : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val login = requireActivity().getSharedPreferences("login", AppCompatActivity.MODE_PRIVATE)
-            .getString("login", "")
+        val login = "Mario Marques"
 
         binding.addOS.setOnClickListener {
-            if (login != "") {
-                findNavController().navigate(R.id.action_FirstFragment_to_insert_form)
-            } else {
+
+            findNavController().navigate(R.id.action_FirstFragment_to_insert_form)
+
                 Toast.makeText(
                     requireContext(),
-                    "Por favor, faça o login antes",
+                    "Carregando formulário",
                     Toast.LENGTH_SHORT
+
                 ).show()
-            }
+
         }
         val swipe = binding.swipeRefresh
         swipe.setOnRefreshListener {
@@ -77,13 +77,23 @@ class Home : Fragment() {
         var oAdapter = HomeListAdapter(orderList)
         recycerview.adapter = oAdapter
         CoroutineScope(MainScope().coroutineContext).async {
-            delay(500)
             if (login != "") {
-                val response = httpServices.getEmployeeOrder(login!!)
-                orderList.clear()
-                orderList.addAll(response.first)
-                binding.ordersCount.text="Ordens realizadas esse mês: ${response.second}"
-                binding.ordersCount.visibility = View.VISIBLE
+                try{
+                    val response = httpServices.getEmployeeOrder(login!!)
+                    orderList.clear()
+                    orderList.addAll(response.first)
+                    binding.ordersCount.text="Ordens realizadas esse mês: ${response.second}"
+
+
+
+                }catch (e : Exception){
+                    orderList.clear()
+                }finally {
+                    binding.ordersCount.visibility = View.VISIBLE
+                    binding.addOS.visibility = View.VISIBLE
+                    binding.progress.visibility = View.GONE
+                }
+
 
                 if (orderList.isNotEmpty()) {
                     oAdapter.notifyItemMoved(0, orderList.size - 1)

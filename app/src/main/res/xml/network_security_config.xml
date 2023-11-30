@@ -2,6 +2,7 @@
 <network-security-config>
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">moriapi-env.eba-4vryvnng.us-east-2.elasticbeanstalk.com</domain>
+        <domain includeSubdomains="true">https://mori-order-api.fly.dev</domain>
         <domain includeSubdomains="true">192.168.15.2</domain>
     </domain-config>
 </network-security-config>
